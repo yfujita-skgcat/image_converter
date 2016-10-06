@@ -64,8 +64,8 @@ public class BaseFrame extends javax.swing.JFrame {
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		Integer _width = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("400")));
-		Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("300")));
+		Integer _width = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, "400", null));
+		Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, "300", null ));
 
 		this.appController = new ApplicationController(this);
 
@@ -82,15 +82,15 @@ public class BaseFrame extends javax.swing.JFrame {
 		//this.minScrollSpinner.setMinAndMax(0, 0, 4094, 1);
 		//this.maxScrollSpinner.setMinAndMax(4095, 1, 4095, 1);
 
-		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY);
-		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY);
+		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
+		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
 		logger.fine(_srcDir);
 		logger.fine(_dstDir);
 		this.sourceText.setText(_srcDir);
 		this.destinationText.setText(_dstDir);
 
-		String _recursive = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RECURSIVE_ON, java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("TRUE"));
-		if (_recursive.equals(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("TRUE"))) {
+		String _recursive = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RECURSIVE_ON, "true", null);
+		if (_recursive.equals("true")) {
 			this.recursiveRadioButton.setSelected(true);
 		} else {
 			this.recursiveRadioButton.setSelected(false);
@@ -124,6 +124,12 @@ public class BaseFrame extends javax.swing.JFrame {
                 destinationButton = new javax.swing.JButton();
                 imageFormatComboBox = new javax.swing.JComboBox();
                 convertLabel = new javax.swing.JLabel();
+                resizeRadioButton = new javax.swing.JCheckBox();
+                resizeSpinner = new javax.swing.JSpinner();
+                jLabel1 = new javax.swing.JLabel();
+                tif_checkbox = new javax.swing.JCheckBox();
+                jpg_checkbox = new javax.swing.JCheckBox();
+                png_checkbox = new javax.swing.JCheckBox();
                 slideScrollPane2 = new javax.swing.JScrollPane();
                 slide2 = new javax.swing.JPanel();
                 imageScrollPane = new javax.swing.JScrollPane();
@@ -229,6 +235,19 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 convertLabel.setText(bundle.getString("AutoConverter.convertLabel.text")); // NOI18N
 
+                resizeRadioButton.setText(bundle.getString("BaseFrame.resizeRadioButton.text")); // NOI18N
+
+                jLabel1.setText(bundle.getString("BaseFrame.jLabel1.text")); // NOI18N
+
+                tif_checkbox.setSelected(true);
+                tif_checkbox.setText(bundle.getString("BaseFrame.tif_checkbox.text")); // NOI18N
+
+                jpg_checkbox.setText(bundle.getString("BaseFrame.jpg_checkbox.text")); // NOI18N
+                jpg_checkbox.setEnabled(false);
+
+                png_checkbox.setText(bundle.getString("BaseFrame.png_checkbox.text")); // NOI18N
+                png_checkbox.setEnabled(false);
+
                 javax.swing.GroupLayout slide1Layout = new javax.swing.GroupLayout(slide1);
                 slide1.setLayout(slide1Layout);
                 slide1Layout.setHorizontalGroup(
@@ -236,18 +255,35 @@ public class BaseFrame extends javax.swing.JFrame {
                         .addGroup(slide1Layout.createSequentialGroup()
                                 .addGap(41, 41, 41)
                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(recursiveRadioButton)
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(convertLabel)
                                                         .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                                                 .addComponent(sourceButton, javax.swing.GroupLayout.Alignment.LEADING, 0, 1, Short.MAX_VALUE)
                                                                 .addComponent(destinationButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                                .addGap(12, 12, 12)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(destinationText, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
-                                                        .addComponent(imageFormatComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(sourceText))))
+                                                        .addComponent(destinationText, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+                                                        .addComponent(sourceText)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, slide1Layout.createSequentialGroup()
+                                                                .addGap(24, 24, 24)
+                                                                .addComponent(imageFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(119, 119, 119)
+                                                                .addComponent(resizeRadioButton)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(resizeSpinner))))
+                                        .addGroup(slide1Layout.createSequentialGroup()
+                                                .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(recursiveRadioButton)
+                                                        .addGroup(slide1Layout.createSequentialGroup()
+                                                                .addComponent(jLabel1)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(tif_checkbox)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(jpg_checkbox)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(png_checkbox)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap())
                 );
                 slide1Layout.setVerticalGroup(
@@ -266,13 +302,21 @@ public class BaseFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(imageFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(convertLabel))
-                                .addContainerGap(365, Short.MAX_VALUE))
+                                        .addComponent(convertLabel)
+                                        .addComponent(resizeRadioButton)
+                                        .addComponent(resizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel1)
+                                        .addComponent(tif_checkbox)
+                                        .addComponent(jpg_checkbox)
+                                        .addComponent(png_checkbox))
+                                .addContainerGap(323, Short.MAX_VALUE))
                 );
 
                 slideScrollPane1.setViewportView(slide1);
 
-                centerPanel.add(slideScrollPane1, bundle.getString("SLIDE1")); // NOI18N
+                centerPanel.add(slideScrollPane1, "slide1");
 
                 slide2.setPreferredSize(new java.awt.Dimension(450, 300));
                 slide2.setLayout(new java.awt.BorderLayout());
@@ -573,7 +617,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 slideScrollPane2.setViewportView(slide2);
 
-                centerPanel.add(slideScrollPane2, bundle.getString("SLIDE2")); // NOI18N
+                centerPanel.add(slideScrollPane2, "slide2");
 
                 slide3.setPreferredSize(new java.awt.Dimension(450, 300));
                 slide3.setLayout(new java.awt.BorderLayout());
@@ -590,7 +634,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 slideScrollPane3.setViewportView(slide3);
 
-                centerPanel.add(slideScrollPane3, bundle.getString("SLIDE3")); // NOI18N
+                centerPanel.add(slideScrollPane3, "slide3");
 
                 getContentPane().add(centerPanel, java.awt.BorderLayout.CENTER);
 
@@ -676,7 +720,7 @@ public class BaseFrame extends javax.swing.JFrame {
   }//GEN-LAST:event_backButtonActionPerformed
 
   private void sourceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourceButtonActionPerformed
-		File _srcDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY));
+		File _srcDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null));
 		if (_srcDir == null) {
 			return;
 		}
@@ -693,7 +737,7 @@ public class BaseFrame extends javax.swing.JFrame {
   }//GEN-LAST:event_sourceButtonActionPerformed
 
   private void destinationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationButtonActionPerformed
-		File _dstDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY));
+		File _dstDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null));
 		if (_dstDir == null) {
 			return;
 		}
@@ -936,9 +980,11 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JCheckBox jCheckBox7;
         private javax.swing.JCheckBox jCheckBox8;
         private javax.swing.JCheckBox jCheckBox9;
+        private javax.swing.JLabel jLabel1;
         private javax.swing.JMenu jMenu1;
         private javax.swing.JMenu jMenu2;
         private javax.swing.JMenuBar jMenuBar1;
+        private javax.swing.JCheckBox jpg_checkbox;
         private javax.swing.JRadioButton manualRadioButton;
         private javax.swing.JSpinner maxSpinner;
         private javax.swing.JLabel messageLabel;
@@ -946,9 +992,12 @@ public class BaseFrame extends javax.swing.JFrame {
         public javax.swing.JComboBox modeSelecter;
         private javax.swing.JButton nextButton;
         private autoconverter.view.PlotPanel plotPanel;
+        private javax.swing.JCheckBox png_checkbox;
         private javax.swing.JComboBox positionSelectCBox;
         private javax.swing.JPanel proceedPanel;
         private javax.swing.JRadioButton recursiveRadioButton;
+        private javax.swing.JCheckBox resizeRadioButton;
+        private javax.swing.JSpinner resizeSpinner;
         private javax.swing.JPanel scalePanel;
         private autoconverter.view.range.RangeSlider scaleRangeSlider;
         private javax.swing.JPanel slide1;
@@ -966,6 +1015,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JTextArea summaryDisplayArea;
         private javax.swing.JLabel summaryLabel;
         private javax.swing.JScrollPane summaryScrollPane;
+        private javax.swing.JCheckBox tif_checkbox;
         private javax.swing.JComboBox timeSelectCBox;
         private java.awt.Label visibleLabel;
         private javax.swing.JComboBox wellSelectCBox;
@@ -1441,6 +1491,76 @@ public class BaseFrame extends javax.swing.JFrame {
 
 	public RangeSlider getScaleRangeSlider() {
 		return scaleRangeSlider;
+	}
+
+	/**
+	 * @return the resizeRadioButton
+	 */
+	public javax.swing.JCheckBox getResizeRadioButton() {
+		return resizeRadioButton;
+	}
+
+	/**
+	 * @param resizeRadioButton the resizeRadioButton to set
+	 */
+	public void setResizeRadioButton(javax.swing.JCheckBox resizeRadioButton) {
+		this.resizeRadioButton = resizeRadioButton;
+	}
+
+	/**
+	 * @return the resizeSpinner
+	 */
+	public javax.swing.JSpinner getResizeSpinner() {
+		return resizeSpinner;
+	}
+
+	/**
+	 * @param resizeSpinner the resizeSpinner to set
+	 */
+	public void setResizeSpinner(javax.swing.JSpinner resizeSpinner) {
+		this.resizeSpinner = resizeSpinner;
+	}
+
+	/**
+	 * @return the jpg_checkbox
+	 */
+	public javax.swing.JCheckBox getJpg_checkbox() {
+		return jpg_checkbox;
+	}
+
+	/**
+	 * @return the png_checkbox
+	 */
+	public javax.swing.JCheckBox getPng_checkbox() {
+		return png_checkbox;
+	}
+
+	/**
+	 * @return the tif_checkbox
+	 */
+	public javax.swing.JCheckBox getTif_checkbox() {
+		return tif_checkbox;
+	}
+
+	/**
+	 * @param jpg_checkbox the jpg_checkbox to set
+	 */
+	public void setJpg_checkbox(javax.swing.JCheckBox jpg_checkbox) {
+		this.jpg_checkbox = jpg_checkbox;
+	}
+
+	/**
+	 * @param png_checkbox the png_checkbox to set
+	 */
+	public void setPng_checkbox(javax.swing.JCheckBox png_checkbox) {
+		this.png_checkbox = png_checkbox;
+	}
+
+	/**
+	 * @param tif_checkbox the tif_checkbox to set
+	 */
+	public void setTif_checkbox(javax.swing.JCheckBox tif_checkbox) {
+		this.tif_checkbox = tif_checkbox;
 	}
 
 }

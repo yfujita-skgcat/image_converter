@@ -314,4 +314,20 @@ public class CaptureImage {
 	public String getImageID() {
 		return imageID;
 	}
+
+	String getInfo() {
+		StringBuilder sb;
+		sb = new StringBuilder("");
+		sb.append("getImageID() = ").append(this.getImageID()).append("\n");
+		sb.append("getDirectory() = ").append(this.getDirectory()).append("\n");
+		sb.append("getFilter() = ").append(this.getFilter()).append("\n");
+		sb.append("getPosition() = ").append(this.getPosition()).append("\n");
+		sb.append("getShotID() = ").append(this.getShotID()).append("\n");
+		sb.append("getTime() = ").append(this.getTime()).append("\n");
+		sb.append("getWell() = ").append(this.getWell()).append("\n");
+		sb.append("getWellName() = ").append(this.getWellName()).append("\n");
+		return sb.toString();
+
+
+	}
 }
