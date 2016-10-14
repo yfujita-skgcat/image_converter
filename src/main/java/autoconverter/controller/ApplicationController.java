@@ -97,12 +97,13 @@ public class ApplicationController implements ApplicationMediator {
 	}
 
 	public void setImageSet(ImageSet _imp) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		imageSet = _imp;
 	}
 
 	public void nextImage() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
+
 
 	public void previousImage() {
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -142,7 +143,7 @@ public class ApplicationController implements ApplicationMediator {
 		try {
 			updating = true;
 			logger.fine("updating => true");
-			CaptureImage _cimg = imageSet.getCaptureImageAt(_imageID);
+			CaptureImage _cimg = getImageSet().getCaptureImageAt(_imageID);
 			if (_cimg == null) {
 				logger.log(Level.FINE, "ID:{0} is not found. skip.", _imageID);
 				this.setMessageLabel("ID:" + _imageID + " is not found.", Color.RED);
@@ -250,21 +251,18 @@ public class ApplicationController implements ApplicationMediator {
 	 * 実際の画像の設定を行う画面へ移行する際に実行される.
 	 */
 	public void initializeImageConfigurationPane() {
-			if (!this.initFileList()) {
-				return;
-			}
-			if (imageSet.size() < 1) {
+			if (getImageSet().size() < 1) {
 				logger.fine("No shot found.");
 				IJ.showMessage("No shot found");
 				return;
 			}
-			imageSet.logFileInfo();
+			getImageSet().logFileInfo();
 			logger.fine("getShotID");
-			for (String s : imageSet.getShotIDs()) {
+			for (String s : getImageSet().getShotIDs()) {
 				logger.fine(s);
 			}
-			imp = new ImagePlus(this.imageSet.getShotAt(0).get(0).getFile().getAbsolutePath());
-			this.initSelectorComboBoxes(imageSet);
+			imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
+			this.initSelectorComboBoxes(getImageSet());
 
 			//baseFrame.getPlotPanel().setImp(_imp);
 			//ImageCanvas canvus = _imp.getCanvas();
@@ -285,7 +283,7 @@ public class ApplicationController implements ApplicationMediator {
 			this.baseFrame.getImageScrollPane().getVerticalScrollBar().setUnitIncrement(25);
 			this.baseFrame.getImageScrollPane().getHorizontalScrollBar().setUnitIncrement(25);
 
-			for (String s : this.imageSet.getFilters()) {
+			for (String s : this.getImageSet().getFilters()) {
 				this.storedAuto.put(s, Boolean.FALSE);
 				// color setting
 				String _color = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_COLOR);
@@ -332,10 +330,10 @@ public class ApplicationController implements ApplicationMediator {
 				area.append("none");
 			}
 			area.append("\n");
-			area.append("Total file: " + imageSet.size() + "\n");
+			area.append("Total file: " + getImageSet().size() + "\n");
 
 			area.append("\n");
-			for (String s : this.imageSet.getFilters()) {
+			for (String s : this.getImageSet().getFilters()) {
 				area.append("Filter name: " + s + "\n");
 				area.append("Color: " + this.storedColor.get(s) + "\n");
 				Boolean method = this.storedAuto.get(s);
@@ -370,18 +368,30 @@ public class ApplicationController implements ApplicationMediator {
 		// 2 slide: cardIndex == 1
 		// 3 slide: cardIndex == 2
 		if (cardIndex == 0) {
-			this.initializeImageConfigurationPane();
+			// ロジックとしては next button を abort に変更し、検索実行中フラグを立てて
+			// ファイルリスト取得
+			// その間に、abort ボタンを押したらファイル検索threadをinterruptする.
+			// で元のnextに戻す. という流れかな?
+			this.startSearchFileList();
 		} else if (cardIndex == 1) {
 			this.showFinalSetting();
-		}
-
-		// change next card
-		if (cardIndex < this.getCardSize()) {
-			cardIndex++;
 			this.getCardLayout().next(baseFrame.getCenterPanel());
+			this.incrementCardIndex();
+		        this.updateWizerdButton();
 		}
-		this.updateWizerdButton();
 
+
+	}
+
+	public void incrementCardIndex(){
+		if (cardIndex < this.getCardSize()) {
+		  cardIndex++;
+		}
+	}
+	public void decrementCardIndex(){
+		if (cardIndex > 0) {
+			cardIndex--;
+		}
 	}
 
 	public void previousCard() {
@@ -405,23 +415,17 @@ public class ApplicationController implements ApplicationMediator {
 	 *
 	 * @return Tiffファイルの取得に成功したかどうか.
 	 */
-	public boolean initFileList() {
+	public boolean startSearchFileList() {
 
+		// 多分これはeventdispatchthread になっていると思う.
 		//  ファイルを検索する前にfileSearchLogTextArea を消去する.
 		this.baseFrame.getFileSearchLogTextArea().setText("");
 
 		String srcPath;
 		srcPath = baseFrame.getSourceText().getText(); // can't click next button if sourceText is blank.
 		if (this.oldSearchPath == null || !srcPath.equals(oldSearchPath)) {
-			WaitDialog _wd = new WaitDialog(baseFrame, true, baseFrame.getRecursiveRadioButton().isSelected());
 			FileSearchWorker fsw = new FileSearchWorker(baseFrame.getSourceText().getText(), baseFrame.getRecursiveRadioButton().isSelected());
-			imageSet = _wd.getImageSet(srcPath);
-			//imageSet = fsw.execute();
-			if (imageSet.size() == 0) {
-				JOptionPane.showMessageDialog(baseFrame, "Tiff file not found in \"" + srcPath + "\"", "File not found",
-					JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
+			fsw.execute();
 		}
 		return true;
 	}
@@ -842,11 +846,11 @@ public class ApplicationController implements ApplicationMediator {
 	 * イメージ全部をコンバートする.
 	 */
 	public void convertImages() {
-		if (imageSet == null) {
+		if (getImageSet() == null) {
 			IJ.showMessage("No images found.");
 			return;
 		}
-		int number = imageSet.size();
+		int number = getImageSet().size();
 		int count = 1;
 		final JTextArea _area = baseFrame.getSummaryDisplayArea();
 
@@ -874,9 +878,9 @@ public class ApplicationController implements ApplicationMediator {
 
 			@Override
 			protected Integer doInBackground() throws Exception {
-				int number = imageSet.size();
+				int number = getImageSet().size();
 				int count = 1;
-				for (CaptureImage _cm : imageSet.getFiles()) {
+				for (CaptureImage _cm : getImageSet().getFiles()) {
 					String _path = _cm.getFile().getAbsolutePath();
 					String filter = _cm.getFilter();
 					Integer bs = storedBallSizes.get(filter);
@@ -1052,4 +1056,12 @@ public class ApplicationController implements ApplicationMediator {
 		//this.updateDensityPlot();
 		return imageID;
 	}
+
+	/**
+	 * @return the imageSet
+	 */
+	public ImageSet getImageSet() {
+		return imageSet;
+	}
+
 }

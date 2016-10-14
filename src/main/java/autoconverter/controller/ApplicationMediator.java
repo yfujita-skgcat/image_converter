@@ -67,7 +67,7 @@ public interface ApplicationMediator {
 	 *
 	 * @return
 	 */
-	public abstract boolean initFileList();
+	public abstract boolean startSearchFileList();
 
 	/**
 	 * 階調の範囲をアップデートする.

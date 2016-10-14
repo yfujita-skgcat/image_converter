@@ -7,6 +7,10 @@ package autoconverter.controller;
 
 import autoconverter.model.ImageSet;
 import autoconverter.view.BaseFrame;
+<<<<<<< 43d4bdae11d89c23c0369f556cc016fd0c5b0ef4
+=======
+import ij.IJ;
+>>>>>>> file search をlog表示するように変更した.
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,12 +33,14 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 	private final ImageSet imageSet;
         private ArrayList<File> imageList;
 	private final File srcPath;
+	private final ApplicationController appCtrl;
 
 	public FileSearchWorker(File _srcPath, boolean _recursive){
 		super();
 		recursive = _recursive;
 		imageSet = new ImageSet();
 		srcPath = _srcPath;
+		appCtrl = ApplicationController.getInstance();
 	}
 
 	public FileSearchWorker(String _srcPath, boolean _recursive){
@@ -49,7 +55,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		Collections.sort(imageList);
 		for (Iterator<File> it = imageList.iterator(); it.hasNext();) {
 			File f = it.next();
-			getImageSet().addFile(f);
+			this.getImageSet().addFile(f);
 		}
 		
 		//return "DONE";
@@ -74,11 +80,27 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		JTextArea textArea = baseFrame.getFileSearchLogTextArea();
 		textArea.append("DONE");
 		//waitDialogInformationArea.append("DONE");
+		// imageSet が空だったらエラーだして終了.
+		if (imageSet.size() < 1) {
+			logger.fine("No shot found.");
+			IJ.showMessage("No shot found");
+			return;
+		}
+		// ApplicationController にimageSet をセットする
+		// あとのimageSetの処理は全部ApplicationControllerで行う.
+		appCtrl.setImageSet(imageSet);
+		
 		if (this.isCancelled()) {
 			logger.fine("Canceled.");
-			getImageSet().clear();
+			this.getImageSet().clear();
 		} else {
 			logger.fine("DONE");
+			textArea.append("Next Card");
+			// ここでページをすすめる
+			appCtrl.initializeImageConfigurationPane();
+			appCtrl.getCardLayout().next(baseFrame.getCenterPanel());
+			appCtrl.incrementCardIndex();
+			appCtrl.updateWizerdButton();
 		}
 	}
 	
