@@ -130,6 +130,8 @@ public class BaseFrame extends javax.swing.JFrame {
                 tif_checkbox = new javax.swing.JCheckBox();
                 jpg_checkbox = new javax.swing.JCheckBox();
                 png_checkbox = new javax.swing.JCheckBox();
+                jScrollPane1 = new javax.swing.JScrollPane();
+                fileSearchLogTextArea = new javax.swing.JTextArea();
                 slideScrollPane2 = new javax.swing.JScrollPane();
                 slide2 = new javax.swing.JPanel();
                 imageScrollPane = new javax.swing.JScrollPane();
@@ -248,6 +250,11 @@ public class BaseFrame extends javax.swing.JFrame {
                 png_checkbox.setText(bundle.getString("BaseFrame.png_checkbox.text")); // NOI18N
                 png_checkbox.setEnabled(false);
 
+                fileSearchLogTextArea.setColumns(20);
+                fileSearchLogTextArea.setRows(5);
+                fileSearchLogTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, bundle.getString("file_search_log"), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION)); // NOI18N
+                jScrollPane1.setViewportView(fileSearchLogTextArea);
+
                 javax.swing.GroupLayout slide1Layout = new javax.swing.GroupLayout(slide1);
                 slide1.setLayout(slide1Layout);
                 slide1Layout.setHorizontalGroup(
@@ -255,6 +262,7 @@ public class BaseFrame extends javax.swing.JFrame {
                         .addGroup(slide1Layout.createSequentialGroup()
                                 .addGap(41, 41, 41)
                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane1)
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(convertLabel)
@@ -311,7 +319,9 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(tif_checkbox)
                                         .addComponent(jpg_checkbox)
                                         .addComponent(png_checkbox))
-                                .addContainerGap(323, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                                .addContainerGap())
                 );
 
                 slideScrollPane1.setViewportView(slide1);
@@ -960,6 +970,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JButton destinationButton;
         private javax.swing.JTextField destinationText;
         private javax.swing.JComboBox dirSelectCBox;
+        private javax.swing.JTextArea fileSearchLogTextArea;
         private javax.swing.JComboBox filterSelectCBox;
         private javax.swing.JPanel imageChangePanel;
         private javax.swing.JComboBox imageFormatComboBox;
@@ -984,6 +995,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JMenu jMenu1;
         private javax.swing.JMenu jMenu2;
         private javax.swing.JMenuBar jMenuBar1;
+        private javax.swing.JScrollPane jScrollPane1;
         private javax.swing.JCheckBox jpg_checkbox;
         private javax.swing.JRadioButton manualRadioButton;
         private javax.swing.JSpinner maxSpinner;
@@ -1561,6 +1573,20 @@ public class BaseFrame extends javax.swing.JFrame {
 	 */
 	public void setTif_checkbox(javax.swing.JCheckBox tif_checkbox) {
 		this.tif_checkbox = tif_checkbox;
+	}
+
+	/**
+	 * @return the fileSearchLogTextArea
+	 */
+	public javax.swing.JTextArea getFileSearchLogTextArea() {
+		return fileSearchLogTextArea;
+	}
+
+	/**
+	 * @param fileSearchLogTextArea the fileSearchLogTextArea to set
+	 */
+	public void setFileSearchLogTextArea(javax.swing.JTextArea fileSearchLogTextArea) {
+		this.fileSearchLogTextArea = fileSearchLogTextArea;
 	}
 
 }

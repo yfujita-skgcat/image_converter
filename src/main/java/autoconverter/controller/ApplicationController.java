@@ -245,9 +245,11 @@ public class ApplicationController implements ApplicationMediator {
 		}
 	}
 
-	public void nextCard() {
-		// get file list if cardIndex == 0, that is, at first page.
-		if (cardIndex == 0) {
+	/**
+	 * ディレクトリやリサイズ等の情報を指定するペインから
+	 * 実際の画像の設定を行う画面へ移行する際に実行される.
+	 */
+	public void initializeImageConfigurationPane() {
 			if (!this.initFileList()) {
 				return;
 			}
@@ -307,7 +309,14 @@ public class ApplicationController implements ApplicationMediator {
 			}
 			this.loadCurrentFilterSettings();
 
-		} else if (cardIndex == 1) {
+
+
+	}
+
+	/**
+	 * 画像変換の設定が終わってnextをおして最終確認のペインを表示するときに使用
+	 */
+	public void showFinalSetting(){
 			// cardIndex == 1 => フィルタセッティング終わり
 			this.storeCurrentFilterSettings();
 			// summary を表示
@@ -352,6 +361,18 @@ public class ApplicationController implements ApplicationMediator {
 				area.append("Background subtraction: " + ball_str + "\n");
 				area.append("\n");
 			}
+
+	}
+
+	public void nextCard() {
+		// get file list if cardIndex == 0, that is, at first page.
+		// 1 slide: cardIndex == 0
+		// 2 slide: cardIndex == 1
+		// 3 slide: cardIndex == 2
+		if (cardIndex == 0) {
+			this.initializeImageConfigurationPane();
+		} else if (cardIndex == 1) {
+			this.showFinalSetting();
 		}
 
 		// change next card
@@ -361,9 +382,6 @@ public class ApplicationController implements ApplicationMediator {
 		}
 		this.updateWizerdButton();
 
-		// 1 slide: cardIndex == 0
-		// 2 slide: cardIndex == 1
-		// 3 slide: cardIndex == 2
 	}
 
 	public void previousCard() {
@@ -388,11 +406,17 @@ public class ApplicationController implements ApplicationMediator {
 	 * @return Tiffファイルの取得に成功したかどうか.
 	 */
 	public boolean initFileList() {
+
+		//  ファイルを検索する前にfileSearchLogTextArea を消去する.
+		this.baseFrame.getFileSearchLogTextArea().setText("");
+
 		String srcPath;
 		srcPath = baseFrame.getSourceText().getText(); // can't click next button if sourceText is blank.
 		if (this.oldSearchPath == null || !srcPath.equals(oldSearchPath)) {
 			WaitDialog _wd = new WaitDialog(baseFrame, true, baseFrame.getRecursiveRadioButton().isSelected());
+			FileSearchWorker fsw = new FileSearchWorker(baseFrame.getSourceText().getText(), baseFrame.getRecursiveRadioButton().isSelected());
 			imageSet = _wd.getImageSet(srcPath);
+			//imageSet = fsw.execute();
 			if (imageSet.size() == 0) {
 				JOptionPane.showMessageDialog(baseFrame, "Tiff file not found in \"" + srcPath + "\"", "File not found",
 					JOptionPane.ERROR_MESSAGE);
@@ -989,6 +1013,10 @@ public class ApplicationController implements ApplicationMediator {
 		} else {
 			return 0;
 		}
+	}
+
+	public BaseFrame getBaseFrame(){
+		return baseFrame;
 	}
 
 	/**
