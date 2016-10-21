@@ -32,6 +32,9 @@ import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.ApplicationController;
 import autoconverter.controller.ApplicationMediator;
 import autoconverter.view.range.RangeSlider;
+import java.awt.event.ItemEvent;
+import java.util.Set;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
 
 /**
@@ -71,16 +74,9 @@ public class BaseFrame extends javax.swing.JFrame {
 
 		initComponents();
 
-
-		//this.jMultiSlider1.setValueAt(20, 0);
-		//this.jMultiSlider1.setValueAt(80, 1);
-		//minSpinnerModel = (SpinnerNumberModel) this.minSpinner.getModel();
-		//maxSpinnerModel = (SpinnerNumberModel) this.maxSpinner.getModel();
-		//minSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 4095, 1));
-
-
-		//this.minScrollSpinner.setMinAndMax(0, 0, 4094, 1);
-		//this.maxScrollSpinner.setMinAndMax(4095, 1, 4095, 1);
+		String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
+		logger.fine(selected_item);
+		this.initFilePatternComboBox(selected_item);
 
 		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
 		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
@@ -96,11 +92,45 @@ public class BaseFrame extends javax.swing.JFrame {
 			this.recursiveRadioButton.setSelected(false);
 		}
 
+		String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
+		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
+
 		this.appController.updateWizerdButton();
 		//this.sourceButton.setActionCommand(_srcDir);
 		//this.destinationButton.setActionCommand(_dstDir);
 		logger.fine(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("SETTING TO ({0}, {1})"), new Object[] {_width, _height}));
 		this.setSize(new Dimension(_width, _height));
+	}
+
+
+	/**
+	 * ファイルパターンを表示するcomboBox 設定.
+	 * 
+	 * @param selected_item 選択するitemを指定する. null の場合は指定しない
+	 */
+	public void initFilePatternComboBox(String selected_item){
+		ArrayList<String> filePatterns = AutoConverterConfig.getFilePatternNames();
+		if(filePatterns.size() > 0){
+			DefaultComboBoxModel itemList = new DefaultComboBoxModel(filePatterns.toArray());
+			if(selected_item != null){
+			  itemList.setSelectedItem(selected_item);
+			}
+			logger.fine(selected_item);
+			String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
+			if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)){
+				regexString = AutoConverterConfig.celaviewRegexpString;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)){
+				regexString = AutoConverterConfig.inCell6000RegexpString;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_CUSTOM)){
+				regexString = "";
+			}
+			this.filePatternComboBox.setModel(itemList);
+			this.getFilePatternTextField().setText(regexString);
+		}
 	}
 
 	/**
@@ -132,6 +162,10 @@ public class BaseFrame extends javax.swing.JFrame {
                 png_checkbox = new javax.swing.JCheckBox();
                 jScrollPane1 = new javax.swing.JScrollPane();
                 fileSearchLogTextArea = new javax.swing.JTextArea();
+                filePatternComboBox = new javax.swing.JComboBox<>();
+                filePatternTextField = new javax.swing.JTextField();
+                displayRangeLabel = new javax.swing.JLabel();
+                displayRangeComboBox = new javax.swing.JComboBox<>();
                 slideScrollPane2 = new javax.swing.JScrollPane();
                 slide2 = new javax.swing.JPanel();
                 imageScrollPane = new javax.swing.JScrollPane();
@@ -255,6 +289,26 @@ public class BaseFrame extends javax.swing.JFrame {
                 fileSearchLogTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, bundle.getString("file_search_log"), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION)); // NOI18N
                 jScrollPane1.setViewportView(fileSearchLogTextArea);
 
+                filePatternComboBox.setEditable(true);
+                filePatternComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Celaview", "In Cell 6000", "Custom" }));
+                filePatternComboBox.addItemListener(new java.awt.event.ItemListener() {
+                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                                filePatternComboBoxItemStateChanged(evt);
+                        }
+                });
+
+                filePatternTextField.setText(bundle.getString("BaseFrame.filePatternTextField.text")); // NOI18N
+
+                displayRangeLabel.setText(bundle.getString("BaseFrame.displayRangeLabel.text")); // NOI18N
+
+                displayRangeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "4095", "65535" }));
+                displayRangeComboBox.setActionCommand(bundle.getString("BaseFrame.displayRangeComboBox.actionCommand")); // NOI18N
+                displayRangeComboBox.addItemListener(new java.awt.event.ItemListener() {
+                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                                displayRangeComboBoxItemStateChanged(evt);
+                        }
+                });
+
                 javax.swing.GroupLayout slide1Layout = new javax.swing.GroupLayout(slide1);
                 slide1.setLayout(slide1Layout);
                 slide1Layout.setHorizontalGroup(
@@ -271,7 +325,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addComponent(destinationButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(destinationText, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+                                                        .addComponent(destinationText)
                                                         .addComponent(sourceText)
                                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, slide1Layout.createSequentialGroup()
                                                                 .addGap(24, 24, 24)
@@ -279,7 +333,11 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addGap(119, 119, 119)
                                                                 .addComponent(resizeRadioButton)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(resizeSpinner))))
+                                                                .addComponent(resizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))))
+                                        .addGroup(slide1Layout.createSequentialGroup()
+                                                .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(filePatternTextField))
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(recursiveRadioButton)
@@ -290,7 +348,11 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                 .addComponent(jpg_checkbox)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(png_checkbox)))
+                                                                .addComponent(png_checkbox)
+                                                                .addGap(111, 111, 111)
+                                                                .addComponent(displayRangeLabel)
+                                                                .addGap(4, 4, 4)
+                                                                .addComponent(displayRangeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                 .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap())
                 );
@@ -318,9 +380,15 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(jLabel1)
                                         .addComponent(tif_checkbox)
                                         .addComponent(jpg_checkbox)
-                                        .addComponent(png_checkbox))
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                                        .addComponent(png_checkbox)
+                                        .addComponent(displayRangeLabel)
+                                        .addComponent(displayRangeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(filePatternTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                                 .addContainerGap())
                 );
 
@@ -612,7 +680,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 390, Short.MAX_VALUE)
+                        .addGap(0, 355, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -951,6 +1019,64 @@ public class BaseFrame extends javax.swing.JFrame {
                 // TODO add your handling code here:
         }//GEN-LAST:event_ballSizeSpinnerStateChanged
 
+        private void filePatternComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filePatternComboBoxItemStateChanged
+		if(this.getFilePatternComboBox() != evt.getSource()){
+			return;
+		}
+		String selectedPatternName = (String) evt.getItem();
+		if(evt.getStateChange() == ItemEvent.SELECTED ){
+			if(selectedPatternName.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW) ||
+				selectedPatternName.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000) ){
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else {
+				this.getFilePatternTextField().setEditable(true);
+				this.filePatternComboBox.setEditable(true);
+			}
+			String regexPattern = AutoConverterConfig.getRegexp(selectedPatternName);
+			this.getFilePatternTextField().setText(regexPattern);
+			AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, selectedPatternName);
+
+			// 1つ前の選択のpatternの名前(selectedPatternName)が新しい場合に、comboBoxに登録したい
+			this.initFilePatternComboBox(selectedPatternName);
+			try {
+				AutoConverterConfig.save();
+			} catch (FileNotFoundException ex) {
+				Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		} else if (evt.getStateChange() == ItemEvent.DESELECTED){
+			// 1つ前の選択のpatternを取ってきてconfigに保存
+			String regexPattern = this.getFilePatternTextField().getText();
+			if(regexPattern.equals("")){
+				AutoConverterConfig.removeConfig(selectedPatternName, AutoConverterConfig.PREFIX_REGEXP);
+			} else {
+				AutoConverterConfig.setConfig(selectedPatternName, regexPattern, AutoConverterConfig.PREFIX_REGEXP);
+			}
+			/*
+			try {
+				AutoConverterConfig.save();
+			} catch (FileNotFoundException ex) {
+				JOptionPane.showConfirmDialog(this, ex.toString(), java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			*/
+		}
+        }//GEN-LAST:event_filePatternComboBoxItemStateChanged
+
+        private void displayRangeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_displayRangeComboBoxItemStateChanged
+		if( evt.getSource() != this.displayRangeComboBox){
+			return;
+		}
+		if(evt.getStateChange() == ItemEvent.SELECTED){
+			String range = (String) this.displayRangeComboBox.getModel().getSelectedItem();
+			AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, range);
+			try {
+				AutoConverterConfig.save();
+			} catch (FileNotFoundException ex) {
+			}
+		}
+        }//GEN-LAST:event_displayRangeComboBoxItemStateChanged
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton adjustButton;
         private javax.swing.JRadioButton autoRadioButton;
@@ -970,6 +1096,10 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JButton destinationButton;
         private javax.swing.JTextField destinationText;
         private javax.swing.JComboBox dirSelectCBox;
+        private javax.swing.JComboBox<String> displayRangeComboBox;
+        private javax.swing.JLabel displayRangeLabel;
+        private javax.swing.JComboBox<String> filePatternComboBox;
+        private javax.swing.JTextField filePatternTextField;
         private javax.swing.JTextArea fileSearchLogTextArea;
         private javax.swing.JComboBox filterSelectCBox;
         private javax.swing.JPanel imageChangePanel;
@@ -1587,6 +1717,62 @@ public class BaseFrame extends javax.swing.JFrame {
 	 */
 	public void setFileSearchLogTextArea(javax.swing.JTextArea fileSearchLogTextArea) {
 		this.fileSearchLogTextArea = fileSearchLogTextArea;
+	}
+
+	/**
+	 * @return the regexpTextField
+	 */
+	public javax.swing.JTextField getRegexpTextField() {
+		return getFilePatternTextField();
+	}
+
+	/**
+	 * @param regexpTextField the regexpTextField to set
+	 */
+	public void setRegexpTextField(javax.swing.JTextField regexpTextField) {
+		this.setFilePatternTextField(regexpTextField);
+	}
+
+	/**
+	 * @return the filePatternComboBox
+	 */
+	public javax.swing.JComboBox<String> getFilePatternComboBox() {
+		return filePatternComboBox;
+	}
+
+	/**
+	 * @param filePatternComboBox the filePatternComboBox to set
+	 */
+	public void setFilePatternComboBox(javax.swing.JComboBox<String> filePatternComboBox) {
+		this.filePatternComboBox = filePatternComboBox;
+	}
+
+	/**
+	 * @return the filePatternTextField
+	 */
+	public javax.swing.JTextField getFilePatternTextField() {
+		return filePatternTextField;
+	}
+
+	/**
+	 * @param filePatternTextField the filePatternTextField to set
+	 */
+	public void setFilePatternTextField(javax.swing.JTextField filePatternTextField) {
+		this.filePatternTextField = filePatternTextField;
+	}
+
+	/**
+	 * @return the displayRangeComboBox
+	 */
+	public javax.swing.JComboBox<String> getDisplayRangeComboBox() {
+		return displayRangeComboBox;
+	}
+
+	/**
+	 * @param displayRangeComboBox the displayRangeComboBox to set
+	 */
+	public void setDisplayRangeComboBox(javax.swing.JComboBox<String> displayRangeComboBox) {
+		this.displayRangeComboBox = displayRangeComboBox;
 	}
 
 }

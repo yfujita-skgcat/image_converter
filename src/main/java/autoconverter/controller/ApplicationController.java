@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 /**
@@ -62,6 +63,8 @@ public class ApplicationController implements ApplicationMediator {
 	private static boolean loading = false;
 	private static boolean updating = false;
 	private static ApplicationController self = null;
+	private String pattern_string;
+	private Pattern pattern;
 
 	public ApplicationController(BaseFrame _base) {
 		cardIndex = 0;
@@ -81,6 +84,10 @@ public class ApplicationController implements ApplicationMediator {
 		storedBallSizes = new HashMap<String, Integer>();
 		lastSelectedFilter = "filter";
 		self = this;
+	}
+
+	public void setRangeSliderHighValue(int val){
+		rangeSliderHighValue = val;
 	}
 
 	/**
@@ -145,7 +152,7 @@ public class ApplicationController implements ApplicationMediator {
 			logger.fine("updating => true");
 			CaptureImage _cimg = getImageSet().getCaptureImageAt(_imageID);
 			if (_cimg == null) {
-				logger.log(Level.FINE, "ID:{0} is not found. skip.", _imageID);
+				//this.setMessageLabel("ID:" + _imageID + " is not found.", Color.RED);
 				this.setMessageLabel("ID:" + _imageID + " is not found.", Color.RED);
 				return;
 			} else {
@@ -252,25 +259,23 @@ public class ApplicationController implements ApplicationMediator {
 	 */
 	public void initializeImageConfigurationPane() {
 			if (getImageSet().size() < 1) {
-				logger.fine("No shot found.");
 				IJ.showMessage("No shot found");
 				return;
 			}
 			getImageSet().logFileInfo();
-			logger.fine("getShotID");
+			//logger.fine("getShotID");
 			for (String s : getImageSet().getShotIDs()) {
 				logger.fine(s);
 			}
+			int max_value = this.getMaxDisplayRangeValue();
+			this.baseFrame.getScaleRangeSlider().setMaximum(max_value);
+			this.baseFrame.getPlotPanel().setOriginalMax(max_value + 1);
+			this.rangeSliderHighValue = max_value;
+
 			imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
 			this.initSelectorComboBoxes(getImageSet());
 
-			//baseFrame.getPlotPanel().setImp(_imp);
-			//ImageCanvas canvus = _imp.getCanvas();
-			//if( canvus == null){
-			//  logger.fine("_imp.getCanvas() == null");
-			//} else {
 			baseFrame.getImageDisplayPanel().setImp(getImp());
-			//}
 
 			// 保存しているfilter情報を初期化
 			this.storedMaxValues.clear();
@@ -556,8 +561,8 @@ public class ApplicationController implements ApplicationMediator {
 		//this.getImp().setDisplayRange(min, max);
 		int max = (int) this.getImp().getDisplayRangeMax();
 		int min = (int) this.getImp().getDisplayRangeMin();
-		if (max > 4095) {
-			max = 4095;
+		if (max > this.getMaxDisplayRangeValue()) {
+			max = this.getMaxDisplayRangeValue();
 		}
 		if (min < 0) {
 			min = 0;
@@ -1064,4 +1069,33 @@ public class ApplicationController implements ApplicationMediator {
 		return imageSet;
 	}
 
+	/**
+	 * ファイルのパターン文字列を取得する.
+	 * @return 
+	 */
+	public String getFilePatternString (){
+		JTextField filePatternTextField = this.baseFrame.getFilePatternTextField();
+		return filePatternTextField.getText();
+	}
+
+	public Pattern getFilePattern() {
+		if( pattern_string == null){
+			pattern_string = this.getFilePatternString();
+		}
+		if( pattern_string.equals(this.getFilePatternString()) && pattern != null ){
+			//logger.fine(pattern_string);
+			return pattern;
+		} else {
+			pattern_string = this.getFilePatternString();
+			//logger.fine(pattern_string);
+		        pattern = Pattern.compile(pattern_string);
+			return pattern;
+		}
+	}
+
+	public int getMaxDisplayRangeValue(){
+		String disp = (String) this.baseFrame.getDisplayRangeComboBox().getModel().getSelectedItem();
+		int max_value = Integer.parseInt(disp);
+		return max_value;
+	}
 }

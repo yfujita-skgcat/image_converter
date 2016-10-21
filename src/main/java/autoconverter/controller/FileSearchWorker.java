@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
@@ -47,13 +49,37 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 
 
 	@Override
-	protected ArrayList<File> doInBackground() throws Exception {
-		imageList = recursiveSearch(srcPath);
-		Collections.sort(imageList);
-		for (Iterator<File> it = imageList.iterator(); it.hasNext();) {
-			File f = it.next();
-			this.getImageSet().addFile(f);
+	protected ArrayList<File> doInBackground() {
+		try {
+			imageList = recursiveSearch(srcPath);
+		} catch (InterruptedException ex) {
+			logger.info("FIle search canceled");
 		}
+		logger.fine("imageList.size() == " + imageList.size());
+		Collections.sort(imageList);
+		logger.fine("imageList.size() == " + imageList.size());
+		logger.fine("imageSet.size() == " + this.imageSet.size());
+		try{
+			for (Iterator<File> it = imageList.iterator(); it.hasNext();) {
+				File f = it.next();
+				logger.fine(f.getName());
+				this.imageSet.addFile(f);
+				logger.fine(f.getName());
+			}
+		} catch(IllegalArgumentException e){
+			logger.fine(e.toString());
+			IJ.showMessage(e.toString());
+			return null;
+		} catch(IllegalStateException e){
+			logger.fine(e.toString());
+			IJ.showMessage(e.toString());
+			return null;
+		} catch(NullPointerException e){
+			logger.fine(e.toString());
+			IJ.showMessage(e.toString());
+			return null;
+		}
+		logger.fine("imageSet.size() == " + this.imageSet.size());
 		
 		//return "DONE";
 		return imageList;
@@ -65,7 +91,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		BaseFrame baseFrame = appCont.getBaseFrame();
 		JTextArea textArea = baseFrame.getFileSearchLogTextArea();
 		for (String s : _list) {
-			textArea.append("FOUND: " + s + "\n");
+			textArea.append(s + "\n");
 			//waitDialogInformationArea.append(s + "\n");
 			//waitDialogInformationLabel.setText(s + " files were found.");
 		}
@@ -92,6 +118,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 			this.getImageSet().clear();
 		} else {
 			logger.fine("DONE");
+			
 			textArea.append("Next Card");
 			// ここでページをすすめる
 			appCtrl.initializeImageConfigurationPane();
@@ -108,6 +135,8 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 	 */
 	public ArrayList<File> recursiveSearch(File top) throws InterruptedException {
 		ArrayList<File> list = new ArrayList();
+		Pattern filePattern = appCtrl.getFilePattern();
+
 		int counter = 0;
 		String[] contents = top.list();
 		for (int i = 0; i < contents.length; i++) {
@@ -119,15 +148,16 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 				list.addAll(recursiveSearch(sdir));
 				continue;
 			}
-			if (sdir.getName().matches(".*\\.(tif|TIF|tiff|TIFF)")) {
+			// ここを正規表現で最初からマッチさせる
+			//if (filePattern.matcher(sdir.getName()).find() ) {
+			if (filePattern.matcher(sdir.getName()).matches() ) {
 				if (!sdir.getName().matches("_thumb_")) {
-					publish(sdir.getAbsolutePath());
-					//counter++;
-					//publish(String.valueOf(counter));
+					publish("FOUND: " + sdir.getAbsolutePath());
 					list.add(sdir);
 				}
 			} else {
-				logger.fine(sdir.getAbsolutePath() + " is not tiff file");
+				//logger.fine(sdir.getAbsolutePath() + " is not tiff file");
+				publish("SKIP: " + sdir.getAbsolutePath());
 			}
 		}
 		return list;

@@ -154,6 +154,14 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 
   }
 
+  /**
+   * プロットエリアのx軸最大値を指定する.
+   * @param max 
+   */
+  public void setOriginalMax(int max){
+	  original_max = max;
+  }
+
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
