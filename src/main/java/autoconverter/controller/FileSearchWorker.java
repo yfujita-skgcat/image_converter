@@ -7,10 +7,7 @@ package autoconverter.controller;
 
 import autoconverter.model.ImageSet;
 import autoconverter.view.BaseFrame;
-<<<<<<< 43d4bdae11d89c23c0369f556cc016fd0c5b0ef4
-=======
 import ij.IJ;
->>>>>>> file search をlog表示するように変更した.
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
