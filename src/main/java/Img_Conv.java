@@ -1,4 +1,6 @@
 
+import autoconverter.controller.ApplicationController;
+import autoconverter.controller.AutoConverterUtils;
 import autoconverter.view.BaseFrame;
 import ij.IJ;
 import ij.plugin.PlugIn;

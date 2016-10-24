@@ -44,6 +44,7 @@ A - 02(fld 04 wv UV - DAPI).tif
 	public static String KEY_RECURSIVE_ON = "RECURSIVE_ON";
 	public static String KEY_SELECTED_PATTERN = "SELECTED_PATTERN";
 	public static String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
+	public static String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
 	public static String PREFIX_BALL = "BALL";
 	public static String PREFIX_MIN = "MIN";
 	public static String PREFIX_MAX = "MAX";

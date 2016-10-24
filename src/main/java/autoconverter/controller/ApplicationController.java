@@ -862,6 +862,8 @@ public class ApplicationController implements ApplicationMediator {
 		final String dst = this.getDestinationDirectoryPath();
 		final String src = this.getSourceDirectoryPath();
 
+		final boolean remove_char = this.baseFrame.getRemoveSpecialCharRadioButton().isSelected();
+
 		final String type = (String) baseFrame.getImageFormatComboBox().getSelectedItem();
 
 		int s_x = this.getScaleX();
@@ -875,7 +877,7 @@ public class ApplicationController implements ApplicationMediator {
 			@Override
 			protected void process(java.util.List<String> chunks) {
 				for (String s : chunks) {
-					logger.fine("Process:" + s);
+					//logger.fine("Process:" + s);
 					_area.append(s);
 					_area.setCaretPosition(_area.getText().length());
 				}
@@ -909,6 +911,7 @@ public class ApplicationController implements ApplicationMediator {
 
 					// directory check
 					String fname = _cm.getFile().getName();
+					String abssrc = _cm.getFile().getAbsolutePath();
 					String dstpath = _path.replaceFirst(Pattern.quote(src), Matcher.quoteReplacement(dst));
 					File dstdir = new File(dstpath).getParentFile();
 					if (!dstdir.exists()) { //ディレクトリが無い!
@@ -918,7 +921,13 @@ public class ApplicationController implements ApplicationMediator {
 						IJ.showMessage(dstdir + " is not directory. stop.");
 						return new Integer(1);
 					}
-					String dstbase = removeExtension(dstpath);
+					if(remove_char){ // special character 削除
+						fname = ApplicationController.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
+
+					}
+
+					//String dstbase = removeExtension(dstpath);
+					String dstbase = removeExtension(dstdir + File.separator + fname);
 
 					ImagePlus _imp = IJ.openImage(_path);
 					if (ballsize != 0) {
@@ -943,23 +952,22 @@ public class ApplicationController implements ApplicationMediator {
 						//_imp = new ImagePlus("small", _ip);
 					}
 
+					String fpath = "";
 					if (type.equals("jpg")) {
-						String fpath = dstbase + ".jpg";
-						publish("(" + count + "/" + number + ") Convert to " + fpath + "\n");
-						logger.fine("save to " + fpath);
+						fpath = dstbase + ".jpg";
+						//logger.fine("save to " + fpath);
 						IJ.saveAs(_imp, "jpg", fpath);
 					} else if (type.equals("ping")) {
-						String fpath = dstbase + ".png";
-						publish("(" + count + "/" + number + ") Convert to " + fpath + "\n");
-						logger.fine("save to " + fpath);
+						fpath = dstbase + ".png";
+						//logger.fine("save to " + fpath);
 						IJ.saveAs(_imp, "png", fpath);
 					} else if (type.equals("tif")) {
-						String fpath = dstbase + ".tif";
-						publish("(" + count + "/" + number + ") Convert to " + fpath + "\n");
-						//_area.append("(" + count + "/" + number + ") Convert to " + dstpath + "\n");
-						logger.fine("save to " + fpath);
+						fpath = dstbase + ".tif";
+						//logger.fine("save to " + fpath);
 						IJ.saveAsTiff(_imp, fpath);
 					}
+					//publish("(" + count + "/" + number + ") CONVERT TO " + fpath + "               FROM     " + abssrc + " DONE\n");
+					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");
 					_imp.close();
 					count++;
 					//_imp.setDisplayRange(min, max);
@@ -1097,5 +1105,24 @@ public class ApplicationController implements ApplicationMediator {
 		String disp = (String) this.baseFrame.getDisplayRangeComboBox().getModel().getSelectedItem();
 		int max_value = Integer.parseInt(disp);
 		return max_value;
+	}
+
+	public static String tr(String from, String to, String str){
+		if(from.length() != to.length()){
+			throw new IllegalArgumentException("Mismatch lengthes of from and to.");
+		}
+		char[] tmp = new char[str.length()];
+		for( int i=0; i<str.length(); i++ ) {
+			char c = str.charAt(i);
+			tmp[i] = c;
+			for(int j=0; j < from.length(); j++){
+				if( c == from.charAt(j)){
+					tmp[i] = to.charAt(j);
+					break;
+				}
+			}
+		}
+		str = new String(tmp);
+		return str;
 	}
 }

@@ -92,6 +92,13 @@ public class BaseFrame extends javax.swing.JFrame {
 			this.recursiveRadioButton.setSelected(false);
 		}
 
+		String _remove_spec_char = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, "true", null);
+		if(_remove_spec_char.equals("true")){
+			this.removeSpecialCharRadioButton.setSelected(true);
+		} else {
+			this.removeSpecialCharRadioButton.setSelected(false);
+		}
+
 		String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
 		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
 
@@ -166,6 +173,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 filePatternTextField = new javax.swing.JTextField();
                 displayRangeLabel = new javax.swing.JLabel();
                 displayRangeComboBox = new javax.swing.JComboBox<>();
+                removeSpecialCharRadioButton = new javax.swing.JRadioButton();
                 slideScrollPane2 = new javax.swing.JScrollPane();
                 slide2 = new javax.swing.JPanel();
                 imageScrollPane = new javax.swing.JScrollPane();
@@ -309,6 +317,13 @@ public class BaseFrame extends javax.swing.JFrame {
                         }
                 });
 
+                removeSpecialCharRadioButton.setText(bundle.getString("BaseFrame.removeSpecialCharRadioButton.text")); // NOI18N
+                removeSpecialCharRadioButton.addChangeListener(new javax.swing.event.ChangeListener() {
+                        public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                                removeSpecialCharRadioButtonStateChanged(evt);
+                        }
+                });
+
                 javax.swing.GroupLayout slide1Layout = new javax.swing.GroupLayout(slide1);
                 slide1.setLayout(slide1Layout);
                 slide1Layout.setHorizontalGroup(
@@ -340,7 +355,10 @@ public class BaseFrame extends javax.swing.JFrame {
                                                 .addComponent(filePatternTextField))
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(recursiveRadioButton)
+                                                        .addGroup(slide1Layout.createSequentialGroup()
+                                                                .addComponent(recursiveRadioButton)
+                                                                .addGap(65, 65, 65)
+                                                                .addComponent(removeSpecialCharRadioButton))
                                                         .addGroup(slide1Layout.createSequentialGroup()
                                                                 .addComponent(jLabel1)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -360,7 +378,9 @@ public class BaseFrame extends javax.swing.JFrame {
                         slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(slide1Layout.createSequentialGroup()
                                 .addGap(26, 26, 26)
-                                .addComponent(recursiveRadioButton)
+                                .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(recursiveRadioButton)
+                                        .addComponent(removeSpecialCharRadioButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(sourceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1077,6 +1097,22 @@ public class BaseFrame extends javax.swing.JFrame {
 		}
         }//GEN-LAST:event_displayRangeComboBoxItemStateChanged
 
+        private void removeSpecialCharRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_removeSpecialCharRadioButtonStateChanged
+         	if (evt.getSource() != this.getRemoveSpecialCharRadioButton()) {
+			return;
+		}
+		boolean _select = this.getRemoveSpecialCharRadioButton().isSelected();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {_select}));
+		try {
+			AutoConverterConfig.save();
+			// TODO add your handling code here:
+		} catch (FileNotFoundException ex) {
+			JOptionPane.showConfirmDialog(this, ex.toString(), java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+        }//GEN-LAST:event_removeSpecialCharRadioButtonStateChanged
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton adjustButton;
         private javax.swing.JRadioButton autoRadioButton;
@@ -1138,6 +1174,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JComboBox positionSelectCBox;
         private javax.swing.JPanel proceedPanel;
         private javax.swing.JRadioButton recursiveRadioButton;
+        private javax.swing.JRadioButton removeSpecialCharRadioButton;
         private javax.swing.JCheckBox resizeRadioButton;
         private javax.swing.JSpinner resizeSpinner;
         private javax.swing.JPanel scalePanel;
@@ -1773,6 +1810,20 @@ public class BaseFrame extends javax.swing.JFrame {
 	 */
 	public void setDisplayRangeComboBox(javax.swing.JComboBox<String> displayRangeComboBox) {
 		this.displayRangeComboBox = displayRangeComboBox;
+	}
+
+	/**
+	 * @return the removeSpecialCharRadioButton
+	 */
+	public javax.swing.JRadioButton getRemoveSpecialCharRadioButton() {
+		return removeSpecialCharRadioButton;
+	}
+
+	/**
+	 * @param removeSpecialCharRadioButton the removeSpecialCharRadioButton to set
+	 */
+	public void setRemoveSpecialCharRadioButton(javax.swing.JRadioButton removeSpecialCharRadioButton) {
+		this.removeSpecialCharRadioButton = removeSpecialCharRadioButton;
 	}
 
 }
