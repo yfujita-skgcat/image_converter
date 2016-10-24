@@ -55,33 +55,25 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		} catch (InterruptedException ex) {
 			logger.info("FIle search canceled");
 		}
-		logger.fine("imageList.size() == " + imageList.size());
 		Collections.sort(imageList);
-		logger.fine("imageList.size() == " + imageList.size());
-		logger.fine("imageSet.size() == " + this.imageSet.size());
 		try{
 			for (Iterator<File> it = imageList.iterator(); it.hasNext();) {
 				File f = it.next();
-				logger.fine(f.getName());
 				this.imageSet.addFile(f);
-				logger.fine(f.getName());
 			}
 		} catch(IllegalArgumentException e){
-			logger.fine(e.toString());
-			IJ.showMessage(e.toString());
+			logger.warning(e.toString());
+			IJ.showMessage(AutoConverterUtils.stacktrace(e));
 			return null;
 		} catch(IllegalStateException e){
-			logger.fine(e.toString());
-			IJ.showMessage(e.toString());
+			logger.warning(e.toString());
+			IJ.showMessage(AutoConverterUtils.stacktrace(e));
 			return null;
 		} catch(NullPointerException e){
-			logger.fine(e.toString());
-			IJ.showMessage(e.toString());
+			logger.warning(e.toString());
+			IJ.showMessage(AutoConverterUtils.stacktrace(e));
 			return null;
 		}
-		logger.fine("imageSet.size() == " + this.imageSet.size());
-		
-		//return "DONE";
 		return imageList;
 	}
 	
@@ -101,7 +93,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 	protected void done() {
 		BaseFrame baseFrame = ApplicationController.getInstance().getBaseFrame();
 		JTextArea textArea = baseFrame.getFileSearchLogTextArea();
-		textArea.append("DONE");
+		textArea.append("DONE\n");
 		//waitDialogInformationArea.append("DONE");
 		// imageSet が空だったらエラーだして終了.
 		if (imageSet.size() < 1) {
@@ -114,12 +106,10 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		appCtrl.setImageSet(imageSet);
 		
 		if (this.isCancelled()) {
-			logger.fine("Canceled.");
+			textArea.append("Canceled.\n");
 			this.getImageSet().clear();
 		} else {
-			logger.fine("DONE");
-			
-			textArea.append("Next Card");
+			textArea.append("Proceed to next step.\n");
 			// ここでページをすすめる
 			appCtrl.initializeImageConfigurationPane();
 			appCtrl.getCardLayout().next(baseFrame.getCenterPanel());

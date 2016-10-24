@@ -4,6 +4,7 @@
  */
 package autoconverter.controller;
 
+import autoconverter.view.BaseFrame;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -17,7 +18,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,17 +34,13 @@ public class AutoConverterConfig {
 	public static final Pattern celaviewPattern = Pattern.compile(celaviewRegexpString);
 	public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\(fld (?<POS>\\d+) wv (?<FILTER>[^\\)]+)\\)\\.(?:tif|TIFF|tiff|TIFF)";
 	public static final Pattern inCell6000Pattern = Pattern.compile(inCell6000RegexpString);
-	/*A - 02(fld 04 wv Blue - FITC).tif
-A - 02(fld 04 wv TL-Brightfield - dsRed).tif
-A - 02(fld 04 wv UV - DAPI).tif
-	String regrex = "(?<TYPE>GET|POST) (?<IP>\\d+\\.\\d+\\.\\d+\\.\\d+)";
-	*/
-	public static final String ixRegexpString = "(.*)_w\\d+(BF|NUA|NIBA|WBV|CFP|RFP|WIGA)\\.(?:tif|TIF|TIFF|tiff)";
-	public static final Pattern ixPattern = Pattern.compile(ixRegexpString);
+	public static final String IX81RegexpString = ".*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	public static final Pattern ixPattern = Pattern.compile(IX81RegexpString);
 	public static String KEY_SOURCE_DIRECTORY = "SOURCE_DIRECTORY";
 	public static String KEY_DESTINATION_DIRECTORY = "DESTINATION_DIRECTORY";
 	public static String KEY_MAIN_FRAME_SIZE_X = "MAIN_FRAME_SIZE_X";
 	public static String KEY_MAIN_FRAME_SIZE_Y = "MAIN_FRAME_SIZE_Y";
+	public static String KEY_IMAGE_FORMAT = "IMAGE_FORMAT";
 	public static String KEY_RECURSIVE_ON = "RECURSIVE_ON";
 	public static String KEY_SELECTED_PATTERN = "SELECTED_PATTERN";
 	public static String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
@@ -54,6 +54,7 @@ A - 02(fld 04 wv UV - DAPI).tif
 	public static String REGEXP_NAME_CUSTOM = "Custom";
 	public static String REGEXP_NAME_CELAVIEW = "Celaview";
 	public static String REGEXP_NAME_INCELL6000 = "In Cell 6000";
+	public static String REGEXP_NAME_IX81 = "IX81";
 	private static String file_path = System.getProperty("user.home") + File.separator + ".ImageJ" + File.separator + "autoconverter.config";
 
 	/**
@@ -173,6 +174,25 @@ A - 02(fld 04 wv UV - DAPI).tif
 	}
 
 	/**
+	 * save config to file.
+	 * throws をこの関数内で解決する.
+	 * @param ignore エラーが起きても終了しない.
+	 * @param baseFrame lockをかけるwindow
+	 */
+	public static void save(BaseFrame baseFrame, boolean ignore) {
+		try {
+			AutoConverterConfig.save(file_path);
+		} catch (FileNotFoundException ex) {
+			if(ignore){
+				JOptionPane.showConfirmDialog(baseFrame, ex.toString(), java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showConfirmDialog(baseFrame, ex.toString() + "\nShutdown program... Error Code: 45", java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
+				System.exit(45);
+			}
+		}
+	}
+
+	/**
 	 * load config from path
 	 *
 	 * @param path
@@ -212,6 +232,7 @@ A - 02(fld 04 wv UV - DAPI).tif
 		}
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_CELAVIEW, AutoConverterConfig.celaviewRegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_INCELL6000, AutoConverterConfig.inCell6000RegexpString);
+		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81, AutoConverterConfig.IX81RegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_CUSTOM, "");
 		return pattern;
 	}

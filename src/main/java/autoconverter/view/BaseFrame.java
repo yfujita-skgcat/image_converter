@@ -75,13 +75,12 @@ public class BaseFrame extends javax.swing.JFrame {
 		initComponents();
 
 		String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
-		logger.fine(selected_item);
 		this.initFilePatternComboBox(selected_item);
 
 		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
 		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
-		logger.fine(_srcDir);
-		logger.fine(_dstDir);
+		//logger.fine(_srcDir);
+		//logger.fine(_dstDir);
 		this.sourceText.setText(_srcDir);
 		this.destinationText.setText(_dstDir);
 
@@ -103,9 +102,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
 
 		this.appController.updateWizerdButton();
-		//this.sourceButton.setActionCommand(_srcDir);
-		//this.destinationButton.setActionCommand(_dstDir);
-		logger.fine(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("SETTING TO ({0}, {1})"), new Object[] {_width, _height}));
+		//logger.fine(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("SETTING TO ({0}, {1})"), new Object[] {_width, _height}));
 		this.setSize(new Dimension(_width, _height));
 	}
 
@@ -122,7 +119,7 @@ public class BaseFrame extends javax.swing.JFrame {
 			if(selected_item != null){
 			  itemList.setSelectedItem(selected_item);
 			}
-			logger.fine(selected_item);
+			//logger.fine(selected_item);
 			String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
 			if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)){
 				regexString = AutoConverterConfig.celaviewRegexpString;
@@ -130,6 +127,10 @@ public class BaseFrame extends javax.swing.JFrame {
 				this.filePatternComboBox.setEditable(false);
 			} else if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)){
 				regexString = AutoConverterConfig.inCell6000RegexpString;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81)){
+				regexString = AutoConverterConfig.IX81RegexpString;
 				this.getFilePatternTextField().setEditable(false);
 				this.filePatternComboBox.setEditable(false);
 			} else if(selected_item.equals(AutoConverterConfig.REGEXP_NAME_CUSTOM)){
@@ -211,8 +212,8 @@ public class BaseFrame extends javax.swing.JFrame {
                 spinnerPanel = new javax.swing.JPanel();
                 minSpinner = new javax.swing.JSpinner();
                 autoRadioButton = new javax.swing.JRadioButton();
-                adjustButton = new javax.swing.JButton();
                 manualRadioButton = new javax.swing.JRadioButton();
+                adjustButton = new javax.swing.JButton();
                 maxSpinner = new javax.swing.JSpinner();
                 subtractionPanel = new javax.swing.JPanel();
                 subtractLabel = new javax.swing.JLabel();
@@ -348,7 +349,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addGap(119, 119, 119)
                                                                 .addComponent(resizeRadioButton)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(resizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))))
+                                                                .addComponent(resizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))))
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -408,7 +409,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(filePatternTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                                 .addContainerGap())
                 );
 
@@ -485,6 +486,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.setLayout(new java.awt.GridBagLayout());
 
                 modeSelecter.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Single", "Merge" }));
+                modeSelecter.setEnabled(false);
                 modeSelecter.setPreferredSize(new java.awt.Dimension(150, 30));
                 modeSelecter.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -520,6 +522,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(channelLabel, gridBagConstraints);
 
                 jCheckBox1.setText(bundle.getString("BaseFrame.jCheckBox1.text")); // NOI18N
+                jCheckBox1.setEnabled(false);
                 jCheckBox1.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -527,6 +530,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(jCheckBox1, gridBagConstraints);
 
                 jCheckBox2.setText(bundle.getString("BaseFrame.jCheckBox2.text")); // NOI18N
+                jCheckBox2.setEnabled(false);
                 jCheckBox2.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -535,6 +539,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(jCheckBox2, gridBagConstraints);
 
                 jCheckBox3.setText(bundle.getString("BaseFrame.jCheckBox3.text")); // NOI18N
+                jCheckBox3.setEnabled(false);
                 jCheckBox3.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -543,6 +548,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(jCheckBox3, gridBagConstraints);
 
                 jCheckBox4.setText(bundle.getString("BaseFrame.jCheckBox4.text")); // NOI18N
+                jCheckBox4.setEnabled(false);
                 jCheckBox4.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -551,6 +557,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(jCheckBox4, gridBagConstraints);
 
                 jCheckBox5.setText(bundle.getString("BaseFrame.jCheckBox5.text")); // NOI18N
+                jCheckBox5.setEnabled(false);
                 jCheckBox5.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -559,6 +566,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(jCheckBox5, gridBagConstraints);
 
                 jCheckBox6.setText(bundle.getString("BaseFrame.jCheckBox6.text")); // NOI18N
+                jCheckBox6.setEnabled(false);
                 jCheckBox6.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -567,6 +575,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.add(jCheckBox6, gridBagConstraints);
 
                 jCheckBox7.setText(bundle.getString("BaseFrame.jCheckBox7.text")); // NOI18N
+                jCheckBox7.setEnabled(false);
                 jCheckBox7.setMaximumSize(new java.awt.Dimension(200, 22));
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
@@ -580,30 +589,44 @@ public class BaseFrame extends javax.swing.JFrame {
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 2;
                 colorSelectPanel.add(visibleLabel, gridBagConstraints);
+
+                jCheckBox8.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 3;
                 colorSelectPanel.add(jCheckBox8, gridBagConstraints);
+
+                jCheckBox9.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 4;
                 colorSelectPanel.add(jCheckBox9, gridBagConstraints);
+
+                jCheckBox10.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 5;
                 colorSelectPanel.add(jCheckBox10, gridBagConstraints);
+
+                jCheckBox11.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 6;
                 colorSelectPanel.add(jCheckBox11, gridBagConstraints);
+
+                jCheckBox12.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 7;
                 colorSelectPanel.add(jCheckBox12, gridBagConstraints);
+
+                jCheckBox13.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 8;
                 colorSelectPanel.add(jCheckBox13, gridBagConstraints);
+
+                jCheckBox14.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 9;
@@ -640,14 +663,6 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 spinnerPanel.add(autoRadioButton);
 
-                adjustButton.setText(bundle.getString("BaseFrame.adjustButton.text")); // NOI18N
-                adjustButton.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                adjustButtonActionPerformed(evt);
-                        }
-                });
-                spinnerPanel.add(adjustButton);
-
                 brightnessAutoGroup.add(manualRadioButton);
                 manualRadioButton.setSelected(true);
                 manualRadioButton.setText(bundle.getString("BaseFrame.manualRadioButton.text")); // NOI18N
@@ -657,6 +672,14 @@ public class BaseFrame extends javax.swing.JFrame {
                         }
                 });
                 spinnerPanel.add(manualRadioButton);
+
+                adjustButton.setText(bundle.getString("BaseFrame.adjustButton.text")); // NOI18N
+                adjustButton.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                adjustButtonActionPerformed(evt);
+                        }
+                });
+                spinnerPanel.add(adjustButton);
 
                 maxSpinner.setModel(new javax.swing.SpinnerNumberModel(4095, 1, 4095, 1));
                 maxSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -700,7 +723,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 355, Short.MAX_VALUE)
+                        .addGap(0, 386, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -749,6 +772,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 proceedPanel.setLayout(new java.awt.BorderLayout());
 
                 cancelButton.setText(bundle.getString("BaseFrame.cancelButton.text")); // NOI18N
+                cancelButton.setActionCommand(bundle.getString("BaseFrame.cancelButton.actionCommand")); // NOI18N
                 cancelButton.setMaximumSize(new java.awt.Dimension(80, 30));
                 cancelButton.setMinimumSize(new java.awt.Dimension(80, 30));
                 cancelButton.setPreferredSize(new java.awt.Dimension(80, 30));
@@ -823,14 +847,7 @@ public class BaseFrame extends javax.swing.JFrame {
 			return;
 		}
 		this.getSourceText().setText(_srcDir.getAbsolutePath());
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, _srcDir.getAbsolutePath());
-		//JButton _src = (JButton) evt.getSource();
-		//_src.setActionCommand(_srcDir.getAbsolutePath());
-		try {
-			AutoConverterConfig.save();
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		appController.storeDirectorySetting(true);
 		this.appController.updateWizerdButton();
   }//GEN-LAST:event_sourceButtonActionPerformed
 
@@ -840,16 +857,7 @@ public class BaseFrame extends javax.swing.JFrame {
 			return;
 		}
 		this.getDestinationText().setText(_dstDir.getAbsolutePath());
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, _dstDir.getAbsolutePath());
-		//JButton _src = (JButton) evt.getSource();
-		//_src.setActionCommand(_dstDir.getAbsolutePath());
-		try {
-			AutoConverterConfig.save();
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		this.appController.updateWizerdButton();
-		// TODO add your handling code here:
+		appController.storeDirectorySetting(true);
   }//GEN-LAST:event_destinationButtonActionPerformed
 
 	/**
@@ -863,15 +871,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		Dimension _d = _c.getSize();
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, _d.width);
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, _d.height);
-		//getLogger().fine("Saving size -> (" + _d.width + ", " + _d.height + ")");
-		try {
-			AutoConverterConfig.save();
-			// TODO add your handling code here:
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		// TODO add your handling code here:
-		// TODO add your handling code here:
+		AutoConverterConfig.save(this, true);
   }//GEN-LAST:event_formComponentResized
 
 	/**
@@ -880,26 +880,15 @@ public class BaseFrame extends javax.swing.JFrame {
 	 * @param evt
 	 */
   private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-		System.exit(1);
-		// TODO add your handling code here:
+	  // とりあえず今のところexit buttonとして使う.
+	  System.exit(0);
   }//GEN-LAST:event_cancelButtonActionPerformed
 
   private void recursiveRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recursiveRadioButtonActionPerformed
 		if (evt.getSource() != this.getRecursiveRadioButton()) {
 			return;
 		}
-		boolean _select = this.getRecursiveRadioButton().isSelected();
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_RECURSIVE_ON, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {_select}));
-		try {
-			AutoConverterConfig.save();
-			// TODO add your handling code here:
-		} catch (FileNotFoundException ex) {
-			JOptionPane.showConfirmDialog(this, ex.toString(), java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-
-		// TODO add your handling code here:
+		appController.storeRecursiveSetting(true);
   }//GEN-LAST:event_recursiveRadioButtonActionPerformed
 
   private void rangeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rangeSliderStateChanged
@@ -916,7 +905,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
         private void colorChannelSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_colorChannelSelectorItemStateChanged
 					// TODO add your handling code here:
-					getLogger().fine(evt.getItem().toString());
+					//getLogger().fine(evt.getItem().toString());
 					//this.appController.setColor(evt.getItem().toString());
 					this.appController.setColor(evt.getItem().toString());
         }//GEN-LAST:event_colorChannelSelectorItemStateChanged
@@ -1059,11 +1048,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
 			// 1つ前の選択のpatternの名前(selectedPatternName)が新しい場合に、comboBoxに登録したい
 			this.initFilePatternComboBox(selectedPatternName);
-			try {
-				AutoConverterConfig.save();
-			} catch (FileNotFoundException ex) {
-				Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
-			}
+			AutoConverterConfig.save(this, true);
 		} else if (evt.getStateChange() == ItemEvent.DESELECTED){
 			// 1つ前の選択のpatternを取ってきてconfigに保存
 			String regexPattern = this.getFilePatternTextField().getText();
@@ -1072,14 +1057,6 @@ public class BaseFrame extends javax.swing.JFrame {
 			} else {
 				AutoConverterConfig.setConfig(selectedPatternName, regexPattern, AutoConverterConfig.PREFIX_REGEXP);
 			}
-			/*
-			try {
-				AutoConverterConfig.save();
-			} catch (FileNotFoundException ex) {
-				JOptionPane.showConfirmDialog(this, ex.toString(), java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			*/
 		}
         }//GEN-LAST:event_filePatternComboBoxItemStateChanged
 
@@ -1088,12 +1065,7 @@ public class BaseFrame extends javax.swing.JFrame {
 			return;
 		}
 		if(evt.getStateChange() == ItemEvent.SELECTED){
-			String range = (String) this.displayRangeComboBox.getModel().getSelectedItem();
-			AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, range);
-			try {
-				AutoConverterConfig.save();
-			} catch (FileNotFoundException ex) {
-			}
+			appController.storeDisplayRangeMaxSetting(true);
 		}
         }//GEN-LAST:event_displayRangeComboBoxItemStateChanged
 
@@ -1101,16 +1073,7 @@ public class BaseFrame extends javax.swing.JFrame {
          	if (evt.getSource() != this.getRemoveSpecialCharRadioButton()) {
 			return;
 		}
-		boolean _select = this.getRemoveSpecialCharRadioButton().isSelected();
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {_select}));
-		try {
-			AutoConverterConfig.save();
-			// TODO add your handling code here:
-		} catch (FileNotFoundException ex) {
-			JOptionPane.showConfirmDialog(this, ex.toString(), java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
+		appController.storeRemoveSpecialCharSetting(true);
         }//GEN-LAST:event_removeSpecialCharRadioButtonStateChanged
 
         // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -77,19 +77,18 @@ public class CaptureImage {
 
 		Pattern filePattern = appCtrl.getFilePattern();
 		Matcher matcher = filePattern.matcher(_f.getName());
-		logger.fine("PASS getParent() == " + directory);
 		if (matcher.matches()) {
 			for(String key: keys){
 				try{
 					params.put(key, matcher.group(key));
 				} catch(IllegalArgumentException e){
-					logger.fine("<" + key + "> is not found in matcher group");
+					//logger.warning("<" + key + "> is not found in matcher group");
 					params.put(key, ""); // "" を入れとかないとエラーになるので...
 				}
 				
 			}
 		} else {
-			logger.fine(_f.getAbsolutePath() + " is not supported.");
+			logger.warning(_f.getAbsolutePath() + " is not supported.");
 		}
 		this.shotID = this.directory + "-" + params.get("WELL") + "-" + params.get("POS") + "-" + params.get("ZPOS")  + "-" + params.get("TIME");
 		this.imageID = shotID + "-" + params.get("FILTER");
