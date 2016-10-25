@@ -54,7 +54,6 @@ public class ApplicationController implements ApplicationMediator {
 	private int rangeSliderLowValue;
 	private SpinnerNumberModel minSpinnerModel;
 	private SpinnerNumberModel maxSpinnerModel;
-	private ImagePlus imp;
 	private HashMap<String, Integer> storedMaxValues;
 	private HashMap<String, Integer> storedMinValues;
 	private HashMap<String, Boolean> storedAuto;
@@ -81,7 +80,6 @@ public class ApplicationController implements ApplicationMediator {
 		rangeSliderHighValue = 4095;
 		rangeSliderLowValue = 0;
 		baseFrame = _base;
-		imp = null;
 		storedMaxValues = new HashMap<String, Integer>();
 		storedMinValues = new HashMap<String, Integer>();
 		storedAuto = new HashMap<String, Boolean>();
@@ -93,7 +91,7 @@ public class ApplicationController implements ApplicationMediator {
 		self = this;
 	}
 
-	public void setRangeSliderHighValue(int val){
+	public void setRangeSliderHighValue(int val) {
 		rangeSliderHighValue = val;
 	}
 
@@ -117,7 +115,6 @@ public class ApplicationController implements ApplicationMediator {
 	public void nextImage() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
-
 
 	public void previousImage() {
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -165,20 +162,34 @@ public class ApplicationController implements ApplicationMediator {
 			} else {
 				this.setMessageLabel(_cimg.getFile().getAbsolutePath());
 			}
-			String filter1 = _cimg.getFilter();
 
-			imp = new ImagePlus(_cimg.getFile().getAbsolutePath());
+			// 毎回元のファイルからimgPlusを作って毎回filter条件を適用する.
+			ImagePlus imp = new ImagePlus(_cimg.getFile().getAbsolutePath());
+			//ImagePlus cur_imp = baseFrame.getImageDisplayPanel().getImp();
 
 			// 設定をロードする
 			this.loadCurrentFilterSettings();
-			baseFrame.getImageDisplayPanel().setImp(imp);
-			baseFrame.getPlotPanel().setImp(imp);
-			this.updateDensityPlot();
-			baseFrame.getPlotPanel().repaint();
+			if (imp != null ) {
+				// ImagePlus を表示領域に乗せたら、各種設定をapplyしていく.
+				// このあたりはもう少しすっきりした下記arterytoarteryをしないとバグの温床になりそう.
+				baseFrame.getImageDisplayPanel().setImp(imp);
+				Integer val = (Integer) this.baseFrame.getBallSizeSpinner().getValue();
+				if (val != null && val != 0) {
+					this.subtractBackground(imp, val.intValue());
+				}
+				if(baseFrame.getAutoRadioButton().isSelected()){
+					this.adjustValues();
+				}
+				this.setColor();
+				
+				baseFrame.getPlotPanel().setImp(imp);
+				this.updateDensityPlot();
+				baseFrame.getPlotPanel().repaint();
 
+				//logger.fine("updating => false");
+			}
 		} finally {
 			updating = false;
-			//logger.fine("updating => false");
 		}
 	}
 
@@ -261,145 +272,142 @@ public class ApplicationController implements ApplicationMediator {
 	}
 
 	/**
-	 * ディレクトリやリサイズ等の情報を指定するペインから
-	 * 実際の画像の設定を行う画面へ移行する際に実行される.
+	 * ディレクトリやリサイズ等の情報を指定するペインから 実際の画像の設定を行う画面へ移行する際に実行される.
 	 */
 	public void initializeImageConfigurationPane() {
-			if (getImageSet().size() < 1) {
-				IJ.showMessage("No shot found");
-				return;
+		if (getImageSet().size() < 1) {
+			IJ.showMessage("No shot found");
+			return;
+		}
+		// ファイル情報をlogメッセージに書き出す.
+		//getImageSet().logFileInfo();
+		int max_value = this.getMaxDisplayRangeValue();
+		this.baseFrame.getScaleRangeSlider().setMaximum(max_value);
+		this.baseFrame.getPlotPanel().setOriginalMax(max_value + 1);
+		this.rangeSliderHighValue = max_value;
+
+		ImagePlus imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
+		this.initSelectorComboBoxes(getImageSet());
+
+		baseFrame.getImageDisplayPanel().setImp(imp);
+
+		// 保存しているfilter情報を初期化
+		this.storedMaxValues.clear();
+		this.storedMinValues.clear();
+		this.storedAuto.clear();
+		this.storedMode.clear();
+		this.storedColor.clear();
+		this.storedBallSizes.clear();;
+		this.baseFrame.getBallSizeSpinner().setValue(0);
+		this.baseFrame.getImageScrollPane().getVerticalScrollBar().setUnitIncrement(25);
+		this.baseFrame.getImageScrollPane().getHorizontalScrollBar().setUnitIncrement(25);
+
+		for (String s : this.getImageSet().getFilters()) {
+			this.storedAuto.put(s, Boolean.FALSE);
+			// color setting
+			String _color = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_COLOR);
+			if (_color != null) {
+				this.storedColor.put(s, _color);
 			}
-			// ファイル情報をlogメッセージに書き出す.
-			//getImageSet().logFileInfo();
-			int max_value = this.getMaxDisplayRangeValue();
-			this.baseFrame.getScaleRangeSlider().setMaximum(max_value);
-			this.baseFrame.getPlotPanel().setOriginalMax(max_value + 1);
-			this.rangeSliderHighValue = max_value;
-
-			imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
-			this.initSelectorComboBoxes(getImageSet());
-
-			baseFrame.getImageDisplayPanel().setImp(getImp());
-
-			// 保存しているfilter情報を初期化
-			this.storedMaxValues.clear();
-			this.storedMinValues.clear();
-			this.storedAuto.clear();
-			this.storedMode.clear();
-			this.storedColor.clear();
-			this.storedBallSizes.clear();;
-			this.baseFrame.ballSizeSpinner.setValue(0);
-			this.baseFrame.getImageScrollPane().getVerticalScrollBar().setUnitIncrement(25);
-			this.baseFrame.getImageScrollPane().getHorizontalScrollBar().setUnitIncrement(25);
-
-			for (String s : this.getImageSet().getFilters()) {
-				this.storedAuto.put(s, Boolean.FALSE);
-				// color setting
-				String _color = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_COLOR);
-				if (_color != null) {
-					this.storedColor.put(s, _color);
-				}
-				String _max = AutoConverterConfig.getConfig(s, "4095", AutoConverterConfig.PREFIX_MAX);
-				String _min = AutoConverterConfig.getConfig(s, "0", AutoConverterConfig.PREFIX_MIN);
-				String _ball = AutoConverterConfig.getConfig(s, "0", AutoConverterConfig.PREFIX_BALL);
-				this.storedMaxValues.put(s, new Integer(_max));
-				this.storedMinValues.put(s, new Integer(_min));
-				this.storedBallSizes.put(s, new Integer(_ball));
-				String _auto = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_AUTO);
-				//logger.fine(s + "_auto = " + _auto);
-				if (_auto != null && _auto.equals("true")) {
-					this.storedAuto.put(s, true);
-				} else {
-					this.storedAuto.put(s, false);
-				}
-
-				String _auto_type = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_AUTO_TYPE);
-				if(_auto_type != null){
-					this.storedAutoType.put(s, _auto_type);
-				}
-
+			String _max = AutoConverterConfig.getConfig(s, "4095", AutoConverterConfig.PREFIX_MAX);
+			String _min = AutoConverterConfig.getConfig(s, "0", AutoConverterConfig.PREFIX_MIN);
+			String _ball = AutoConverterConfig.getConfig(s, "0", AutoConverterConfig.PREFIX_BALL);
+			this.storedMaxValues.put(s, new Integer(_max));
+			this.storedMinValues.put(s, new Integer(_min));
+			this.storedBallSizes.put(s, new Integer(_ball));
+			String _auto = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_AUTO);
+			//logger.fine(s + "_auto = " + _auto);
+			if (_auto != null && _auto.equals("true")) {
+				this.storedAuto.put(s, true);
+			} else {
+				this.storedAuto.put(s, false);
 			}
-			this.loadCurrentFilterSettings();
 
+			String _auto_type = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_AUTO_TYPE);
+			if (_auto_type != null) {
+				this.storedAutoType.put(s, _auto_type);
+			}
 
+		}
+		this.loadCurrentFilterSettings();
 
 	}
 
 	/**
 	 * 画像変換の設定が終わってnextをおして最終確認のペインを表示するときに使用
 	 */
-	public void showFinalSetting(){
-			// cardIndex == 1 => フィルタセッティング終わり
-			this.storeCurrentFilterSettings();
-			// summary を表示
-			JTextArea area = this.baseFrame.getSummaryDisplayArea();
-			area.setText("");
-			area.append("================ summary ==============\n");
-			area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
-			area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n\n");
-			area.append("Remove special chars: ");
-			if( this.baseFrame.getRemoveSpecialCharRadioButton().isSelected() ){
-				area.append("YES");
-			} else {
-				area.append("NO");
-			}
-			area.append("\n\n");
-			area.append("Include parametars in filename: ");
-			if(this.baseFrame.getAddParamRadioButton().isSelected()){
-				area.append("YES");
-			} else {
-				area.append("NO");
-			}
-			area.append("\n\n");
-			area.append("Cropping: ");
-			ImagePanel imgPanel = this.baseFrame.getImageDisplayPanel();
-			if(imgPanel.isSelected()){
-				area.append("YES\n");
-				area.append("x: "      + imgPanel.getLeftTopX()  + "\n");
-				area.append("y: "      + imgPanel.getLeftTopY()  + "\n");
-				area.append("width: "  + imgPanel.getRoiWidth()  + "\n");
-				area.append("height: " + imgPanel.getRoiHeight() + "\n\n");
-			} else {
-				area.append("NO\n\n");
-			}
+	public void showFinalSetting() {
+		// cardIndex == 1 => フィルタセッティング終わり
+		this.storeCurrentFilterSettings();
+		// summary を表示
+		JTextArea area = this.baseFrame.getSummaryDisplayArea();
+		area.setText("");
+		area.append("================ summary ==============\n");
+		area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
+		area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n\n");
+		area.append("Remove special chars: ");
+		if (this.baseFrame.getRemoveSpecialCharRadioButton().isSelected()) {
+			area.append("YES");
+		} else {
+			area.append("NO");
+		}
+		area.append("\n\n");
+		area.append("Include parametars in filename: ");
+		if (this.baseFrame.getAddParamRadioButton().isSelected()) {
+			area.append("YES");
+		} else {
+			area.append("NO");
+		}
+		area.append("\n\n");
+		area.append("Cropping: ");
+		ImagePanel imgPanel = this.baseFrame.getImageDisplayPanel();
+		if (imgPanel.isSelected()) {
+			area.append("YES\n");
+			area.append("x: " + imgPanel.getLeftTopX() + "\n");
+			area.append("y: " + imgPanel.getLeftTopY() + "\n");
+			area.append("width: " + imgPanel.getRoiWidth() + "\n");
+			area.append("height: " + imgPanel.getRoiHeight() + "\n\n");
+		} else {
+			area.append("NO\n\n");
+		}
 
-			area.append("Resize: ");
-			if (this.getScaleX() > 0) {
-				area.append(Integer.toString(this.getScaleX()) + " pixel (width)");
-			} else {
-				area.append("NO");
-			}
-			area.append("\n\n");
-			area.append("Total file: " + getImageSet().size() + "\n");
+		area.append("Resize: ");
+		if (this.getScaleX() > 0) {
+			area.append(Integer.toString(this.getScaleX()) + " pixel (width)");
+		} else {
+			area.append("NO");
+		}
+		area.append("\n\n");
+		area.append("Total file: " + getImageSet().size() + "\n");
 
-			area.append("\n");
-			for (String s : this.getImageSet().getFilters()) {
-				area.append("Filter name: " + s + "\n");
-				area.append("Color: " + this.storedColor.get(s) + "\n");
-				Boolean method = this.storedAuto.get(s);
-				if (method) {
-					area.append("Method: auto (saturated=" + this.storedAutoType.get(s) + "%)" );
-					area.append("\n");
-					area.append("Range: variable\n");
-				} else {
-					area.append("Method: manual\n");
-					area.append("Range: " + this.storedMinValues.get(s) + "-" + this.storedMaxValues.get(s) + "\n");
-				}
-				String mode = this.storedMode.get(s);
-				if (mode == null) {
-					mode = "Undefined (Single)";
-				}
-				area.append("Mode: " + mode + "\n");
-				Integer bs = this.storedBallSizes.get(s);
-				String ball_str = "None";
-				if (bs == null || bs == 0 ) {
-					ball_str = "None";
-				} else {
-					ball_str = bs.toString();
-				}
-				area.append("Background subtraction: " + ball_str + "\n");
+		area.append("\n");
+		for (String s : this.getImageSet().getFilters()) {
+			area.append("Filter name: " + s + "\n");
+			area.append("Color: " + this.storedColor.get(s) + "\n");
+			Boolean method = this.storedAuto.get(s);
+			if (method) {
+				area.append("Method: auto (saturated=" + this.storedAutoType.get(s) + "%)");
 				area.append("\n");
+				area.append("Range: variable\n");
+			} else {
+				area.append("Method: manual\n");
+				area.append("Range: " + this.storedMinValues.get(s) + "-" + this.storedMaxValues.get(s) + "\n");
 			}
+			String mode = this.storedMode.get(s);
+			if (mode == null) {
+				mode = "Undefined (Single)";
+			}
+			area.append("Mode: " + mode + "\n");
+			Integer bs = this.storedBallSizes.get(s);
+			String ball_str = "None";
+			if (bs == null || bs == 0) {
+				ball_str = "None";
+			} else {
+				ball_str = bs.toString();
+			}
+			area.append("Background subtraction: " + ball_str + "\n");
+			area.append("\n");
+		}
 
 	}
 
@@ -419,18 +427,18 @@ public class ApplicationController implements ApplicationMediator {
 			this.showFinalSetting();
 			this.getCardLayout().next(baseFrame.getCenterPanel());
 			this.incrementCardIndex();
-		        this.updateWizerdButton();
+			this.updateWizerdButton();
 		}
-
 
 	}
 
-	public void incrementCardIndex(){
+	public void incrementCardIndex() {
 		if (cardIndex < this.getCardSize()) {
-		  cardIndex++;
+			cardIndex++;
 		}
 	}
-	public void decrementCardIndex(){
+
+	public void decrementCardIndex() {
 		if (cardIndex > 0) {
 			cardIndex--;
 		}
@@ -439,7 +447,7 @@ public class ApplicationController implements ApplicationMediator {
 	public void previousCard() {
 		if (cardIndex > 0) {
 			this.getCardLayout().previous(baseFrame.getCenterPanel());
-			if(cardIndex == 2 && this.convert_swing_worker != null){
+			if (cardIndex == 2 && this.convert_swing_worker != null) {
 				this.convert_swing_worker.cancel(true);
 			}
 			cardIndex--;
@@ -594,17 +602,18 @@ public class ApplicationController implements ApplicationMediator {
 	 * 自動で設定する.
 	 */
 	public void adjustValues() {
-		if (imp == null) {
+		if (this.getImp() == null) {
 			return;
 		}
+		ImagePlus imp = this.getImp();
 		String sat_val = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
 		IJ.run(imp, "Enhance Contrast", "saturated=0.35");
 		int min = (int) this.getImp().getDisplayRangeMin();
 
-		try{
+		try {
 			Double.parseDouble(sat_val);
 			IJ.run(imp, "Enhance Contrast", "saturated=" + sat_val);
-		} catch (NumberFormatException e){
+		} catch (NumberFormatException e) {
 			logger.fine(e.toString());
 		}
 		//this.getImp().setDisplayRange(min, max);
@@ -701,12 +710,13 @@ public class ApplicationController implements ApplicationMediator {
 
 	/**
 	 * 初期画面の設定情報を保存する.
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeInitialSettings(boolean save){
+	public void storeInitialSettings(boolean save) {
 		// src, dst ディレクトリ保存
 		this.storeDirectorySetting(false);
-		
+
 		// recursive button
 		this.storeRecursiveSetting(false);
 
@@ -725,103 +735,109 @@ public class ApplicationController implements ApplicationMediator {
 		// add param
 		this.storeAddParamSetting(false);
 
-		if(save){
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
 
 	/**
 	 * ファイルのパターン文字列等の保存
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeFilePatternSettings(boolean save){
+	public void storeFilePatternSettings(boolean save) {
 		String selected_pattern_name = (String) baseFrame.getFilePatternComboBox().getModel().getSelectedItem();
 		String regex_string = baseFrame.getFilePatternTextField().getText();
-		if(! regex_string.equals("")){
+		if (!regex_string.equals("")) {
 			AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, selected_pattern_name);
 			AutoConverterConfig.setConfig(selected_pattern_name, regex_string, AutoConverterConfig.PREFIX_REGEXP);
-			if(save){
+			if (save) {
 				AutoConverterConfig.save(baseFrame, true);
 			}
 		}
-
 
 	}
 
 	/**
 	 * display range の最大値
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeDisplayRangeMaxSetting(boolean save){
+	public void storeDisplayRangeMaxSetting(boolean save) {
 		String selected = (String) this.baseFrame.getDisplayRangeComboBox().getModel().getSelectedItem();
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, selected);
-		if(save){
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
 
 	/**
 	 * 変換先フォーマット保存
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeFormatComboBoxSettings(boolean save){
+	public void storeFormatComboBoxSettings(boolean save) {
 		String selected = (String) this.baseFrame.getImageFormatComboBox().getModel().getSelectedItem();
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_IMAGE_FORMAT, selected);
-		if(save){
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
 
 	/**
 	 * 特殊文字を削除するかどうかの設定を保存.
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeRemoveSpecialCharSetting(boolean save){
+	public void storeRemoveSpecialCharSetting(boolean save) {
 		boolean _select = this.baseFrame.getRemoveSpecialCharRadioButton().isSelected();
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {_select}));
-		if(save){
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{_select}));
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
 
 	/**
 	 * ファイル名に変換設定を加えて保存する.
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeAddParamSetting(boolean save){
+	public void storeAddParamSetting(boolean save) {
 		boolean selected = baseFrame.getAddParamRadioButton().isSelected();
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {selected}));
-		if(save){
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{selected}));
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
 
 	/**
 	 * recursive buttonの状態を保存
-	 * @param save  ファイルに保存するかどうか.
+	 *
+	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeRecursiveSetting(boolean save){
+	public void storeRecursiveSetting(boolean save) {
 		boolean _select = this.baseFrame.getRecursiveRadioButton().isSelected();
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_RECURSIVE_ON, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {_select}));
-		if(save){
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_RECURSIVE_ON, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{_select}));
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
 
 	/**
 	 * 読出元、書き出し先のディレクトリ情報を保存する.
+	 *
 	 * @param save ファイルに保存するかどうか.
 	 */
-	public void storeDirectorySetting(boolean save){
+	public void storeDirectorySetting(boolean save) {
 		File _srcDir = new File(this.baseFrame.getSourceText().getText());
-		if(_srcDir != null){
+		if (_srcDir != null) {
 			AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, _srcDir.getAbsolutePath());
 		}
 		File _dstDir = new File(this.baseFrame.getDestinationText().getText());
-		if(_dstDir != null){
+		if (_dstDir != null) {
 			AutoConverterConfig.setConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, _dstDir.getAbsolutePath());
 		}
-		if(save){
+		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
 
@@ -890,6 +906,7 @@ public class ApplicationController implements ApplicationMediator {
 		Boolean auto = this.storedAuto.get(filter);
 		Integer min = this.storedMinValues.get(filter);
 		Integer max = this.storedMaxValues.get(filter);
+		Integer ballSize = this.storedBallSizes.get(filter);
 		String auto_type = this.storedAutoType.get(filter);
 		//logger.fine("Loading auto = " + auto);
 		//logger.fine("Loading min = " + min);
@@ -901,12 +918,16 @@ public class ApplicationController implements ApplicationMediator {
 		if (auto != null) {
 			this.setAutoSelected(auto);
 		}
-		if(auto_type != null){
+		if (auto_type != null) {
 			logger.fine(auto_type);
 			this.baseFrame.getAutoTypeComboBox().getModel().setSelectedItem(auto_type);
 		} else {
 			this.baseFrame.getAutoTypeComboBox().setSelectedIndex(0);
 		}
+		if (ballSize != null) {
+			this.baseFrame.getBallSizeSpinner().setValue(ballSize);
+		}
+
 		String color = this.storedColor.get(filter);
 		//logger.fine("Load color = " + color);
 		if (color != null) {
@@ -915,7 +936,6 @@ public class ApplicationController implements ApplicationMediator {
 		} else {
 			this.baseFrame.colorChannelSelector.setSelectedIndex(0);
 		}
-		this.setColor();
 		loading = false;
 	}
 
@@ -935,12 +955,13 @@ public class ApplicationController implements ApplicationMediator {
 
 	/**
 	 * AutoとManual関連のボタンのON/OFFを設定する.
+	 *
 	 * @param auto autoの状態を変更する.
 	 */
 	public void setAutoSelected(boolean auto) {
 
 		this.baseFrame.getAutoRadioButton().setSelected(auto);
-		this.baseFrame.getManualRadioButton().setSelected(! auto);
+		this.baseFrame.getManualRadioButton().setSelected(!auto);
 		this.configAutoRelatedComponents(auto);
 		if (auto == true) {
 			this.adjustValues();
@@ -966,7 +987,9 @@ public class ApplicationController implements ApplicationMediator {
 	 * @param toString
 	 */
 	public void setColor(String toString) {
-		//logger.fine("In setColor" + toString);
+		if (this.getImp() == null) {
+			return;
+		}
 		IJ.run(this.getImp(), toString, "");
 		this.getImp().updateImage();
 		this.baseFrame.getImageDisplayPanel().repaint();
@@ -989,8 +1012,10 @@ public class ApplicationController implements ApplicationMediator {
 		}
 		// 画像を更新
 		//this.updateImage(); // loopする?
+		logger.fine("subtraction");
 		if (radius < 20) {
-			baseFrame.getMessageLabel().setText("Substraction ball is too small. Ignored.");
+			//baseFrame.getMessageLabel().setText("Substraction ball is too small. Ignored.");
+			this.setMessageLabel("Substraction ball is too small. Ignored.", Color.RED);
 			return;
 		}
 		IJ.run(_imp, "Subtract Background...", "rolling=" + radius);
@@ -1010,7 +1035,7 @@ public class ApplicationController implements ApplicationMediator {
 	 * @return the imp
 	 */
 	public ImagePlus getImp() {
-		return imp;
+		return this.baseFrame.getImageDisplayPanel().getImp();
 	}
 
 	public String getDestinationDirectoryPath() {
@@ -1075,12 +1100,12 @@ public class ApplicationController implements ApplicationMediator {
 				String rtop = null;
 				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
 				int crop_height = imgPanel.getRoiHeight();
-				int crop_width  = imgPanel.getRoiWidth();
+				int crop_width = imgPanel.getRoiWidth();
 				int crop_x = imgPanel.getLeftTopX();
 				int crop_y = imgPanel.getLeftTopY();
 
 				for (CaptureImage _cm : getImageSet().getFiles()) {
-					if(isCancelled()){
+					if (isCancelled()) {
 						return new Integer(22);
 					}
 					String _path = _cm.getFile().getAbsolutePath();
@@ -1125,7 +1150,7 @@ public class ApplicationController implements ApplicationMediator {
 						rtop = dst + parent;
 						logger.fine(rtop);
 					}
-					*/
+					 */
 					File dstdir = new File(dstpath).getParentFile();
 					if (!dstdir.exists()) { //ディレクトリが無い!
 						dstdir.mkdirs();
@@ -1134,7 +1159,7 @@ public class ApplicationController implements ApplicationMediator {
 						IJ.showMessage(dstdir + " is not directory. stop.");
 						return new Integer(1);
 					}
-					if(remove_char){ // special character 削除
+					if (remove_char) { // special character 削除
 						fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
 
 					}
@@ -1145,7 +1170,7 @@ public class ApplicationController implements ApplicationMediator {
 					ImagePlus _imp = IJ.openImage(_path);
 					if (ballsize != 0) {
 						IJ.run(_imp, "Subtract Background...", "rolling=" + ballsize);
-						if(addparam){
+						if (addparam) {
 							dstbase = dstbase + "_BALL" + ballsize;
 						}
 					}
@@ -1155,28 +1180,27 @@ public class ApplicationController implements ApplicationMediator {
 						min = (int) _imp.getDisplayRangeMin();
 						IJ.run(_imp, "Enhance Contrast", "saturated=" + auto_type);
 						max = (int) _imp.getDisplayRangeMax();
-						IJ.setMinAndMax(_imp,  min,  max);
-						if(addparam){
+						IJ.setMinAndMax(_imp, min, max);
+						if (addparam) {
 							dstbase = dstbase + "_AUTO" + auto_type;
 						}
 					} else {
 						IJ.setMinAndMax(_imp, (int) min, (int) max);
-						if(addparam){
+						if (addparam) {
 							dstbase = dstbase + "_RANGE" + min + "-" + max;
 						}
 					}
 					// 色設定.
 					IJ.run(_imp, color, "");
 
-					if( crop_height != 0 && crop_width != 0 ){ // crop 領域が設定されている.
+					if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
 						_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
 						IJ.run(_imp, "Crop", "");
-					        //IJ.run(imp, "Select None", "");
-						if(addparam){
+						//IJ.run(imp, "Select None", "");
+						if (addparam) {
 							dstbase = dstbase + "_CROPx" + crop_x + "y" + crop_y + "w" + crop_width + "h" + crop_height;
 						}
 					}
-
 
 					// resize
 					if (scale_x > 0 && scale_y > 0) {
@@ -1213,7 +1237,7 @@ public class ApplicationController implements ApplicationMediator {
 
 			@Override
 			public void done() {
-				if(isCancelled()){
+				if (isCancelled()) {
 					// cancel 何もせず戻るだけ.
 
 					//JOptionPane.showConfirmDialog(baseFrame, "Image conversion cancelled.",  java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
@@ -1238,16 +1262,6 @@ public class ApplicationController implements ApplicationMediator {
 		convert_swing_worker.execute();
 	}
 
-	public void setBallSize(Integer size) {
-		JSpinner spinner = this.baseFrame.ballSizeSpinner;
-		if (spinner == null) {
-			return;
-		}
-		spinner.setValue(size);
-		this.updateImage();
-		this.subtractBackground(size);
-	}
-
 	public boolean isIncludeTif() {
 		JCheckBox checkbox = this.baseFrame.getTif_checkbox();
 		return checkbox.isSelected();
@@ -1263,12 +1277,8 @@ public class ApplicationController implements ApplicationMediator {
 		return checkbox.isSelected();
 	}
 
-	public void setBallSize(int size) {
-		this.setBallSize(new Integer(size));
-	}
-
 	public int getBallSize() {
-		Integer size = (Integer) this.baseFrame.ballSizeSpinner.getValue();
+		Integer size = (Integer) this.baseFrame.getBallSizeSpinner().getValue();
 		if (size != null) {
 			return size.intValue();
 		} else {
@@ -1276,7 +1286,7 @@ public class ApplicationController implements ApplicationMediator {
 		}
 	}
 
-	public BaseFrame getBaseFrame(){
+	public BaseFrame getBaseFrame() {
 		return baseFrame;
 	}
 
@@ -1308,9 +1318,8 @@ public class ApplicationController implements ApplicationMediator {
 		String slice = (String) this.baseFrame.getzSelectCBox().getSelectedItem();
 		String time = (String) this.baseFrame.getTimeSelectCBox().getSelectedItem();
 		String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
-		String imageID = Pattern.quote(dir + "-" + wellname + "-" + position + "-" + slice + "-" + time + "-" + filter);
-		//this.updateImage(imageID);
-		//this.updateDensityPlot();
+		String imageID = dir + "-" + wellname + "-" + position + "-" + slice + "-" + time + "-" + filter;
+
 		return imageID;
 	}
 
@@ -1323,29 +1332,30 @@ public class ApplicationController implements ApplicationMediator {
 
 	/**
 	 * ファイルのパターン文字列を取得する.
-	 * @return 
+	 *
+	 * @return
 	 */
-	public String getFilePatternString (){
+	public String getFilePatternString() {
 		JTextField filePatternTextField = this.baseFrame.getFilePatternTextField();
 		return filePatternTextField.getText();
 	}
 
 	public Pattern getFilePattern() {
-		if( pattern_string == null){
+		if (pattern_string == null) {
 			pattern_string = this.getFilePatternString();
 		}
-		if( pattern_string.equals(this.getFilePatternString()) && pattern != null ){
+		if (pattern_string.equals(this.getFilePatternString()) && pattern != null) {
 			//logger.fine(pattern_string);
 			return pattern;
 		} else {
 			pattern_string = this.getFilePatternString();
 			//logger.fine(pattern_string);
-		        pattern = Pattern.compile(pattern_string);
+			pattern = Pattern.compile(pattern_string);
 			return pattern;
 		}
 	}
 
-	public int getMaxDisplayRangeValue(){
+	public int getMaxDisplayRangeValue() {
 		String disp = (String) this.baseFrame.getDisplayRangeComboBox().getModel().getSelectedItem();
 		int max_value = Integer.parseInt(disp);
 		return max_value;

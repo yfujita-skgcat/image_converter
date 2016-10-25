@@ -1064,11 +1064,11 @@ public class BaseFrame extends javax.swing.JFrame {
         }//GEN-LAST:event_convertButtonActionPerformed
 
         private void ballSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ballSizeSpinnerStateChanged
-                if( evt.getSource() == this.ballSizeSpinner){
+                if( evt.getSource() == this.getBallSizeSpinner()){
                         JSpinner spinner = (JSpinner) evt.getSource();
                         Integer val = (Integer) spinner.getValue();
                         logger.fine(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("SUBTRACT BACKGROUND FROM LISTNER."));
-                        //this.appController.subtractBackground(val.intValue());
+                        //this.appController.subtractBackground(val);
                         this.appController.storeCurrentFilterSettings();
                         this.appController.updateImage();
                 }
@@ -1895,6 +1895,20 @@ public class BaseFrame extends javax.swing.JFrame {
 	 */
 	public void setAddParamRadioButton(javax.swing.JRadioButton addParamRadioButton) {
 		this.addParamRadioButton = addParamRadioButton;
+	}
+
+	/**
+	 * @return the ballSizeSpinner
+	 */
+	public javax.swing.JSpinner getBallSizeSpinner() {
+		return ballSizeSpinner;
+	}
+
+	/**
+	 * @param ballSizeSpinner the ballSizeSpinner to set
+	 */
+	public void setBallSizeSpinner(javax.swing.JSpinner ballSizeSpinner) {
+		this.ballSizeSpinner = ballSizeSpinner;
 	}
 
 }

@@ -22,6 +22,7 @@ public class Img_Conv implements PlugIn {
 		//IJ.showMessage("This is a test imagej plugin.");
 		//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		BaseFrame ac = new BaseFrame();
+		ac.setTitle(AutoConverterUtils.getVersion());
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				new BaseFrame().setVisible(true);
