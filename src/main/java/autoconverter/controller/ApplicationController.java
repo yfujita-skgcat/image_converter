@@ -16,24 +16,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import autoconverter.model.CaptureImage;
 import autoconverter.model.ImageSet;
 import autoconverter.view.BaseFrame;
-import autoconverter.view.WaitDialog;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
@@ -67,6 +64,7 @@ public class ApplicationController implements ApplicationMediator {
 	private static ApplicationController self = null;
 	private String pattern_string;
 	private Pattern pattern;
+	private SwingWorker<Integer, String> convert_swing_worker;
 
 	public ApplicationController(BaseFrame _base) {
 		cardIndex = 0;
@@ -402,6 +400,9 @@ public class ApplicationController implements ApplicationMediator {
 	public void previousCard() {
 		if (cardIndex > 0) {
 			this.getCardLayout().previous(baseFrame.getCenterPanel());
+			if(cardIndex == 2 && this.convert_swing_worker != null){
+				this.convert_swing_worker.cancel(true);
+			}
 			cardIndex--;
 		}
 		this.updateWizerdButton();
@@ -982,8 +983,7 @@ public class ApplicationController implements ApplicationMediator {
 		final int scale_y = s_y;
 
 		//IJ.run(imp, "Size...", "width=680 height=512 constrain average interpolation=Bilinear");
-		SwingWorker sw;
-		sw = new SwingWorker<Integer, String>() {
+		convert_swing_worker = new SwingWorker<Integer, String>() {
 			@Override
 			protected void process(java.util.List<String> chunks) {
 				for (String s : chunks) {
@@ -998,6 +998,9 @@ public class ApplicationController implements ApplicationMediator {
 				int number = getImageSet().size();
 				int count = 1;
 				for (CaptureImage _cm : getImageSet().getFiles()) {
+					if(isCancelled()){
+						return new Integer(22);
+					}
 					String _path = _cm.getFile().getAbsolutePath();
 					String filter = _cm.getFilter();
 					Integer bs = storedBallSizes.get(filter);
@@ -1087,6 +1090,12 @@ public class ApplicationController implements ApplicationMediator {
 
 			@Override
 			public void done() {
+				if(isCancelled()){
+					// cancel 何もせず戻るだけ.
+
+					//JOptionPane.showConfirmDialog(baseFrame, "Image conversion cancelled.",  java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("CONFIG SAVE ERROR"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				_area.append("Conversion finished.\n");
 				String memoPath = dst + File.separator + "conversion_log.txt";
 				try {
@@ -1101,7 +1110,7 @@ public class ApplicationController implements ApplicationMediator {
 			}
 		};
 		//logger.fine("execute");
-		sw.execute();
+		convert_swing_worker.execute();
 	}
 
 	public void setBallSize(Integer size) {
