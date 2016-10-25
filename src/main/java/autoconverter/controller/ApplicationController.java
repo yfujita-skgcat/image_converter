@@ -22,6 +22,7 @@ import javax.swing.SpinnerNumberModel;
 import autoconverter.model.CaptureImage;
 import autoconverter.model.ImageSet;
 import autoconverter.view.BaseFrame;
+import autoconverter.view.ImagePanel;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -336,6 +337,18 @@ public class ApplicationController implements ApplicationMediator {
 			area.append("================ summary ==============\n");
 			area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
 			area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n");
+			area.append("Cropping: ");
+			ImagePanel imgPanel = this.baseFrame.getImageDisplayPanel();
+			if(imgPanel.isSelected()){
+				area.append("YES\n");
+				area.append("x: "      + imgPanel.getLeftTopX()  + "\n");
+				area.append("y: "      + imgPanel.getLeftTopY()  + "\n");
+				area.append("width: "  + imgPanel.getRoiWidth()  + "\n");
+				area.append("height: " + imgPanel.getRoiHeight() + "\n");
+			} else {
+				area.append("NO\n");
+			}
+
 			area.append("Resize: ");
 			if (this.getScaleX() > 0) {
 				area.append(Integer.toString(this.getScaleX()) + " pixel (width)");
@@ -593,7 +606,7 @@ public class ApplicationController implements ApplicationMediator {
 		IJ.setMinAndMax(imp, (int) min, (int) max);
 		//baseFrame.getScaleRangeSlider().setLowerValue(min);
 		//baseFrame.getScaleRangeSlider().setUpperValue(max);
-		logger.fine("max, min = " + max + ", " + min);
+		//logger.fine("max, min = " + max + ", " + min);
 	}
 
 	/**
@@ -845,7 +858,7 @@ public class ApplicationController implements ApplicationMediator {
 
 		String adjust_type = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
 		this.storedAutoType.put(filter, adjust_type);
-		logger.fine("storeing " + adjust_type);
+		//logger.fine("storeing " + adjust_type);
 		AutoConverterConfig.setConfig(filter, adjust_type, AutoConverterConfig.PREFIX_AUTO_TYPE);
 
 		AutoConverterConfig.save(baseFrame, true);
@@ -1045,6 +1058,12 @@ public class ApplicationController implements ApplicationMediator {
 				int number = getImageSet().size();
 				int count = 1;
 				String rtop = null;
+				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
+				int crop_height = imgPanel.getRoiHeight();
+				int crop_width  = imgPanel.getRoiWidth();
+				int crop_x = imgPanel.getLeftTopX();
+				int crop_y = imgPanel.getLeftTopY();
+
 				for (CaptureImage _cm : getImageSet().getFiles()) {
 					if(isCancelled()){
 						return new Integer(22);
@@ -1133,6 +1152,16 @@ public class ApplicationController implements ApplicationMediator {
 					}
 					// 色設定.
 					IJ.run(_imp, color, "");
+
+					if( crop_height != 0 && crop_width != 0 ){ // crop 領域が設定されている.
+						_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
+						IJ.run(_imp, "Crop", "");
+					        //IJ.run(imp, "Select None", "");
+						if(addparam){
+							dstbase = dstbase + "_CROPx" + crop_x + "y" + crop_y + "w" + crop_width + "h" + crop_height;
+						}
+					}
+
 
 					// resize
 					if (scale_x > 0 && scale_y > 0) {

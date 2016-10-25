@@ -433,6 +433,20 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 imageScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
                 imageScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+                imagePanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+                        public void mouseDragged(java.awt.event.MouseEvent evt) {
+                                imagePanelMouseDragged(evt);
+                        }
+                });
+                imagePanel.addMouseListener(new java.awt.event.MouseAdapter() {
+                        public void mousePressed(java.awt.event.MouseEvent evt) {
+                                imagePanelMousePressed(evt);
+                        }
+                        public void mouseReleased(java.awt.event.MouseEvent evt) {
+                                imagePanelMouseReleased(evt);
+                        }
+                });
                 imageScrollPane.setViewportView(imagePanel);
 
                 slide2.add(imageScrollPane, java.awt.BorderLayout.CENTER);
@@ -1127,6 +1141,18 @@ public class BaseFrame extends javax.swing.JFrame {
 		appController.storeAddParamSetting(true);
 
         }//GEN-LAST:event_addParamRadioButtonStateChanged
+
+        private void imagePanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMousePressed
+		this.imagePanel.setStart(evt.getX(), evt.getY());
+        }//GEN-LAST:event_imagePanelMousePressed
+
+        private void imagePanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseReleased
+		this.imagePanel.setEnd(evt.getX(), evt.getY());
+        }//GEN-LAST:event_imagePanelMouseReleased
+
+        private void imagePanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseDragged
+		this.imagePanel.setNow(evt.getX(), evt.getY());
+        }//GEN-LAST:event_imagePanelMouseDragged
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JRadioButton addParamRadioButton;
