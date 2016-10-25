@@ -45,12 +45,14 @@ public class AutoConverterConfig {
 	public static String KEY_SELECTED_PATTERN = "SELECTED_PATTERN";
 	public static String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
 	public static String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
+	public static String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
 	public static String PREFIX_BALL = "BALL";
 	public static String PREFIX_MIN = "MIN";
 	public static String PREFIX_MAX = "MAX";
 	public static String PREFIX_COLOR = "COLOR";
 	public static String PREFIX_AUTO = "AUTO";
 	public static String PREFIX_REGEXP = "REGEXP";
+	public static String PREFIX_AUTO_TYPE = "AUTO_SCALE_TYPE";
 	public static String REGEXP_NAME_CUSTOM = "Custom";
 	public static String REGEXP_NAME_CELAVIEW = "Celaview";
 	public static String REGEXP_NAME_INCELL6000 = "In Cell 6000";

@@ -10,30 +10,20 @@
  */
 package autoconverter.view;
 
-import ij.ImagePlus;
-import autoconverter.model.ImageSet;
-import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SpinnerNumberModel;
 import autoconverter.controller.AutoConverterConfig;
 import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.ApplicationController;
-import autoconverter.controller.ApplicationMediator;
 import autoconverter.view.range.RangeSlider;
 import java.awt.event.ItemEvent;
-import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
 
@@ -91,11 +81,20 @@ public class BaseFrame extends javax.swing.JFrame {
 			this.recursiveRadioButton.setSelected(false);
 		}
 
+		// special char load
 		String _remove_spec_char = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, "true", null);
 		if(_remove_spec_char.equals("true")){
 			this.removeSpecialCharRadioButton.setSelected(true);
 		} else {
 			this.removeSpecialCharRadioButton.setSelected(false);
+		}
+
+		// add param load
+		String _add_param = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, "true",null);
+		if(_add_param.equals("true")){
+			this.addParamRadioButton.setSelected(true);
+		} else {
+			this.addParamRadioButton.setSelected(false);
 		}
 
 		String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
@@ -175,6 +174,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 displayRangeLabel = new javax.swing.JLabel();
                 displayRangeComboBox = new javax.swing.JComboBox<>();
                 removeSpecialCharRadioButton = new javax.swing.JRadioButton();
+                addParamRadioButton = new javax.swing.JRadioButton();
                 slideScrollPane2 = new javax.swing.JScrollPane();
                 slide2 = new javax.swing.JPanel();
                 imageScrollPane = new javax.swing.JScrollPane();
@@ -214,6 +214,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 autoRadioButton = new javax.swing.JRadioButton();
                 manualRadioButton = new javax.swing.JRadioButton();
                 adjustButton = new javax.swing.JButton();
+                autoTypeComboBox = new javax.swing.JComboBox<>();
                 maxSpinner = new javax.swing.JSpinner();
                 subtractionPanel = new javax.swing.JPanel();
                 subtractLabel = new javax.swing.JLabel();
@@ -325,6 +326,13 @@ public class BaseFrame extends javax.swing.JFrame {
                         }
                 });
 
+                addParamRadioButton.setText(bundle.getString("BaseFrame.addParamRadioButton.text")); // NOI18N
+                addParamRadioButton.addChangeListener(new javax.swing.event.ChangeListener() {
+                        public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                                addParamRadioButtonStateChanged(evt);
+                        }
+                });
+
                 javax.swing.GroupLayout slide1Layout = new javax.swing.GroupLayout(slide1);
                 slide1.setLayout(slide1Layout);
                 slide1Layout.setHorizontalGroup(
@@ -349,17 +357,13 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addGap(119, 119, 119)
                                                                 .addComponent(resizeRadioButton)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(resizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))))
+                                                                .addComponent(resizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))))
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(filePatternTextField))
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(slide1Layout.createSequentialGroup()
-                                                                .addComponent(recursiveRadioButton)
-                                                                .addGap(65, 65, 65)
-                                                                .addComponent(removeSpecialCharRadioButton))
                                                         .addGroup(slide1Layout.createSequentialGroup()
                                                                 .addComponent(jLabel1)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -371,7 +375,13 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addGap(111, 111, 111)
                                                                 .addComponent(displayRangeLabel)
                                                                 .addGap(4, 4, 4)
-                                                                .addComponent(displayRangeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                .addComponent(displayRangeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(slide1Layout.createSequentialGroup()
+                                                                .addComponent(recursiveRadioButton)
+                                                                .addGap(65, 65, 65)
+                                                                .addComponent(removeSpecialCharRadioButton)
+                                                                .addGap(71, 71, 71)
+                                                                .addComponent(addParamRadioButton)))
                                                 .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap())
                 );
@@ -381,7 +391,8 @@ public class BaseFrame extends javax.swing.JFrame {
                                 .addGap(26, 26, 26)
                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(recursiveRadioButton)
-                                        .addComponent(removeSpecialCharRadioButton))
+                                        .addComponent(removeSpecialCharRadioButton)
+                                        .addComponent(addParamRadioButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(slide1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(sourceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -409,7 +420,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(filePatternTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                                 .addContainerGap())
                 );
 
@@ -477,7 +488,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 imagePropertyPanel.setMinimumSize(new java.awt.Dimension(500, 200));
                 imagePropertyPanel.setPreferredSize(new java.awt.Dimension(550, 300));
-                imagePropertyPanel.setLayout(new java.awt.GridLayout(1, 0));
+                imagePropertyPanel.setLayout(new java.awt.BorderLayout());
 
                 colorSelectScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
                 colorSelectScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -634,7 +645,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 colorSelectScrollPane.setViewportView(colorSelectPanel);
 
-                imagePropertyPanel.add(colorSelectScrollPane);
+                imagePropertyPanel.add(colorSelectScrollPane, java.awt.BorderLayout.WEST);
 
                 brightnessPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
                 brightnessPanel.setMinimumSize(new java.awt.Dimension(260, 368));
@@ -644,15 +655,20 @@ public class BaseFrame extends javax.swing.JFrame {
                 scalePanel.setPreferredSize(new java.awt.Dimension(400, 62));
                 scalePanel.setLayout(new java.awt.GridLayout(3, 0));
 
-                spinnerPanel.setLayout(new java.awt.GridLayout(1, 5));
+                spinnerPanel.setLayout(new java.awt.GridBagLayout());
 
                 minSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 4094, 1));
+                minSpinner.setMinimumSize(new java.awt.Dimension(100, 28));
+                minSpinner.setPreferredSize(new java.awt.Dimension(100, 28));
                 minSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
                         public void stateChanged(javax.swing.event.ChangeEvent evt) {
                                 minSpinnerStateChanged(evt);
                         }
                 });
-                spinnerPanel.add(minSpinner);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 0;
+                spinnerPanel.add(minSpinner, gridBagConstraints);
 
                 brightnessAutoGroup.add(autoRadioButton);
                 autoRadioButton.setText(bundle.getString("BaseFrame.autoRadioButton.text")); // NOI18N
@@ -661,7 +677,9 @@ public class BaseFrame extends javax.swing.JFrame {
                                 autoRadioButtonActionPerformed(evt);
                         }
                 });
-                spinnerPanel.add(autoRadioButton);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridwidth = 2;
+                spinnerPanel.add(autoRadioButton, gridBagConstraints);
 
                 brightnessAutoGroup.add(manualRadioButton);
                 manualRadioButton.setSelected(true);
@@ -671,7 +689,9 @@ public class BaseFrame extends javax.swing.JFrame {
                                 manualRadioButtonActionPerformed(evt);
                         }
                 });
-                spinnerPanel.add(manualRadioButton);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridwidth = 2;
+                spinnerPanel.add(manualRadioButton, gridBagConstraints);
 
                 adjustButton.setText(bundle.getString("BaseFrame.adjustButton.text")); // NOI18N
                 adjustButton.addActionListener(new java.awt.event.ActionListener() {
@@ -679,15 +699,35 @@ public class BaseFrame extends javax.swing.JFrame {
                                 adjustButtonActionPerformed(evt);
                         }
                 });
-                spinnerPanel.add(adjustButton);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridwidth = 3;
+                spinnerPanel.add(adjustButton, gridBagConstraints);
+
+                autoTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0.35", "0.1", "0.2", "0.7", "1.0", "2.0", "5.0", "10.0", "15.0", "20.0", "25.0", "30.0", "40.0", "50.0" }));
+                autoTypeComboBox.setMinimumSize(new java.awt.Dimension(160, 28));
+                autoTypeComboBox.setPreferredSize(new java.awt.Dimension(160, 28));
+                autoTypeComboBox.addItemListener(new java.awt.event.ItemListener() {
+                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                                autoTypeComboBoxItemStateChanged(evt);
+                        }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 8;
+                gridBagConstraints.gridy = 0;
+                spinnerPanel.add(autoTypeComboBox, gridBagConstraints);
 
                 maxSpinner.setModel(new javax.swing.SpinnerNumberModel(4095, 1, 4095, 1));
+                maxSpinner.setMinimumSize(new java.awt.Dimension(100, 28));
+                maxSpinner.setPreferredSize(new java.awt.Dimension(100, 28));
                 maxSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
                         public void stateChanged(javax.swing.event.ChangeEvent evt) {
                                 maxSpinnerStateChanged(evt);
                         }
                 });
-                spinnerPanel.add(maxSpinner);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 9;
+                gridBagConstraints.gridy = 0;
+                spinnerPanel.add(maxSpinner, gridBagConstraints);
 
                 scalePanel.add(spinnerPanel);
 
@@ -723,7 +763,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 386, Short.MAX_VALUE)
+                        .addGap(0, 588, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -732,7 +772,7 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 brightnessPanel.add(plotPanel, java.awt.BorderLayout.CENTER);
 
-                imagePropertyPanel.add(brightnessPanel);
+                imagePropertyPanel.add(brightnessPanel, java.awt.BorderLayout.CENTER);
 
                 slide2.add(imagePropertyPanel, java.awt.BorderLayout.NORTH);
 
@@ -959,7 +999,6 @@ public class BaseFrame extends javax.swing.JFrame {
 	 * @param evt 
 	 */
   private void maxSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxSpinnerStateChanged
-    // TODO add your handling code here:
 		if(evt.getSource() == this.maxSpinner){
 			Integer max = (Integer) this.maxSpinner.getValue();
 		  this.getAppController().setMinSpinnerMax(max.intValue()-1);
@@ -973,7 +1012,6 @@ public class BaseFrame extends javax.swing.JFrame {
 	 * @param evt 
 	 */
   private void minSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_minSpinnerStateChanged
-    // TODO add your handling code here:
 		if(evt.getSource() == this.minSpinner){
 			Integer min = (Integer) this.minSpinner.getValue();
 		  this.getAppController().setMaxSpinnerMin(min.intValue()+1);
@@ -983,21 +1021,16 @@ public class BaseFrame extends javax.swing.JFrame {
   }//GEN-LAST:event_minSpinnerStateChanged
 
   private void autoRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRadioButtonActionPerformed
-    // TODO add your handling code here:
 		if(evt.getSource() == this.getAutoRadioButton() &&  this.getAutoRadioButton().isSelected() ){
-			this.appController.enableAutoRelatedComponents(false);
+			this.appController.configAutoRelatedComponents(true);
 			this.appController.adjustValues();
 			this.appController.storeCurrentFilterSettings();
 		}
   }//GEN-LAST:event_autoRadioButtonActionPerformed
 
   private void manualRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manualRadioButtonActionPerformed
-    // TODO add your handling code here:
 		if(evt.getSource() == this.getManualRadioButton() &&  this.getManualRadioButton().isSelected() ){
-			this.minSpinner.setEnabled(true);
-			this.maxSpinner.setEnabled(true);
-			this.getAdjustButton().setEnabled(true);
-			this.getScaleRangeSlider().setEnabled(true);
+			this.appController.configAutoRelatedComponents(false);
 			this.appController.storeCurrentFilterSettings();
 		}
   }//GEN-LAST:event_manualRadioButtonActionPerformed
@@ -1076,9 +1109,30 @@ public class BaseFrame extends javax.swing.JFrame {
 		appController.storeRemoveSpecialCharSetting(true);
         }//GEN-LAST:event_removeSpecialCharRadioButtonStateChanged
 
+        private void autoTypeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoTypeComboBoxItemStateChanged
+		if(evt.getSource() != this.autoTypeComboBox){
+			return;
+		}
+
+		if(this.autoRadioButton.isSelected()){
+			appController.adjustValues();
+		}
+		appController.storeCurrentFilterSettings();
+        }//GEN-LAST:event_autoTypeComboBoxItemStateChanged
+
+        private void addParamRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_addParamRadioButtonStateChanged
+		if(evt.getSource() != this.getAddParamRadioButton()){
+			return;
+		}
+		appController.storeAddParamSetting(true);
+
+        }//GEN-LAST:event_addParamRadioButtonStateChanged
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JRadioButton addParamRadioButton;
         private javax.swing.JButton adjustButton;
         private javax.swing.JRadioButton autoRadioButton;
+        private javax.swing.JComboBox<String> autoTypeComboBox;
         private javax.swing.JButton backButton;
         public javax.swing.JSpinner ballSizeSpinner;
         private javax.swing.ButtonGroup brightnessAutoGroup;
@@ -1787,6 +1841,34 @@ public class BaseFrame extends javax.swing.JFrame {
 	 */
 	public void setRemoveSpecialCharRadioButton(javax.swing.JRadioButton removeSpecialCharRadioButton) {
 		this.removeSpecialCharRadioButton = removeSpecialCharRadioButton;
+	}
+
+	/**
+	 * @return the autoTypeComboBox
+	 */
+	public javax.swing.JComboBox<String> getAutoTypeComboBox() {
+		return autoTypeComboBox;
+	}
+
+	/**
+	 * @param autoTypeComboBox the autoTypeComboBox to set
+	 */
+	public void setAutoTypeComboBox(javax.swing.JComboBox<String> autoTypeComboBox) {
+		this.autoTypeComboBox = autoTypeComboBox;
+	}
+
+	/**
+	 * @return the addParamRadioButton
+	 */
+	public javax.swing.JRadioButton getAddParamRadioButton() {
+		return addParamRadioButton;
+	}
+
+	/**
+	 * @param addParamRadioButton the addParamRadioButton to set
+	 */
+	public void setAddParamRadioButton(javax.swing.JRadioButton addParamRadioButton) {
+		this.addParamRadioButton = addParamRadioButton;
 	}
 
 }

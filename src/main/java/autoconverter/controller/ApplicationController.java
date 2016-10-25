@@ -26,6 +26,8 @@ import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
@@ -58,6 +60,7 @@ public class ApplicationController implements ApplicationMediator {
 	private HashMap<String, String> storedColor;
 	private HashMap<String, String> storedMode;
 	private HashMap<String, Integer> storedBallSizes;
+	private HashMap<String, String> storedAutoType;
 	private String lastSelectedFilter;
 	private static boolean loading = false;
 	private static boolean updating = false;
@@ -65,6 +68,8 @@ public class ApplicationController implements ApplicationMediator {
 	private String pattern_string;
 	private Pattern pattern;
 	private SwingWorker<Integer, String> convert_swing_worker;
+	public static final int ADJUST_MIN_MAX = 1;
+	public static final int ADJUST_MIN_TWO_THIRD_MAX = 2;
 
 	public ApplicationController(BaseFrame _base) {
 		cardIndex = 0;
@@ -79,6 +84,7 @@ public class ApplicationController implements ApplicationMediator {
 		storedMaxValues = new HashMap<String, Integer>();
 		storedMinValues = new HashMap<String, Integer>();
 		storedAuto = new HashMap<String, Boolean>();
+		storedAutoType = new HashMap<>();
 		storedColor = new HashMap<String, String>();
 		storedMode = new HashMap<String, String>();
 		storedBallSizes = new HashMap<String, Integer>();
@@ -304,6 +310,11 @@ public class ApplicationController implements ApplicationMediator {
 					this.storedAuto.put(s, true);
 				} else {
 					this.storedAuto.put(s, false);
+				}
+
+				String _auto_type = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_AUTO_TYPE);
+				if(_auto_type != null){
+					this.storedAutoType.put(s, _auto_type);
 				}
 
 			}
@@ -558,18 +569,28 @@ public class ApplicationController implements ApplicationMediator {
 		if (imp == null) {
 			return;
 		}
+		String sat_val = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
 		IJ.run(imp, "Enhance Contrast", "saturated=0.35");
+		int min = (int) this.getImp().getDisplayRangeMin();
+
+		try{
+			Double.parseDouble(sat_val);
+			IJ.run(imp, "Enhance Contrast", "saturated=" + sat_val);
+		} catch (NumberFormatException e){
+			logger.fine(e.toString());
+		}
 		//this.getImp().setDisplayRange(min, max);
 		int max = (int) this.getImp().getDisplayRangeMax();
-		int min = (int) this.getImp().getDisplayRangeMin();
 		if (max > this.getMaxDisplayRangeValue()) {
 			max = this.getMaxDisplayRangeValue();
 		}
 		if (min < 0) {
 			min = 0;
 		}
+
 		baseFrame.getMinSpinner().setValue(min);
 		baseFrame.getMaxSpinner().setValue(max);
+		IJ.setMinAndMax(imp, (int) min, (int) max);
 		//baseFrame.getScaleRangeSlider().setLowerValue(min);
 		//baseFrame.getScaleRangeSlider().setUpperValue(max);
 		logger.fine("max, min = " + max + ", " + min);
@@ -673,11 +694,13 @@ public class ApplicationController implements ApplicationMediator {
 		// file pattern
 		this.storeFilePatternSettings(false);
 
+		// add param
+		this.storeAddParamSetting(false);
+
 		if(save){
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
-
 
 	/**
 	 * ファイルのパターン文字列等の保存
@@ -733,6 +756,17 @@ public class ApplicationController implements ApplicationMediator {
 		}
 	}
 
+	/**
+	 * ファイル名に変換設定を加えて保存する.
+	 * @param save  ファイルに保存するかどうか.
+	 */
+	public void storeAddParamSetting(boolean save){
+		boolean selected = baseFrame.getAddParamRadioButton().isSelected();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[] {selected}));
+		if(save){
+			AutoConverterConfig.save(baseFrame, true);
+		}
+	}
 
 	/**
 	 * recursive buttonの状態を保存
@@ -809,11 +843,13 @@ public class ApplicationController implements ApplicationMediator {
 			AutoConverterConfig.setConfig(filter, "false", AutoConverterConfig.PREFIX_AUTO);
 		}
 
-		try{
-			AutoConverterConfig.save();
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(ApplicationController.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		String adjust_type = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
+		this.storedAutoType.put(filter, adjust_type);
+		logger.fine("storeing " + adjust_type);
+		AutoConverterConfig.setConfig(filter, adjust_type, AutoConverterConfig.PREFIX_AUTO_TYPE);
+
+		AutoConverterConfig.save(baseFrame, true);
+
 	}
 
 	public void loadCurrentFilterSettings() {
@@ -826,6 +862,7 @@ public class ApplicationController implements ApplicationMediator {
 		Boolean auto = this.storedAuto.get(filter);
 		Integer min = this.storedMinValues.get(filter);
 		Integer max = this.storedMaxValues.get(filter);
+		String auto_type = this.storedAutoType.get(filter);
 		//logger.fine("Loading auto = " + auto);
 		//logger.fine("Loading min = " + min);
 		//logger.fine("Loading max = " + max);
@@ -835,6 +872,12 @@ public class ApplicationController implements ApplicationMediator {
 		}
 		if (auto != null) {
 			this.setAutoSelected(auto);
+		}
+		if(auto_type != null){
+			logger.fine(auto_type);
+			this.baseFrame.getAutoTypeComboBox().getModel().setSelectedItem(auto_type);
+		} else {
+			this.baseFrame.getAutoTypeComboBox().setSelectedIndex(0);
 		}
 		String color = this.storedColor.get(filter);
 		//logger.fine("Load color = " + color);
@@ -862,29 +905,31 @@ public class ApplicationController implements ApplicationMediator {
 		this.lastSelectedFilter = lastSelectedFilter;
 	}
 
+	/**
+	 * AutoとManual関連のボタンのON/OFFを設定する.
+	 * @param auto autoの状態を変更する.
+	 */
 	public void setAutoSelected(boolean auto) {
+
+		this.baseFrame.getAutoRadioButton().setSelected(auto);
+		this.baseFrame.getManualRadioButton().setSelected(! auto);
+		this.configAutoRelatedComponents(auto);
 		if (auto == true) {
-			this.baseFrame.getAutoRadioButton().setSelected(true);
-			this.baseFrame.getManualRadioButton().setSelected(false);
-			this.enableAutoRelatedComponents(false);
 			this.adjustValues();
-		} else {
-			this.baseFrame.getAutoRadioButton().setSelected(false);
-			this.baseFrame.getManualRadioButton().setSelected(true);
-			this.enableAutoRelatedComponents(true);
 		}
 	}
 
 	/**
 	 * AutoとManual関連のボタンの有効、無効を設定する.
 	 *
-	 * @param bool
+	 * @param bool auto が有効の場合
 	 */
-	public void enableAutoRelatedComponents(boolean bool) {
-		this.baseFrame.getMinSpinner().setEnabled(bool);
-		this.baseFrame.getMaxSpinner().setEnabled(bool);
-		this.baseFrame.getAdjustButton().setEnabled(bool);
-		this.baseFrame.getScaleRangeSlider().setEnabled(bool);
+	public void configAutoRelatedComponents(boolean bool) {
+		this.baseFrame.getMinSpinner().setEnabled(!bool);
+		this.baseFrame.getMaxSpinner().setEnabled(!bool);
+		this.baseFrame.getAdjustButton().setEnabled(!bool);
+		this.baseFrame.getScaleRangeSlider().setEnabled(!bool);
+		//this.baseFrame.getAutoTypeComboBox().setEnabled(bool);
 	}
 
 	/**
@@ -977,6 +1022,8 @@ public class ApplicationController implements ApplicationMediator {
 
 		final String type = (String) baseFrame.getImageFormatComboBox().getSelectedItem();
 
+		final boolean addparam = baseFrame.getAddParamRadioButton().isSelected();
+
 		int s_x = this.getScaleX();
 		int s_y = s_x * 1024 / 1344;
 		final int scale_x = s_x;
@@ -997,6 +1044,7 @@ public class ApplicationController implements ApplicationMediator {
 			protected Integer doInBackground() throws Exception {
 				int number = getImageSet().size();
 				int count = 1;
+				String rtop = null;
 				for (CaptureImage _cm : getImageSet().getFiles()) {
 					if(isCancelled()){
 						return new Integer(22);
@@ -1013,6 +1061,7 @@ public class ApplicationController implements ApplicationMediator {
 					Integer min = storedMinValues.get(filter);
 					Integer max = storedMaxValues.get(filter);
 					Boolean auto = storedAuto.get(filter);
+					String auto_type = storedAutoType.get(filter);
 					String mode = storedMode.get(filter);
 					String color = storedColor.get(filter);
 					if (color == null) {
@@ -1025,7 +1074,24 @@ public class ApplicationController implements ApplicationMediator {
 					// directory check
 					String fname = _cm.getFile().getName();
 					String abssrc = _cm.getFile().getAbsolutePath();
-					String dstpath = _path.replaceFirst(Pattern.quote(src), Matcher.quoteReplacement(dst));
+					// src     => /src
+					// dst     => /dst
+					// rpath   => /path/target/
+					// dstpath => /dst/path/target
+					// rtop    => /dst/path
+					String rpath = _path.replaceFirst(Pattern.quote(src), "");
+					//String dstpath = _path.replaceFirst(Pattern.quote(src), Matcher.quoteReplacement(dst));
+					String dstpath = dst + rpath;
+					/*
+					logger.fine(dstpath);
+					logger.fine(rpath);
+					String parent = new File(rpath).getParent();
+					logger.fine(parent);
+					if( ! parent.equals("/") ){
+						rtop = dst + parent;
+						logger.fine(rtop);
+					}
+					*/
 					File dstdir = new File(dstpath).getParentFile();
 					if (!dstdir.exists()) { //ディレクトリが無い!
 						dstdir.mkdirs();
@@ -1045,12 +1111,25 @@ public class ApplicationController implements ApplicationMediator {
 					ImagePlus _imp = IJ.openImage(_path);
 					if (ballsize != 0) {
 						IJ.run(_imp, "Subtract Background...", "rolling=" + ballsize);
+						if(addparam){
+							dstbase = dstbase + "_BALL" + ballsize;
+						}
 					}
 
 					if (auto == true) {
 						IJ.run(_imp, "Enhance Contrast", "saturated=0.35");
+						min = (int) _imp.getDisplayRangeMin();
+						IJ.run(_imp, "Enhance Contrast", "saturated=" + auto_type);
+						max = (int) _imp.getDisplayRangeMax();
+						IJ.setMinAndMax(_imp,  min,  max);
+						if(addparam){
+							dstbase = dstbase + "_AUTO" + auto_type;
+						}
 					} else {
 						IJ.setMinAndMax(_imp, (int) min, (int) max);
+						if(addparam){
+							dstbase = dstbase + "_RANGE" + min + "-" + max;
+						}
 					}
 					// 色設定.
 					IJ.run(_imp, color, "");
@@ -1097,7 +1176,9 @@ public class ApplicationController implements ApplicationMediator {
 					return;
 				}
 				_area.append("Conversion finished.\n");
-				String memoPath = dst + File.separator + "conversion_log.txt";
+				Calendar now = Calendar.getInstance();
+				String date = "" + now.get(Calendar.YEAR) + now.get(Calendar.MONDAY) + now.get(Calendar.DAY_OF_MONTH) + "_" + now.get(Calendar.HOUR_OF_DAY) + "h" + now.get(Calendar.MINUTE) + "m" + now.get(Calendar.SECOND) + "s";
+				String memoPath = dst + File.separator + "conversion_log" + date + ".txt";
 				try {
 					BufferedWriter bw = new BufferedWriter(new FileWriter(new File(memoPath)));
 					bw.write(_area.getText());
