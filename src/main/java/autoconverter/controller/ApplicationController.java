@@ -336,7 +336,21 @@ public class ApplicationController implements ApplicationMediator {
 			area.setText("");
 			area.append("================ summary ==============\n");
 			area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
-			area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n");
+			area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n\n");
+			area.append("Remove special chars: ");
+			if( this.baseFrame.getRemoveSpecialCharRadioButton().isSelected() ){
+				area.append("YES");
+			} else {
+				area.append("NO");
+			}
+			area.append("\n\n");
+			area.append("Include parametars in filename: ");
+			if(this.baseFrame.getAddParamRadioButton().isSelected()){
+				area.append("YES");
+			} else {
+				area.append("NO");
+			}
+			area.append("\n\n");
 			area.append("Cropping: ");
 			ImagePanel imgPanel = this.baseFrame.getImageDisplayPanel();
 			if(imgPanel.isSelected()){
@@ -344,18 +358,18 @@ public class ApplicationController implements ApplicationMediator {
 				area.append("x: "      + imgPanel.getLeftTopX()  + "\n");
 				area.append("y: "      + imgPanel.getLeftTopY()  + "\n");
 				area.append("width: "  + imgPanel.getRoiWidth()  + "\n");
-				area.append("height: " + imgPanel.getRoiHeight() + "\n");
+				area.append("height: " + imgPanel.getRoiHeight() + "\n\n");
 			} else {
-				area.append("NO\n");
+				area.append("NO\n\n");
 			}
 
 			area.append("Resize: ");
 			if (this.getScaleX() > 0) {
 				area.append(Integer.toString(this.getScaleX()) + " pixel (width)");
 			} else {
-				area.append("none");
+				area.append("NO");
 			}
-			area.append("\n");
+			area.append("\n\n");
 			area.append("Total file: " + getImageSet().size() + "\n");
 
 			area.append("\n");
@@ -364,7 +378,8 @@ public class ApplicationController implements ApplicationMediator {
 				area.append("Color: " + this.storedColor.get(s) + "\n");
 				Boolean method = this.storedAuto.get(s);
 				if (method) {
-					area.append("Method: auto\n");
+					area.append("Method: auto (saturated=" + this.storedAutoType.get(s) + "%)" );
+					area.append("\n");
 					area.append("Range: variable\n");
 				} else {
 					area.append("Method: manual\n");
@@ -377,7 +392,7 @@ public class ApplicationController implements ApplicationMediator {
 				area.append("Mode: " + mode + "\n");
 				Integer bs = this.storedBallSizes.get(s);
 				String ball_str = "None";
-				if (bs == null) {
+				if (bs == null || bs == 0 ) {
 					ball_str = "None";
 				} else {
 					ball_str = bs.toString();
