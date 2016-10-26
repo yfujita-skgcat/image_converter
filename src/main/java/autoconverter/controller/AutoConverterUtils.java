@@ -64,6 +64,10 @@ public class AutoConverterUtils {
 			return null;
 		}
 		File directory = jfc.getSelectedFile();
+		if(! directory.isDirectory()){
+			File parent_dir = directory.getParentFile();
+			return parent_dir;
+		}
 		return directory;
 	}
 
