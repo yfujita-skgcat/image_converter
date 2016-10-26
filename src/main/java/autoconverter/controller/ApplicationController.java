@@ -1067,6 +1067,7 @@ public class ApplicationController implements ApplicationMediator {
 		int number = getImageSet().size();
 		int count = 1;
 		final JTextArea _area = baseFrame.getSummaryDisplayArea();
+		baseFrame.getConvertButton().setEnabled(false);
 
 		final String dst = this.getDestinationDirectoryPath();
 		final String src = this.getSourceDirectoryPath();
@@ -1237,6 +1238,7 @@ public class ApplicationController implements ApplicationMediator {
 
 			@Override
 			public void done() {
+				baseFrame.getConvertButton().setEnabled(true);
 				if (isCancelled()) {
 					// cancel 何もせず戻るだけ.
 

@@ -235,8 +235,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 backButton = new javax.swing.JButton();
                 nextButton = new javax.swing.JButton();
                 jMenuBar1 = new javax.swing.JMenuBar();
-                jMenu1 = new javax.swing.JMenu();
-                jMenu2 = new javax.swing.JMenu();
+                fileMenu = new javax.swing.JMenu();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setMinimumSize(new java.awt.Dimension(630, 400));
@@ -873,11 +872,9 @@ public class BaseFrame extends javax.swing.JFrame {
 
                 getContentPane().add(southPanel, java.awt.BorderLayout.SOUTH);
 
-                jMenu1.setText(bundle.getString("BaseFrame.jMenu1.text")); // NOI18N
-                jMenuBar1.add(jMenu1);
-
-                jMenu2.setText(bundle.getString("BaseFrame.jMenu1.text")); // NOI18N
-                jMenuBar1.add(jMenu2);
+                fileMenu.setText(bundle.getString("BaseFrame.fileMenu.text")); // NOI18N
+                fileMenu.setEnabled(false);
+                jMenuBar1.add(fileMenu);
 
                 setJMenuBar(jMenuBar1);
 
@@ -1177,6 +1174,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JComboBox dirSelectCBox;
         private javax.swing.JComboBox<String> displayRangeComboBox;
         private javax.swing.JLabel displayRangeLabel;
+        private javax.swing.JMenu fileMenu;
         private javax.swing.JComboBox<String> filePatternComboBox;
         private javax.swing.JTextField filePatternTextField;
         private javax.swing.JTextArea fileSearchLogTextArea;
@@ -1201,8 +1199,6 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JCheckBox jCheckBox8;
         private javax.swing.JCheckBox jCheckBox9;
         private javax.swing.JLabel jLabel1;
-        private javax.swing.JMenu jMenu1;
-        private javax.swing.JMenu jMenu2;
         private javax.swing.JMenuBar jMenuBar1;
         private javax.swing.JScrollPane jScrollPane1;
         private javax.swing.JCheckBox jpg_checkbox;
@@ -1532,14 +1528,7 @@ public class BaseFrame extends javax.swing.JFrame {
 	 * @return the jMenu1
 	 */
 	public javax.swing.JMenu getjMenu1() {
-		return jMenu1;
-	}
-
-	/**
-	 * @return the jMenu2
-	 */
-	public javax.swing.JMenu getjMenu2() {
-		return jMenu2;
+		return fileMenu;
 	}
 
 	/**

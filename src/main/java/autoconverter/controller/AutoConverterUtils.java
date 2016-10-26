@@ -5,16 +5,14 @@ import ij.io.FileInfo;
 import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import autoconverter.model.ImageSet;
+import autoconverter.view.DirectoryChooserDialog;
+import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -54,21 +52,50 @@ public class AutoConverterUtils {
 	 * @return
 	 */
 	public static File getDirectory(Component parent, String def) {
-		JFileChooser jfc = new JFileChooser(".");
-		jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		if (def != null) {
-			jfc.setSelectedFile(new File(def));
+		int ret = 0;
+		DirectoryChooserDialog dcd = null;
+		JFileChooser jfc = null;
+		if (!AutoConverterUtils.isWindows()) {
+			dcd = new DirectoryChooserDialog((Frame) parent, true);
+			dcd.setFilePath(def);
+			ret = dcd.showDialog();
+		} else {
+
+			jfc = new JFileChooser(".");
+			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (def != null) {
+				jfc.setSelectedFile(new File(def));
+			}
+			ret = jfc.showSaveDialog(parent);
 		}
-		int ret = jfc.showSaveDialog(parent);
+
 		if (ret != JFileChooser.APPROVE_OPTION) {
 			return null;
 		}
-		File directory = jfc.getSelectedFile();
-		if(! directory.isDirectory()){
+		File directory;
+		if (!AutoConverterUtils.isWindows()) {
+			directory = dcd.getFile();
+		} else {
+			directory = jfc.getSelectedFile();
+		}
+		if(directory == null){
+			return null;
+		}
+		if (!directory.isDirectory()) {
 			File parent_dir = directory.getParentFile();
 			return parent_dir;
 		}
 		return directory;
+	}
+
+	public static boolean isWindows(){
+		boolean ret = "\\".equals(System.getProperty("file.separator"));
+		if(ret){
+			logger.fine("windows");
+		} else {
+			logger.fine("not windows");
+		}
+		return ret;
 	}
 
 	/**
