@@ -25,7 +25,8 @@ public class Img_Conv implements PlugIn {
 		ac.setTitle(AutoConverterUtils.getVersion());
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new BaseFrame().setVisible(true);
+				//new BaseFrame().setVisible(true);
+				ac.setVisible(true);
 			}
 		});
 		

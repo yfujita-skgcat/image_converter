@@ -267,4 +267,13 @@ public class AutoConverterUtils {
 		e.printStackTrace(pw);
 		return sw.toString();
 	}
+	public static String stacktrace(String msg){
+		Exception e = new Exception(msg);
+		return AutoConverterUtils.stacktrace(e);
+	}
+	public static void showStacktrace(String msg){
+		if(logger != null){
+			logger.fine(AutoConverterUtils.stacktrace(msg));
+		}
+	}
 }

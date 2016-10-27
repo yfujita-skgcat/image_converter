@@ -58,6 +58,7 @@ public class AutoConverterConfig {
 	public static String REGEXP_NAME_INCELL6000 = "In Cell 6000";
 	public static String REGEXP_NAME_IX81 = "IX81";
 	private static String file_path = System.getProperty("user.home") + File.separator + ".ImageJ" + File.separator + "autoconverter.config";
+	private static Logger logger = AutoConverterUtils.getLogger();
 
 	/**
 	 * @return the config

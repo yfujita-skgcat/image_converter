@@ -35,6 +35,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
 import javax.swing.SwingWorker;
 
 /**
@@ -166,31 +167,36 @@ public class ApplicationController implements ApplicationMediator {
 			// 毎回元のファイルからimgPlusを作って毎回filter条件を適用する.
 			ImagePlus imp = new ImagePlus(_cimg.getFile().getAbsolutePath());
 			//ImagePlus cur_imp = baseFrame.getImageDisplayPanel().getImp();
+			this.updateImage(imp);
 
-			// 設定をロードする
-			this.loadCurrentFilterSettings();
-			if (imp != null ) {
-				// ImagePlus を表示領域に乗せたら、各種設定をapplyしていく.
-				// このあたりはもう少しすっきりした下記arterytoarteryをしないとバグの温床になりそう.
-				baseFrame.getImageDisplayPanel().setImp(imp);
-				Integer val = (Integer) this.baseFrame.getBallSizeSpinner().getValue();
-				if (val != null && val != 0) {
-					this.subtractBackground(imp, val.intValue());
-				}
-				if(baseFrame.getAutoRadioButton().isSelected()){
-					this.adjustValues();
-				}
-				this.setColor();
-				
-				baseFrame.getPlotPanel().setImp(imp);
-				this.updateDensityPlot();
-				baseFrame.getPlotPanel().repaint();
-
-				//logger.fine("updating => false");
-			}
 		} finally {
 			updating = false;
 		}
+	}
+
+	public void updateImage(ImagePlus imp){
+		// 設定をロードする
+		this.loadCurrentFilterSettings();
+		if (imp != null ) {
+			// ImagePlus を表示領域に乗せたら、各種設定をapplyしていく.
+			// このあたりはもう少しすっきりした下記arterytoarteryをしないとバグの温床になりそう.
+			baseFrame.getImageDisplayPanel().setImp(imp);
+			Integer val = (Integer) this.baseFrame.getBallSizeSpinner().getValue();
+			if (val != null && val != 0) {
+				this.subtractBackground(imp, val.intValue());
+			}
+			if(baseFrame.getAutoRadioButton().isSelected()){
+				this.adjustValues();
+			}
+			this.setColor();
+			
+			baseFrame.getPlotPanel().setImp(imp);
+			this.updateDensityPlot();
+			baseFrame.getPlotPanel().repaint();
+			
+			//logger.fine("updating => false");
+		}
+
 	}
 
 	/**
@@ -222,6 +228,7 @@ public class ApplicationController implements ApplicationMediator {
 	 */
 	private void initSelectorComboBoxes(ImageSet _imgSet) {
 		// 全部のselectorコンボボックスを初期化
+		this.baseFrame.enableListener(false);
 		for (Iterator<JComboBox> it = baseFrame.getSelectCBoxes().iterator(); it.hasNext();) {
 			JComboBox cbox = it.next();
 			cbox.removeAllItems();
@@ -269,6 +276,7 @@ public class ApplicationController implements ApplicationMediator {
 				cbox.setSelectedIndex(0);
 			}
 		}
+		this.baseFrame.enableListener(true);
 	}
 
 	/**
@@ -279,6 +287,11 @@ public class ApplicationController implements ApplicationMediator {
 			IJ.showMessage("No shot found");
 			return;
 		}
+		// intensityのspinnerの最大値を設定する. 
+		JSpinner sp = this.baseFrame.getMaxSpinner();
+		SpinnerNumberModel model = (SpinnerNumberModel) sp.getModel();
+		model.setMaximum(Integer.parseInt((String) this.baseFrame.getDisplayRangeComboBox().getModel().getSelectedItem()));
+
 		// ファイル情報をlogメッセージに書き出す.
 		//getImageSet().logFileInfo();
 		int max_value = this.getMaxDisplayRangeValue();
@@ -286,10 +299,8 @@ public class ApplicationController implements ApplicationMediator {
 		this.baseFrame.getPlotPanel().setOriginalMax(max_value + 1);
 		this.rangeSliderHighValue = max_value;
 
-		ImagePlus imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
-		this.initSelectorComboBoxes(getImageSet());
 
-		baseFrame.getImageDisplayPanel().setImp(imp);
+		this.initSelectorComboBoxes(getImageSet());
 
 		// 保存しているfilter情報を初期化
 		this.storedMaxValues.clear();
@@ -329,7 +340,9 @@ public class ApplicationController implements ApplicationMediator {
 			}
 
 		}
-		this.loadCurrentFilterSettings();
+		ImagePlus imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
+
+		this.updateImage(imp);
 
 	}
 
@@ -912,6 +925,7 @@ public class ApplicationController implements ApplicationMediator {
 		//logger.fine("Loading min = " + min);
 		//logger.fine("Loading max = " + max);
 
+		this.baseFrame.enableListener(false);
 		if (min != null && max != null) {
 			this.setScaleValues(min, max);
 		}
@@ -919,7 +933,6 @@ public class ApplicationController implements ApplicationMediator {
 			this.setAutoSelected(auto);
 		}
 		if (auto_type != null) {
-			logger.fine(auto_type);
 			this.baseFrame.getAutoTypeComboBox().getModel().setSelectedItem(auto_type);
 		} else {
 			this.baseFrame.getAutoTypeComboBox().setSelectedIndex(0);
@@ -929,13 +942,14 @@ public class ApplicationController implements ApplicationMediator {
 		}
 
 		String color = this.storedColor.get(filter);
-		//logger.fine("Load color = " + color);
+		//AutoConverterUtils.showStacktrace("loadCurrentFilterSettings()");
 		if (color != null) {
 			ComboBoxModel model = this.baseFrame.colorChannelSelector.getModel();
 			model.setSelectedItem(color);
 		} else {
 			this.baseFrame.colorChannelSelector.setSelectedIndex(0);
 		}
+		this.baseFrame.enableListener(true);
 		loading = false;
 	}
 
