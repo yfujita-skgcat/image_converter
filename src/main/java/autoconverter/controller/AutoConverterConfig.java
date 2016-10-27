@@ -36,27 +36,31 @@ public class AutoConverterConfig {
 	public static final Pattern inCell6000Pattern = Pattern.compile(inCell6000RegexpString);
 	public static final String IX81RegexpString = ".*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
 	public static final Pattern ixPattern = Pattern.compile(IX81RegexpString);
-	public static String KEY_SOURCE_DIRECTORY = "SOURCE_DIRECTORY";
-	public static String KEY_DESTINATION_DIRECTORY = "DESTINATION_DIRECTORY";
-	public static String KEY_MAIN_FRAME_SIZE_X = "MAIN_FRAME_SIZE_X";
-	public static String KEY_MAIN_FRAME_SIZE_Y = "MAIN_FRAME_SIZE_Y";
-	public static String KEY_IMAGE_FORMAT = "IMAGE_FORMAT";
-	public static String KEY_RECURSIVE_ON = "RECURSIVE_ON";
-	public static String KEY_SELECTED_PATTERN = "SELECTED_PATTERN";
-	public static String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
-	public static String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
-	public static String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
-	public static String PREFIX_BALL = "BALL";
-	public static String PREFIX_MIN = "MIN";
-	public static String PREFIX_MAX = "MAX";
-	public static String PREFIX_COLOR = "COLOR";
-	public static String PREFIX_AUTO = "AUTO";
-	public static String PREFIX_REGEXP = "REGEXP";
-	public static String PREFIX_AUTO_TYPE = "AUTO_SCALE_TYPE";
-	public static String REGEXP_NAME_CUSTOM = "Custom";
-	public static String REGEXP_NAME_CELAVIEW = "Celaview";
-	public static String REGEXP_NAME_INCELL6000 = "In Cell 6000";
-	public static String REGEXP_NAME_IX81 = "IX81";
+	public static final String KEY_CROP_AREA_X = "CROP_AREA_X";
+	public static final String KEY_CROP_AREA_Y = "CROP_AREA_Y";
+	public static final String KEY_CROP_AREA_W = "CROP_AREA_W";
+	public static final String KEY_CROP_AREA_H = "CROP_AREA_H";
+	public static final String KEY_SOURCE_DIRECTORY = "SOURCE_DIRECTORY";
+	public static final String KEY_DESTINATION_DIRECTORY = "DESTINATION_DIRECTORY";
+	public static final String KEY_MAIN_FRAME_SIZE_X = "MAIN_FRAME_SIZE_X";
+	public static final String KEY_MAIN_FRAME_SIZE_Y = "MAIN_FRAME_SIZE_Y";
+	public static final String KEY_IMAGE_FORMAT = "IMAGE_FORMAT";
+	public static final String KEY_RECURSIVE_ON = "RECURSIVE_ON";
+	public static final String KEY_SELECTED_PATTERN = "SELECTED_PATTERN";
+	public static final String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
+	public static final String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
+	public static final String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
+	public static final String PREFIX_BALL = "BALL";
+	public static final String PREFIX_MIN = "MIN";
+	public static final String PREFIX_MAX = "MAX";
+	public static final String PREFIX_COLOR = "COLOR";
+	public static final String PREFIX_AUTO = "AUTO";
+	public static final String PREFIX_REGEXP = "REGEXP";
+	public static final String PREFIX_AUTO_TYPE = "AUTO_SCALE_TYPE";
+	public static final String REGEXP_NAME_CUSTOM = "Custom";
+	public static final String REGEXP_NAME_CELAVIEW = "Celaview";
+	public static final String REGEXP_NAME_INCELL6000 = "In Cell 6000";
+	public static final String REGEXP_NAME_IX81 = "IX81";
 	private static String file_path = System.getProperty("user.home") + File.separator + ".ImageJ" + File.separator + "autoconverter.config";
 	private static Logger logger = AutoConverterUtils.getLogger();
 
@@ -83,6 +87,19 @@ public class AutoConverterConfig {
 			return def;
 		}
 		return ret;
+	}
+
+	public static int getConfig(String key, int def){
+		int ret = AutoConverterConfig.getConfig(key, def, null);
+		return ret;
+	}
+
+	public static int getConfig(String key, int def, String prefix) {
+		String ret = AutoConverterConfig.getConfig(key, prefix);
+		if (ret == null) {
+			return def;
+		}
+		return Integer.parseInt(ret);
 	}
 
 	/**

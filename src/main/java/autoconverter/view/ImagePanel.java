@@ -10,6 +10,7 @@
  */
 package autoconverter.view;
 
+import autoconverter.controller.AutoConverterConfig;
 import ij.IJ;
 import ij.ImagePlus;
 import java.awt.BorderLayout;
@@ -81,11 +82,11 @@ public class ImagePanel extends javax.swing.JPanel {
 		start = new Point();
 		end = new Point();
 		dragF = false;
-		rect = new Rectangle();
-		left_top_x = 0;
-		left_top_y = 0;
-		height = 0;
-		width = 0;
+		left_top_x = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, 0);
+		left_top_y = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_Y, 0);
+		height     = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, 0);
+		width      = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, 0);
+		rect = new Rectangle(left_top_x, left_top_y, width, height);
 	}
 
 	@Override
@@ -146,8 +147,16 @@ public class ImagePanel extends javax.swing.JPanel {
 			width = 0;
 			rect.setBounds(left_top_x, left_top_y, width, height);
 		}
+		this.storeCropAreaToHash();
 		repaint();
 
+	}
+
+	public void storeCropAreaToHash(){
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_H, height);
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_W, width);
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_X, left_top_x);
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_Y, left_top_y);
 	}
 
 	/**
@@ -159,6 +168,7 @@ public class ImagePanel extends javax.swing.JPanel {
 		height = 0;
 		width = 0;
 		rect.setBounds(left_top_x, left_top_y, width, height);
+		this.storeCropAreaToHash();
 		repaint();
 	}
 

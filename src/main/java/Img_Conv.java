@@ -1,6 +1,7 @@
 
 import autoconverter.controller.ApplicationController;
 import autoconverter.controller.AutoConverterUtils;
+import autoconverter.controller.ShutdownHook;
 import autoconverter.view.BaseFrame;
 import ij.IJ;
 import ij.plugin.PlugIn;
@@ -29,6 +30,8 @@ public class Img_Conv implements PlugIn {
 				ac.setVisible(true);
 			}
 		});
+		Thread th = new Thread(new ShutdownHook());
+		Runtime.getRuntime().addShutdownHook(th);
 		
 	}
 
