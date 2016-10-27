@@ -10,7 +10,9 @@
  */
 package autoconverter.view;
 
+import autoconverter.controller.ApplicationController;
 import autoconverter.controller.AutoConverterConfig;
+import autoconverter.controller.AutoConverterUtils;
 import ij.IJ;
 import ij.ImagePlus;
 import java.awt.BorderLayout;
@@ -21,6 +23,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Scrollable;
@@ -41,6 +44,8 @@ public class ImagePanel extends javax.swing.JPanel {
 	private int left_top_y;
 	private int height;
 	private int width;
+	private final ApplicationController appCtrl;
+	private static final Logger logger = AutoConverterUtils.getLogger();
 
 	/**
 	 * 最後に選択した左上のx座標
@@ -48,6 +53,11 @@ public class ImagePanel extends javax.swing.JPanel {
 	 */
 	public int getLeftTopX(){
 		return left_top_x;
+	}
+	public void setLeftTopX(int v){
+		this.left_top_x = v;
+		this.storeCropAreaToHash();
+		rect.setBounds(left_top_x, left_top_y, width, height);
 	}
 
 	/**
@@ -57,6 +67,11 @@ public class ImagePanel extends javax.swing.JPanel {
 	public int getLeftTopY(){
 		return left_top_y;
 	}
+	public void setLeftTopY(int v){
+		this.left_top_y = v;
+		this.storeCropAreaToHash();
+		rect.setBounds(left_top_x, left_top_y, width, height);
+	}
 
 	/**
 	 * 最後に選択した四角の高さ
@@ -65,6 +80,11 @@ public class ImagePanel extends javax.swing.JPanel {
 	public int getRoiHeight(){
 		return height;
 	}
+	public void setRoiHeight(int v){
+		this.height= v;
+		this.storeCropAreaToHash();
+		rect.setBounds(left_top_x, left_top_y, width, height);
+	}
 
 	/**
 	 * 最後に選択した四角の幅
@@ -72,6 +92,11 @@ public class ImagePanel extends javax.swing.JPanel {
 	 */
 	public int getRoiWidth(){
 		return width;
+	}
+	public void setRoiWidth(int v){
+		this.width = v;
+		this.storeCropAreaToHash();
+		rect.setBounds(left_top_x, left_top_y, width, height);
 	}
 
 	/**
@@ -87,6 +112,7 @@ public class ImagePanel extends javax.swing.JPanel {
 		height     = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, 0);
 		width      = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, 0);
 		rect = new Rectangle(left_top_x, left_top_y, width, height);
+		appCtrl = ApplicationController.getInstance();
 	}
 
 	@Override
@@ -115,6 +141,7 @@ public class ImagePanel extends javax.swing.JPanel {
 
 	public void setStart(int x, int y) {
 		start.setLocation(x, y);
+		this.appCtrl.setCropPanel(x, y, 0, 0);
 		this.setDragged(true);
 	}
 
@@ -134,6 +161,7 @@ public class ImagePanel extends javax.swing.JPanel {
 			height = y - start.y;
 		}
 		rect.setBounds(left_top_x, left_top_y, width, height);
+		this.appCtrl.setCropPanel(left_top_x, left_top_y, width, height);
 		repaint();
 	}
 
@@ -147,6 +175,7 @@ public class ImagePanel extends javax.swing.JPanel {
 			width = 0;
 			rect.setBounds(left_top_x, left_top_y, width, height);
 		}
+		this.appCtrl.setCropPanel(left_top_x, left_top_y, width, height);
 		this.storeCropAreaToHash();
 		repaint();
 

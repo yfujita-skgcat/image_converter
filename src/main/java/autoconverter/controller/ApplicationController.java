@@ -287,6 +287,10 @@ public class ApplicationController implements ApplicationMediator {
 			IJ.showMessage("No shot found");
 			return;
 		}
+		// Crop Area のパネルを有効化
+		//this.baseFrame.getCropAreaPanel().setEnabled(true);
+		this.baseFrame.getCropAreaPanel().setVisible(true);
+
 		// intensityのspinnerの最大値を設定する. 
 		JSpinner sp = this.baseFrame.getMaxSpinner();
 		SpinnerNumberModel model = (SpinnerNumberModel) sp.getModel();
@@ -437,6 +441,8 @@ public class ApplicationController implements ApplicationMediator {
 			this.storeInitialSettings(true);
 			this.startSearchFileList();
 		} else if (cardIndex == 1) {
+			//this.baseFrame.getCropAreaPanel().setEnabled(false);
+			this.baseFrame.getCropAreaPanel().setVisible(false);
 			this.showFinalSetting();
 			this.getCardLayout().next(baseFrame.getCenterPanel());
 			this.incrementCardIndex();
@@ -460,8 +466,16 @@ public class ApplicationController implements ApplicationMediator {
 	public void previousCard() {
 		if (cardIndex > 0) {
 			this.getCardLayout().previous(baseFrame.getCenterPanel());
-			if (cardIndex == 2 && this.convert_swing_worker != null) {
-				this.convert_swing_worker.cancel(true);
+			if (cardIndex == 2 ) {
+				if (this.convert_swing_worker != null) {
+					this.convert_swing_worker.cancel(true);
+				}
+				//this.baseFrame.getCropAreaPanel().setEnabled(true);
+				this.baseFrame.getCropAreaPanel().setVisible(true);
+			}
+			if (cardIndex == 1 ){
+				//this.baseFrame.getCropAreaPanel().setEnabled(false);
+				this.baseFrame.getCropAreaPanel().setVisible(false);
 			}
 			cardIndex--;
 		}
@@ -1375,5 +1389,12 @@ public class ApplicationController implements ApplicationMediator {
 		String disp = (String) this.baseFrame.getDisplayRangeComboBox().getModel().getSelectedItem();
 		int max_value = Integer.parseInt(disp);
 		return max_value;
+	}
+
+	public void setCropPanel(int x, int y, int w, int h){
+		this.baseFrame.getxTextField().setText("" + x);
+		this.baseFrame.getyTextField().setText("" + y);
+		this.baseFrame.getwTextField().setText("" + w);
+		this.baseFrame.gethTextField().setText("" + h);
 	}
 }

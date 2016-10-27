@@ -10,6 +10,7 @@
  */
 package autoconverter.view;
 
+import autoconverter.IntegerVerifier;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.File;
@@ -22,9 +23,13 @@ import javax.swing.JComboBox;
 import autoconverter.controller.AutoConverterConfig;
 import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.ApplicationController;
+import autoconverter.controller.IntegerDocument;
+import autoconverter.controller.NumberFormatterFactory;
 import autoconverter.view.range.RangeSlider;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
 
 /**
@@ -36,6 +41,7 @@ public class BaseFrame extends javax.swing.JFrame {
 	private static Logger logger = AutoConverterUtils.getLogger();
 	public static final int MAX_CARD_SIZE = 3;
 	private boolean active = true;
+	private final IntegerVerifier inputverifier;
 
 	public void enableListener(boolean flag) {
 		active = flag;
@@ -66,8 +72,20 @@ public class BaseFrame extends javax.swing.JFrame {
 		Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, "300", null));
 
 		this.appController = new ApplicationController(this);
+		// input verifier
+		inputverifier = new IntegerVerifier();
 
 		initComponents();
+
+		// crop 位置のロード
+
+		this.xTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, "0", null));
+		this.yTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_Y, "0", null));
+		this.hTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, "0", null));
+		this.wTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, "0", null));
+		
+		// crop are text panel 無効化
+		this.cropAreaPanel.setVisible(false);
 
 		String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
 		this.initFilePatternComboBox(selected_item);
@@ -231,7 +249,17 @@ public class BaseFrame extends javax.swing.JFrame {
                 summaryScrollPane = new javax.swing.JScrollPane();
                 summaryDisplayArea = new javax.swing.JTextArea();
                 southPanel = new javax.swing.JPanel();
+                jPanel1 = new javax.swing.JPanel();
                 messageLabel = new javax.swing.JLabel();
+                cropAreaPanel = new javax.swing.JPanel();
+                xTextField = new javax.swing.JFormattedTextField();
+                xLabel = new javax.swing.JLabel();
+                yLabel = new javax.swing.JLabel();
+                wLabel = new javax.swing.JLabel();
+                hLabel = new javax.swing.JLabel();
+                yTextField = new javax.swing.JFormattedTextField();
+                wTextField = new javax.swing.JFormattedTextField();
+                hTextField = new javax.swing.JFormattedTextField();
                 proceedPanel = new javax.swing.JPanel();
                 cancelButton = new javax.swing.JButton();
                 convertButton = new javax.swing.JButton();
@@ -360,7 +388,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addGap(119, 119, 119)
                                                                 .addComponent(resizeRadioButton)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(resizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))))
+                                                                .addComponent(resizeSpinner))))
                                         .addGroup(slide1Layout.createSequentialGroup()
                                                 .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -423,7 +451,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(filePatternTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
                                 .addContainerGap())
                 );
 
@@ -780,7 +808,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 588, Short.MAX_VALUE)
+                        .addGap(0, 270, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -821,9 +849,177 @@ public class BaseFrame extends javax.swing.JFrame {
                 southPanel.setPreferredSize(new java.awt.Dimension(200, 70));
                 southPanel.setLayout(new java.awt.BorderLayout());
 
+                jPanel1.setLayout(new java.awt.BorderLayout());
+
                 messageLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
                 messageLabel.setPreferredSize(new java.awt.Dimension(40, 30));
-                southPanel.add(messageLabel, java.awt.BorderLayout.SOUTH);
+                jPanel1.add(messageLabel, java.awt.BorderLayout.CENTER);
+
+                cropAreaPanel.setMinimumSize(new java.awt.Dimension(200, 100));
+                cropAreaPanel.setPreferredSize(new java.awt.Dimension(200, 30));
+                cropAreaPanel.setLayout(new java.awt.GridBagLayout());
+
+                xTextField.setText(bundle.getString("BaseFrame.xTextField.text")); // NOI18N
+                xTextField.setInputVerifier(inputverifier);
+                xTextField.setMinimumSize(new java.awt.Dimension(40, 30));
+                xTextField.setPreferredSize(new java.awt.Dimension(40, 30));
+                xTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                textFieldFocusLost(evt);
+                        }
+                });
+                xTextField.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                textFieldActionPerformed(evt);
+                        }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 1;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.gridwidth = 2;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(xTextField, gridBagConstraints);
+
+                xLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                xLabel.setText(bundle.getString("BaseFrame.xLabel.text")); // NOI18N
+                xLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                xLabel.setMaximumSize(new java.awt.Dimension(15, 30));
+                xLabel.setMinimumSize(new java.awt.Dimension(15, 30));
+                xLabel.setName(""); // NOI18N
+                xLabel.setPreferredSize(new java.awt.Dimension(15, 20));
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(xLabel, gridBagConstraints);
+
+                yLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                yLabel.setText(bundle.getString("BaseFrame.yLabel.text")); // NOI18N
+                yLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                yLabel.setMaximumSize(new java.awt.Dimension(15, 20));
+                yLabel.setMinimumSize(new java.awt.Dimension(15, 20));
+                yLabel.setPreferredSize(new java.awt.Dimension(15, 20));
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 3;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(yLabel, gridBagConstraints);
+
+                wLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                wLabel.setText(bundle.getString("BaseFrame.wLabel.text")); // NOI18N
+                wLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                wLabel.setMaximumSize(new java.awt.Dimension(15, 20));
+                wLabel.setMinimumSize(new java.awt.Dimension(15, 20));
+                wLabel.setName(""); // NOI18N
+                wLabel.setPreferredSize(new java.awt.Dimension(15, 20));
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 6;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(wLabel, gridBagConstraints);
+
+                hLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+                hLabel.setText(bundle.getString("BaseFrame.hLabel.text")); // NOI18N
+                hLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                hLabel.setMaximumSize(new java.awt.Dimension(15, 20));
+                hLabel.setMinimumSize(new java.awt.Dimension(15, 20));
+                hLabel.setPreferredSize(new java.awt.Dimension(15, 20));
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 9;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(hLabel, gridBagConstraints);
+
+                yTextField.setText(bundle.getString("BaseFrame.yTextField.text")); // NOI18N
+                yTextField.setInputVerifier(inputverifier);
+                yTextField.setMinimumSize(new java.awt.Dimension(40, 30));
+                yTextField.setPreferredSize(new java.awt.Dimension(40, 30));
+                yTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                textFieldFocusLost(evt);
+                        }
+                });
+                yTextField.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                textFieldActionPerformed(evt);
+                        }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 4;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.gridwidth = 2;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(yTextField, gridBagConstraints);
+
+                wTextField.setText(bundle.getString("BaseFrame.wTextField.text")); // NOI18N
+                wTextField.setInputVerifier(inputverifier);
+                wTextField.setMinimumSize(new java.awt.Dimension(40, 30));
+                wTextField.setPreferredSize(new java.awt.Dimension(40, 30));
+                wTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                textFieldFocusLost(evt);
+                        }
+                });
+                wTextField.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                textFieldActionPerformed(evt);
+                        }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 7;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.gridwidth = 2;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(wTextField, gridBagConstraints);
+
+                hTextField.setText(bundle.getString("BaseFrame.hTextField.text")); // NOI18N
+                hTextField.setInputVerifier(inputverifier);
+                hTextField.setMinimumSize(new java.awt.Dimension(40, 30));
+                hTextField.setPreferredSize(new java.awt.Dimension(40, 30));
+                hTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                textFieldFocusLost(evt);
+                        }
+                });
+                hTextField.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                textFieldActionPerformed(evt);
+                        }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 10;
+                gridBagConstraints.gridy = 0;
+                gridBagConstraints.gridwidth = 2;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                cropAreaPanel.add(hTextField, gridBagConstraints);
+
+                jPanel1.add(cropAreaPanel, java.awt.BorderLayout.EAST);
+
+                southPanel.add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
                 proceedPanel.setPreferredSize(new java.awt.Dimension(450, 100));
                 proceedPanel.setLayout(new java.awt.BorderLayout());
@@ -1239,6 +1435,38 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.imagePanel.setNow(evt.getX(), evt.getY());
         }//GEN-LAST:event_imagePanelMouseDragged
 
+        private void textFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldActionPerformed
+		JFormattedTextField tf = (javax.swing.JFormattedTextField ) evt.getSource();
+		tf.getInputVerifier().verify(tf);
+		int val = Integer.parseInt(tf.getText());
+		if(evt.getSource() == this.xTextField){
+			this.imagePanel.setLeftTopX(val);
+		} else if (evt.getSource() == this.yTextField){
+			this.imagePanel.setLeftTopY(val);
+		} else if (evt.getSource() == this.hTextField){
+			this.imagePanel.setRoiHeight(val);
+		} else if (evt.getSource() == this.wTextField){
+			this.imagePanel.setRoiWidth(val);
+		}
+		this.imagePanel.repaint();
+        }//GEN-LAST:event_textFieldActionPerformed
+
+        private void textFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFocusLost
+		JFormattedTextField tf = (javax.swing.JFormattedTextField ) evt.getSource();
+		tf.getInputVerifier().verify(tf);
+		int val = Integer.parseInt(tf.getText());
+		if(evt.getSource() == this.xTextField){
+			this.imagePanel.setLeftTopX(val);
+		} else if (evt.getSource() == this.yTextField){
+			this.imagePanel.setLeftTopY(val);
+		} else if (evt.getSource() == this.hTextField){
+			this.imagePanel.setRoiHeight(val);
+		} else if (evt.getSource() == this.wTextField){
+			this.imagePanel.setRoiWidth(val);
+		}
+		this.imagePanel.repaint();
+        }//GEN-LAST:event_textFieldFocusLost
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JRadioButton addParamRadioButton;
         private javax.swing.JButton adjustButton;
@@ -1257,6 +1485,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JScrollPane colorSelectScrollPane;
         private javax.swing.JButton convertButton;
         private javax.swing.JLabel convertLabel;
+        private javax.swing.JPanel cropAreaPanel;
         private javax.swing.JButton destinationButton;
         private javax.swing.JTextField destinationText;
         private javax.swing.JComboBox dirSelectCBox;
@@ -1267,6 +1496,8 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JTextField filePatternTextField;
         private javax.swing.JTextArea fileSearchLogTextArea;
         private javax.swing.JComboBox filterSelectCBox;
+        private javax.swing.JLabel hLabel;
+        private javax.swing.JFormattedTextField hTextField;
         private javax.swing.JPanel imageChangePanel;
         private javax.swing.JComboBox imageFormatComboBox;
         private autoconverter.view.ImagePanel imagePanel;
@@ -1288,6 +1519,7 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JCheckBox jCheckBox9;
         private javax.swing.JLabel jLabel1;
         private javax.swing.JMenuBar jMenuBar1;
+        private javax.swing.JPanel jPanel1;
         private javax.swing.JScrollPane jScrollPane1;
         private javax.swing.JCheckBox jpg_checkbox;
         private javax.swing.JRadioButton manualRadioButton;
@@ -1324,7 +1556,13 @@ public class BaseFrame extends javax.swing.JFrame {
         private javax.swing.JCheckBox tif_checkbox;
         private javax.swing.JComboBox timeSelectCBox;
         private java.awt.Label visibleLabel;
+        private javax.swing.JLabel wLabel;
+        private javax.swing.JFormattedTextField wTextField;
         private javax.swing.JComboBox wellSelectCBox;
+        private javax.swing.JLabel xLabel;
+        private javax.swing.JFormattedTextField xTextField;
+        private javax.swing.JLabel yLabel;
+        private javax.swing.JFormattedTextField yTextField;
         private javax.swing.JComboBox zSelectCBox;
         // End of variables declaration//GEN-END:variables
 
@@ -1983,6 +2221,76 @@ public class BaseFrame extends javax.swing.JFrame {
 	 */
 	public void setBallSizeSpinner(javax.swing.JSpinner ballSizeSpinner) {
 		this.ballSizeSpinner = ballSizeSpinner;
+	}
+
+	/**
+	 * @return the cropAreaPanel
+	 */
+	public javax.swing.JPanel getCropAreaPanel() {
+		return cropAreaPanel;
+	}
+
+	/**
+	 * @param cropAreaPanel the cropAreaPanel to set
+	 */
+	public void setCropAreaPanel(javax.swing.JPanel cropAreaPanel) {
+		this.cropAreaPanel = cropAreaPanel;
+	}
+
+	/**
+	 * @return the xTextField
+	 */
+	public javax.swing.JTextField getxTextField() {
+		return xTextField;
+	}
+
+	/**
+	 * @param xTextField the xTextField to set
+	 */
+	public void setxTextField(javax.swing.JFormattedTextField xTextField) {
+		this.xTextField = xTextField;
+	}
+
+	/**
+	 * @return the yTextField
+	 */
+	public javax.swing.JFormattedTextField getyTextField() {
+		return yTextField;
+	}
+
+	/**
+	 * @param yTextField the yTextField to set
+	 */
+	public void setyTextField(javax.swing.JFormattedTextField yTextField) {
+		this.yTextField = yTextField;
+	}
+
+	/**
+	 * @return the wTextField
+	 */
+	public javax.swing.JTextField getwTextField() {
+		return wTextField;
+	}
+
+	/**
+	 * @param wTextField the wTextField to set
+	 */
+	public void setwTextField(javax.swing.JFormattedTextField wTextField) {
+		this.wTextField = wTextField;
+	}
+
+	/**
+	 * @return the hTextField
+	 */
+	public javax.swing.JTextField gethTextField() {
+		return hTextField;
+	}
+
+	/**
+	 * @param hTextField the hTextField to set
+	 */
+	public void sethTextField(javax.swing.JFormattedTextField hTextField) {
+		this.hTextField = hTextField;
 	}
 
 }
