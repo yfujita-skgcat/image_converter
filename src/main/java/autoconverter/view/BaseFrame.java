@@ -313,6 +313,13 @@ public class BaseFrame extends javax.swing.JFrame {
                 convertLabel.setText(bundle.getString("AutoConverter.convertLabel.text")); // NOI18N
 
                 resizeRadioButton.setText(bundle.getString("BaseFrame.resizeRadioButton.text")); // NOI18N
+                resizeRadioButton.addChangeListener(new javax.swing.event.ChangeListener() {
+                        public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                                resizeRadioButtonStateChanged(evt);
+                        }
+                });
+
+                resizeSpinner.setEnabled(false);
 
                 jLabel1.setText(bundle.getString("BaseFrame.jLabel1.text")); // NOI18N
 
@@ -413,7 +420,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                                                 .addComponent(removeSpecialCharRadioButton)
                                                                 .addGap(71, 71, 71)
                                                                 .addComponent(addParamRadioButton)))
-                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                                .addGap(0, 105, Short.MAX_VALUE)))
                                 .addContainerGap())
                 );
                 slide1Layout.setVerticalGroup(
@@ -451,7 +458,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(filePatternComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(filePatternTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
                                 .addContainerGap())
                 );
 
@@ -808,7 +815,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 270, Short.MAX_VALUE)
+                        .addGap(0, 612, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1467,6 +1474,12 @@ public class BaseFrame extends javax.swing.JFrame {
 		}
 		this.imagePanel.repaint();
         }//GEN-LAST:event_textFieldFocusLost
+
+        private void resizeRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_resizeRadioButtonStateChanged
+		if(evt.getSource() == this.resizeRadioButton){
+			this.resizeSpinner.setEnabled(this.resizeRadioButton.isSelected());
+		}
+        }//GEN-LAST:event_resizeRadioButtonStateChanged
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JRadioButton addParamRadioButton;
