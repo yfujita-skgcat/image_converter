@@ -56,16 +56,23 @@ public class AutoConverterUtils {
 		int ret = 0;
 		DirectoryChooserDialog dcd = null;
 		JFileChooser jfc = null;
+		File def_dir = null;
+		if(def != null){
+			def_dir = new File(def);
+		}
+
 		if (!AutoConverterUtils.isWindows()) {
 			dcd = new DirectoryChooserDialog((Frame) parent, true);
-			dcd.setFilePath(def);
+			if( def_dir != null && def_dir.isDirectory()){
+				dcd.setFilePath(def);
+			}
 			ret = dcd.showDialog();
 		} else {
 
 			jfc = new JFileChooser(".");
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if (def != null) {
-				jfc.setSelectedFile(new File(def));
+			if( def_dir != null && def_dir.isDirectory()){
+				jfc.setSelectedFile(def_dir);
 			}
 			ret = jfc.showSaveDialog(parent);
 		}
@@ -91,11 +98,6 @@ public class AutoConverterUtils {
 
 	public static boolean isWindows(){
 		boolean ret = "\\".equals(System.getProperty("file.separator"));
-		if(ret){
-			logger.fine("windows");
-		} else {
-			logger.fine("not windows");
-		}
 		return ret;
 	}
 

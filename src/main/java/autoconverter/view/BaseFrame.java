@@ -1119,6 +1119,7 @@ public class BaseFrame extends javax.swing.JFrame {
 	  }
 	  this.getDestinationText().setText(_dstDir.getAbsolutePath());
 	  appController.storeDirectorySetting(true);
+	  this.appController.updateWizerdButton();
   }//GEN-LAST:event_destinationButtonActionPerformed
 
 	/**

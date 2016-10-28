@@ -580,11 +580,11 @@ public class ApplicationController implements ApplicationMediator {
 			return true;
 		}
 		if (!_srcF.isDirectory()) {
-			getMessageList().add(_srcF.getAbsoluteFile() + " is not directory.");
+			getMessageList().add("\"" + _srcF.getAbsoluteFile() + "\" is not directory.");
 			return false;
 		}
 		if (!_dstF.isDirectory()) {
-			getMessageList().add(_dstF.getAbsoluteFile() + " is not directory.");
+			getMessageList().add("\"" + _dstF.getAbsoluteFile() + "\" is not directory.");
 			return false;
 		}
 		if (!_srcF.canWrite()) {

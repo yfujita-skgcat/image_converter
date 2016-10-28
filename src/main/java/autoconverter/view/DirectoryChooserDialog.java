@@ -63,7 +63,6 @@ public class DirectoryChooserDialog extends javax.swing.JDialog {
         }// </editor-fold>//GEN-END:initComponents
 
         private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
-		logger.fine(evt.getActionCommand());
 		if(evt.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)){
 			retval = JFileChooser.APPROVE_OPTION;
 			this.setVisible(false);
@@ -125,8 +124,6 @@ public class DirectoryChooserDialog extends javax.swing.JDialog {
 			this.fileChooser.setSelectedFile(new File(path));
 			this.fileChooser.setCurrentDirectory(new File(path));
 		}
-		logger.fine(path);
-		logger.fine(fileChooser.getSelectedFile().getAbsolutePath());
 	}
 	public int showDialog(){
 		this.setVisible(true);
