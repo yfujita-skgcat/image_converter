@@ -32,7 +32,8 @@ public class AutoConverterConfig {
 	private static HashMap<String, String> config = new HashMap<String, String>();
 	public static final String celaviewRegexpString = "(?<WELL>[^-]+)--W(?<NUM>\\d+)--P(?<POS>\\d+)--Z(?<ZPOS>\\d+)--T(?<TIME>\\d+)--(?<FILTER>.*)\\.(?:tif|TIF|tiff|TIFF)";
 	public static final Pattern celaviewPattern = Pattern.compile(celaviewRegexpString);
-	public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\(fld (?<POS>\\d+) wv (?<FILTER>[^\\)]+)\\)\\.(?:tif|TIFF|tiff|TIFF)";
+	//public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\(fld (?<POS>\\d+) wv (?<FILTER>[^\\)]+)\\)\\.(?:tif|TIFF|tiff|TIFF)";
+	public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\((fld (?<POS>\\d+))? ?(z (?<ZPOS>\\d+))? ?(wv (?<FILTER>[^\\)]+))?\\)\\.(?:tif|TIFF|tiff|TIFF)";
 	public static final Pattern inCell6000Pattern = Pattern.compile(inCell6000RegexpString);
 	public static final String IX81RegexpString = ".*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
 	public static final Pattern ixPattern = Pattern.compile(IX81RegexpString);
@@ -178,10 +179,11 @@ public class AutoConverterConfig {
 	public static void save(String path) throws FileNotFoundException {
 		File dir = new File((new File(path)).getParent());
 		dir.mkdirs();
-		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)));
-		encoder.writeObject(config);
-		encoder.flush();
-		encoder.close();
+		logger.log(Level.INFO, "Writing config to {0}...", path);
+		try (XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)))) {
+			encoder.writeObject(config);
+			encoder.flush();
+		}
 	}
 
 	/**

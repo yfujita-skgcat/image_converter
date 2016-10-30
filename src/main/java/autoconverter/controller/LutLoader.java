@@ -1,6 +1,5 @@
 package autoconverter.controller;
 
-import autoconverter.*;
 import ij.plugin.*;
 import ij.*;
 import ij.io.*;

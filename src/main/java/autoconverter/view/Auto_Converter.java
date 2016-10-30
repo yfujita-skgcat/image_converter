@@ -4,7 +4,6 @@ package autoconverter.view;
 
 
 import autoconverter.view.BaseFrame;
-import autoconverter.*;
 import ij.plugin.PlugIn;
 
 /*

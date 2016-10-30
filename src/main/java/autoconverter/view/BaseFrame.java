@@ -10,24 +10,20 @@
  */
 package autoconverter.view;
 
-import autoconverter.IntegerVerifier;
+import autoconverter.controller.IntegerVerifier;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import autoconverter.controller.AutoConverterConfig;
 import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.ApplicationController;
-import autoconverter.controller.IntegerDocument;
-import autoconverter.controller.NumberFormatterFactory;
 import autoconverter.view.range.RangeSlider;
 import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
@@ -41,10 +37,23 @@ public class BaseFrame extends javax.swing.JFrame {
 	private static Logger logger = AutoConverterUtils.getLogger();
 	public static final int MAX_CARD_SIZE = 3;
 	private boolean active = true;
+	private int active_stack = 1;
 	private final IntegerVerifier inputverifier;
+	private final ApplicationController appController;
 
 	public void enableListener(boolean flag) {
-		active = flag;
+		// enable するとactive状態になる. < 1 の時はListenerが動かない
+		if(flag){
+			active_stack++;
+		} else {
+			active_stack--;
+		}
+		if(active_stack > 0){
+			active = true;
+		} else {
+			active = false;
+		}
+		//logger.fine("active_stack = " + active_stack);
 	}
 
 	/**
@@ -53,11 +62,6 @@ public class BaseFrame extends javax.swing.JFrame {
 	public static Logger getLogger() {
 		return logger;
 	}
-	//private ImageSet imageSet;
-	//private String oldSearchPath;
-	//private int rangeSliderHighValue;
-	//private int rangeSliderLowValue;
-	private final ApplicationController appController;
 
 	/**
 	 * Creates new form baseFrame
@@ -92,8 +96,6 @@ public class BaseFrame extends javax.swing.JFrame {
 
 		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
 		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
-		//logger.fine(_srcDir);
-		//logger.fine(_dstDir);
 		this.sourceText.setText(_srcDir);
 		this.destinationText.setText(_dstDir);
 
@@ -124,7 +126,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
 
 		this.appController.updateWizerdButton();
-		//logger.fine(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("SETTING TO ({0}, {1})"), new Object[] {_width, _height}));
+
 		this.setSize(new Dimension(_width, _height));
 	}
 
@@ -140,7 +142,6 @@ public class BaseFrame extends javax.swing.JFrame {
 			if (selected_item != null) {
 				itemList.setSelectedItem(selected_item);
 			}
-			//logger.fine(selected_item);
 			String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
 			if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)) {
 				regexString = AutoConverterConfig.celaviewRegexpString;
@@ -493,7 +494,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 imageChangePanel.setMinimumSize(new java.awt.Dimension(100, 40));
                 imageChangePanel.setPreferredSize(new java.awt.Dimension(511, 40));
 
-                dirSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "folder" }));
+                dirSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FOLDER" }));
                 dirSelectCBox.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
                                 imageSelectorChanged(evt);
@@ -501,7 +502,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 imageChangePanel.add(dirSelectCBox);
 
-                wellSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "well" }));
+                wellSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<WELL>" }));
                 wellSelectCBox.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
                                 imageSelectorChanged(evt);
@@ -509,7 +510,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 imageChangePanel.add(wellSelectCBox);
 
-                positionSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "position" }));
+                positionSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<POS>" }));
                 positionSelectCBox.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
                                 imageSelectorChanged(evt);
@@ -517,7 +518,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 imageChangePanel.add(positionSelectCBox);
 
-                timeSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "time" }));
+                timeSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<TIME>" }));
                 timeSelectCBox.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
                                 imageSelectorChanged(evt);
@@ -525,7 +526,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 imageChangePanel.add(timeSelectCBox);
 
-                filterSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "filter" }));
+                filterSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<FILTER>" }));
                 filterSelectCBox.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
                                 imageSelectorChanged(evt);
@@ -533,7 +534,12 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 imageChangePanel.add(filterSelectCBox);
 
-                zSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "z" }));
+                zSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<ZPOS>" }));
+                zSelectCBox.addItemListener(new java.awt.event.ItemListener() {
+                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                                imageSelectorChanged(evt);
+                        }
+                });
                 imageChangePanel.add(zSelectCBox);
 
                 slide2.add(imageChangePanel, java.awt.BorderLayout.SOUTH);
@@ -803,6 +809,11 @@ public class BaseFrame extends javax.swing.JFrame {
                 scaleRangeSlider.addChangeListener(new javax.swing.event.ChangeListener() {
                         public void stateChanged(javax.swing.event.ChangeEvent evt) {
                                 scaleRangeSliderStateChanged(evt);
+                        }
+                });
+                scaleRangeSlider.addMouseListener(new java.awt.event.MouseAdapter() {
+                        public void mouseReleased(java.awt.event.MouseEvent evt) {
+                                scaleRangeSliderMouseReleased(evt);
                         }
                 });
                 scalePanel.add(scaleRangeSlider);
@@ -1112,7 +1123,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		  return;
 	  }
 	  this.getSourceText().setText(_srcDir.getAbsolutePath());
-	  appController.storeDirectorySetting(true);
+	  appController.storeDirectorySetting(false);
 	  this.appController.updateWizerdButton();
   }//GEN-LAST:event_sourceButtonActionPerformed
 
@@ -1125,7 +1136,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		  return;
 	  }
 	  this.getDestinationText().setText(_dstDir.getAbsolutePath());
-	  appController.storeDirectorySetting(true);
+	  appController.storeDirectorySetting(false);
 	  this.appController.updateWizerdButton();
   }//GEN-LAST:event_destinationButtonActionPerformed
 
@@ -1143,7 +1154,7 @@ public class BaseFrame extends javax.swing.JFrame {
 	  Dimension _d = _c.getSize();
 	  AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, _d.width);
 	  AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, _d.height);
-	  AutoConverterConfig.save(this, true);
+	  //AutoConverterConfig.save(this, true);
   }//GEN-LAST:event_formComponentResized
 
 	/**
@@ -1155,7 +1166,6 @@ public class BaseFrame extends javax.swing.JFrame {
 	  if (!active) {
 		  return;
 	  }
-	  // とりあえず今のところexit buttonとして使う.
 	  System.exit(0);
   }//GEN-LAST:event_cancelButtonActionPerformed
 
@@ -1166,24 +1176,13 @@ public class BaseFrame extends javax.swing.JFrame {
 	  if (evt.getSource() != this.getRecursiveRadioButton()) {
 		  return;
 	  }
-	  appController.storeRecursiveSetting(true);
+	  appController.storeRecursiveSetting(false);
   }//GEN-LAST:event_recursiveRadioButtonActionPerformed
-
-  private void rangeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rangeSliderStateChanged
-	  if (!active) {
-		  return;
-	  }
-	  //logger.fine("State Changed! lowValue=" + this.rangeSlider.getLowValue() +", highValue=" + this.rangeSlider.getHighValue());
-	  // I can't understand how to notify that property of rangeSlider changed.
-	  this.appController.updateRangeSlider();
-	  // TODO add your handling code here:
-  }//GEN-LAST:event_rangeSliderStateChanged
 
   private void modeSelecterItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeSelecterItemStateChanged
 	  if (!active) {
 		  return;
 	  }
-	  // TODO add your handling code here:
 	  getLogger().fine(evt.getItem().toString());
   }//GEN-LAST:event_modeSelecterItemStateChanged
 
@@ -1191,9 +1190,6 @@ public class BaseFrame extends javax.swing.JFrame {
 		if (!active) {
 			return;
 		}
-		// TODO add your handling code here:
-		//getLogger().fine(evt.getItem().toString());
-		//this.appController.setColor(evt.getItem().toString());
 		this.appController.setColor(evt.getItem().toString());
         }//GEN-LAST:event_colorChannelSelectorItemStateChanged
 
@@ -1209,26 +1205,13 @@ public class BaseFrame extends javax.swing.JFrame {
 	  if(evt.getStateChange() != ItemEvent.SELECTED){
 		  return;
 	  }
-
-	  /*
-		 * 画像選択用のComboBoxが変更された時に呼ぶ
-	   */
-	  //getLogger().fine(evt.getItem().toString());
-	  ArrayList<JComboBox> boxes = this.getSelectCBoxes();
-	  for (Iterator<JComboBox> it = boxes.iterator(); it.hasNext();) {
-		  JComboBox box;
-		  box = it.next();
-		  String item = (String) box.getSelectedItem();
-		  //this.shotID = this.directory + "_" + this.wellName + "-" + this.well + "-" + this.position + "-" + this.slice + "-" + this.time;
-		  //getLogger().fine("selected:" + item);
-	  }
 	  String dir = this.getSourceText().getText() + (String) this.getDirSelectCBox().getSelectedItem();
 	  String wellname = (String) this.getWellSelectCBox().getSelectedItem();
 	  String position = (String) this.getPositionSelectCBox().getSelectedItem();
 	  String slice = (String) this.getzSelectCBox().getSelectedItem();
 	  String time = (String) this.getTimeSelectCBox().getSelectedItem();
 	  String filter = (String) this.getFilterSelectCBox().getSelectedItem();
-	  String imageID = dir + java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("-{0}-{1}-{2}-{3}-{4}"), new Object[]{wellname, position, slice, time, filter});
+	  String imageID = ApplicationController.createImageID(dir, wellname, position, slice, time, filter);
 	  this.getAppController().updateImage(imageID);
 	  this.getAppController().updateDensityPlot();
 
@@ -1243,9 +1226,11 @@ public class BaseFrame extends javax.swing.JFrame {
 		if (evt.getSource() == this.getScaleRangeSlider()) {
 			int lower = this.scaleRangeSlider.getValue();
 			int upper = this.getScaleRangeSlider().getUpperValue();
-			this.getAppController().setScaleValues(lower, upper);
+			this.enableListener(false);
+			this.getAppController().setScaleValues(lower, upper, false);
 			this.getAppController().setScaleMaxValues(upper);
 			this.getAppController().updateDensityPlot();
+			this.enableListener(true);
 		}
         }//GEN-LAST:event_scaleRangeSliderStateChanged
 
@@ -1260,9 +1245,11 @@ public class BaseFrame extends javax.swing.JFrame {
 	  }
 	  if (evt.getSource() == this.maxSpinner) {
 		  Integer max = (Integer) this.maxSpinner.getValue();
+		  this.enableListener(false);
 		  this.getAppController().setMinSpinnerMax(max.intValue() - 1);
 		  this.getScaleRangeSlider().setUpperValue(max);
-		  this.appController.storeCurrentFilterSettings();
+		  this.enableListener(true);
+		  this.appController.storeCurrentFilterSettings(false);
 	  }
   }//GEN-LAST:event_maxSpinnerStateChanged
 
@@ -1277,9 +1264,11 @@ public class BaseFrame extends javax.swing.JFrame {
 	  }
 	  if (evt.getSource() == this.minSpinner) {
 		  Integer min = (Integer) this.minSpinner.getValue();
+		  this.enableListener(false);
 		  this.getAppController().setMaxSpinnerMin(min.intValue() + 1);
 		  this.getScaleRangeSlider().setLowerValue(min);
-		  this.appController.storeCurrentFilterSettings();
+		  this.enableListener(true);
+		  this.appController.storeCurrentFilterSettings(false);
 	  }
   }//GEN-LAST:event_minSpinnerStateChanged
 
@@ -1290,7 +1279,7 @@ public class BaseFrame extends javax.swing.JFrame {
 	  if (evt.getSource() == this.getAutoRadioButton() && this.getAutoRadioButton().isSelected()) {
 		  this.appController.configAutoRelatedComponents(true);
 		  this.appController.adjustValues();
-		  this.appController.storeCurrentFilterSettings();
+		  this.appController.storeCurrentFilterSettings(false);
 	  }
   }//GEN-LAST:event_autoRadioButtonActionPerformed
 
@@ -1300,7 +1289,7 @@ public class BaseFrame extends javax.swing.JFrame {
 	  }
 	  if (evt.getSource() == this.getManualRadioButton() && this.getManualRadioButton().isSelected()) {
 		  this.appController.configAutoRelatedComponents(false);
-		  this.appController.storeCurrentFilterSettings();
+		  this.appController.storeCurrentFilterSettings(false);
 	  }
   }//GEN-LAST:event_manualRadioButtonActionPerformed
 
@@ -1313,15 +1302,14 @@ public class BaseFrame extends javax.swing.JFrame {
 		if (!active) {
 			return;
 		}
-		// TODO add your handling code here:
 		this.appController.adjustValues();
+		this.appController.storeCurrentFilterSettings(false);
         }//GEN-LAST:event_adjustButtonActionPerformed
 
         private void convertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertButtonActionPerformed
 		if (!active) {
 			return;
 		}
-		// TODO add your handling code here:
 		this.appController.convertImages();
         }//GEN-LAST:event_convertButtonActionPerformed
 
@@ -1331,13 +1319,9 @@ public class BaseFrame extends javax.swing.JFrame {
 		}
 		if (evt.getSource() == this.getBallSizeSpinner()) {
 			JSpinner spinner = (JSpinner) evt.getSource();
-			Integer val = (Integer) spinner.getValue();
-			logger.fine(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("SUBTRACT BACKGROUND FROM LISTNER."));
-			//this.appController.subtractBackground(val);
-			this.appController.storeCurrentFilterSettings();
+			this.appController.storeCurrentFilterSettings(false);
 			this.appController.updateImage();
 		}
-		// TODO add your handling code here:
         }//GEN-LAST:event_ballSizeSpinnerStateChanged
 
         private void filePatternComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filePatternComboBoxItemStateChanged
@@ -1363,7 +1347,6 @@ public class BaseFrame extends javax.swing.JFrame {
 
 			// 1つ前の選択のpatternの名前(selectedPatternName)が新しい場合に、comboBoxに登録したい
 			this.initFilePatternComboBox(selectedPatternName);
-			AutoConverterConfig.save(this, true);
 		} else if (evt.getStateChange() == ItemEvent.DESELECTED) {
 			// 1つ前の選択のpatternを取ってきてconfigに保存
 			String regexPattern = this.getFilePatternTextField().getText();
@@ -1383,7 +1366,7 @@ public class BaseFrame extends javax.swing.JFrame {
 			return;
 		}
 		if (evt.getStateChange() == ItemEvent.SELECTED) {
-			appController.storeDisplayRangeMaxSetting(true);
+			appController.storeDisplayRangeMaxSetting(false);
 		}
         }//GEN-LAST:event_displayRangeComboBoxItemStateChanged
 
@@ -1394,7 +1377,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		if (evt.getSource() != this.getRemoveSpecialCharRadioButton()) {
 			return;
 		}
-		appController.storeRemoveSpecialCharSetting(true);
+		appController.storeRemoveSpecialCharSetting(false);
         }//GEN-LAST:event_removeSpecialCharRadioButtonStateChanged
 
         private void autoTypeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoTypeComboBoxItemStateChanged
@@ -1404,11 +1387,14 @@ public class BaseFrame extends javax.swing.JFrame {
 		if (evt.getSource() != this.autoTypeComboBox) {
 			return;
 		}
+		if( evt.getStateChange() != ItemEvent.SELECTED){
+			return;
+		}
 
 		if (this.autoRadioButton.isSelected()) {
 			appController.adjustValues();
 		}
-		appController.storeCurrentFilterSettings();
+		appController.storeCurrentFilterSettings(false);
         }//GEN-LAST:event_autoTypeComboBoxItemStateChanged
 
         private void addParamRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_addParamRadioButtonStateChanged
@@ -1418,7 +1404,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		if (evt.getSource() != this.getAddParamRadioButton()) {
 			return;
 		}
-		appController.storeAddParamSetting(true);
+		appController.storeAddParamSetting(false);
 
         }//GEN-LAST:event_addParamRadioButtonStateChanged
 
@@ -1480,6 +1466,14 @@ public class BaseFrame extends javax.swing.JFrame {
 			this.resizeSpinner.setEnabled(this.resizeRadioButton.isSelected());
 		}
         }//GEN-LAST:event_resizeRadioButtonStateChanged
+
+        private void scaleRangeSliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scaleRangeSliderMouseReleased
+		/*
+		 * rangeSlider をドラッグ中に毎回Hashに保存しているとちょっと付加が高い & どうなるかわからないので
+		 * マウスを離した時にだけ保存するようにしてみた.
+		 */
+		appController.storeCurrentFilterSettings(false);
+        }//GEN-LAST:event_scaleRangeSliderMouseReleased
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JRadioButton addParamRadioButton;

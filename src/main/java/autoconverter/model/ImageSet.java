@@ -4,21 +4,14 @@
  */
 package autoconverter.model;
 
-import autoconverter.model.CaptureImage;
+import autoconverter.controller.ApplicationController;
 import java.util.ArrayList;
 import java.io.File;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import autoconverter.controller.AutoConverterUtils;
 import ij.IJ;
 
@@ -226,7 +219,7 @@ public class ImageSet {
 	 * @return
 	 */
 	public CaptureImage getCaptureImageAt(String dir, String wellname, String position, String slice, String time, String filter) {
-		String _imageID = dir + "-" + wellname + "-" + position + "-" + slice + "-" + time + "-" + filter;
+		String _imageID = ApplicationController.createImageID(dir, wellname, position, slice, time, filter);
 		return this.getCaptureImageAt(_imageID);
 	}
 

@@ -5,7 +5,6 @@
 package autoconverter.model;
 
 import autoconverter.controller.ApplicationController;
-import autoconverter.controller.AutoConverterConfig;
 import autoconverter.controller.AutoConverterUtils;
 import java.io.File;
 import java.util.ArrayList;
@@ -80,9 +79,12 @@ public class CaptureImage {
 		if (matcher.matches()) {
 			for(String key: keys){
 				try{
-					params.put(key, matcher.group(key));
+					if(matcher.group(key) == null){
+						params.put(key, "");
+					} else {
+					        params.put(key, matcher.group(key));
+					}
 				} catch(IllegalArgumentException e){
-					//logger.warning("<" + key + "> is not found in matcher group");
 					params.put(key, ""); // "" を入れとかないとエラーになるので...
 				}
 				
@@ -90,8 +92,15 @@ public class CaptureImage {
 		} else {
 			logger.warning(_f.getAbsolutePath() + " is not supported.");
 		}
-		this.shotID = this.directory + "-" + params.get("WELL") + "-" + params.get("POS") + "-" + params.get("ZPOS")  + "-" + params.get("TIME");
-		this.imageID = shotID + "-" + params.get("FILTER");
+		// フィルタ名が""だと設定が保存されいないので、フィルタ名無しの時の名前を追加.
+		if( params.get("FILTER") == null ){
+			params.put("FILTER", "NOSPECIFIED");
+		}
+		if( params.get("FILTER").equals("") ){
+			params.put("FILTER", "NOSPECIFIED");
+		}
+		this.shotID = ApplicationController.createShotID(directory, params.get("WELL"), params.get("POS"),  params.get("ZPOS"), params.get("TIME"));
+		this.imageID = ApplicationController.createImageID(directory, params.get("WELL"), params.get("POS"),  params.get("ZPOS"), params.get("TIME"), params.get("FILTER"));
 		this.file = _f;
 	}
 

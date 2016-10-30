@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.JTextArea;
@@ -62,16 +61,13 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 				this.imageSet.addFile(f);
 			}
 		} catch(IllegalArgumentException e){
-			logger.warning(e.toString());
-			IJ.showMessage(AutoConverterUtils.stacktrace(e));
+			logger.warning(AutoConverterUtils.stacktrace(e));
 			return null;
 		} catch(IllegalStateException e){
-			logger.warning(e.toString());
-			IJ.showMessage(AutoConverterUtils.stacktrace(e));
+			logger.warning(AutoConverterUtils.stacktrace(e));
 			return null;
 		} catch(NullPointerException e){
-			logger.warning(e.toString());
-			IJ.showMessage(AutoConverterUtils.stacktrace(e));
+			logger.warning(AutoConverterUtils.stacktrace(e));
 			return null;
 		}
 		return imageList;
@@ -84,8 +80,6 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		JTextArea textArea = baseFrame.getFileSearchLogTextArea();
 		for (String s : _list) {
 			textArea.append(s + "\n");
-			//waitDialogInformationArea.append(s + "\n");
-			//waitDialogInformationLabel.setText(s + " files were found.");
 		}
 	}
 	
@@ -94,10 +88,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		BaseFrame baseFrame = ApplicationController.getInstance().getBaseFrame();
 		JTextArea textArea = baseFrame.getFileSearchLogTextArea();
 		textArea.append("DONE\n");
-		//waitDialogInformationArea.append("DONE");
-		// imageSet が空だったらエラーだして終了.
 		if (imageSet.size() < 1) {
-			logger.fine("No shot found.");
 			IJ.showMessage("No shot found");
 			return;
 		}
@@ -127,7 +118,6 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		ArrayList<File> list = new ArrayList();
 		Pattern filePattern = appCtrl.getFilePattern();
 
-		int counter = 0;
 		String[] contents = top.list();
 		for (int i = 0; i < contents.length; i++) {
 			if (Thread.interrupted()) {
@@ -139,14 +129,12 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 				continue;
 			}
 			// ここを正規表現で最初からマッチさせる
-			//if (filePattern.matcher(sdir.getName()).find() ) {
 			if (filePattern.matcher(sdir.getName()).matches() ) {
 				if (!sdir.getName().matches("_thumb_")) {
 					publish("FOUND: " + sdir.getAbsolutePath());
 					list.add(sdir);
 				}
 			} else {
-				//logger.fine(sdir.getAbsolutePath() + " is not tiff file");
 				publish("SKIP: " + sdir.getAbsolutePath());
 			}
 		}

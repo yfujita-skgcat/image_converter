@@ -69,10 +69,6 @@ public interface ApplicationMediator {
 	 */
 	public abstract boolean startSearchFileList();
 
-	/**
-	 * 階調の範囲をアップデートする.
-	 */
-	public abstract void updateRangeSlider();
 
 	/**
 	 * WizerdのNext, Back, Cancelのボタンの有効、無効をアップデートする.

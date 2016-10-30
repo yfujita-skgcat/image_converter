@@ -456,7 +456,7 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="folder"/>
+                            <StringItem index="0" value="FOLDER"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -468,7 +468,7 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="well"/>
+                            <StringItem index="0" value="&lt;WELL&gt;"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -480,7 +480,7 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="position"/>
+                            <StringItem index="0" value="&lt;POS&gt;"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -492,7 +492,7 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="time"/>
+                            <StringItem index="0" value="&lt;TIME&gt;"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -504,7 +504,7 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="filter"/>
+                            <StringItem index="0" value="&lt;FILTER&gt;"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -516,10 +516,13 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="z"/>
+                            <StringItem index="0" value="&lt;ZPOS&gt;"/>
                           </StringArray>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="imageSelectorChanged"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -1043,6 +1046,7 @@
                               </Properties>
                               <Events>
                                 <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="scaleRangeSliderStateChanged"/>
+                                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="scaleRangeSliderMouseReleased"/>
                               </Events>
                             </Component>
                           </SubComponents>

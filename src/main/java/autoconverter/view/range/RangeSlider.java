@@ -4,6 +4,8 @@
  */
 package autoconverter.view.range;
 
+import autoconverter.controller.AutoConverterUtils;
+import java.util.logging.Logger;
 import javax.swing.JSlider;
 
 /**
@@ -11,6 +13,8 @@ import javax.swing.JSlider;
  * @author yfujita
  */
 public class RangeSlider extends JSlider {
+
+	private static final Logger logger = AutoConverterUtils.getLogger();
 
 	/**
 	 * Constructs a RangeSlider with default minimum and maximum values of 0 and
@@ -56,6 +60,34 @@ public class RangeSlider extends JSlider {
 		return super.getValue();
 	}
 
+
+	/**
+	 * 最大値と最小値を同時に設定する.
+	 * @param min
+	 * @param max 
+	 */
+	public void setMinAndMax(int min, int max){
+		// 基本 getMinimum() < min < max < getMaximum()であればOK.
+		if( min > max){
+			logger.warning("min > max");
+			int tmp;
+			tmp = max;
+			max = min;
+			min = tmp;
+		}
+		int oldMin    = getValue();
+		int oldExtent = getExtent();
+		int oldMax    = oldMin + oldExtent;
+		if( oldMin == min && oldMax == max){
+			return;
+		}
+		min = Math.max(getMinimum(), min);
+		max = Math.min(getMaximum(), max);
+
+		getModel().setRangeProperties(min, max - min, getMinimum(),
+						getMaximum(), getValueIsAdjusting());
+	}
+
 	/**
 	 * Sets the lower value in the range.
 	 */
@@ -70,7 +102,7 @@ public class RangeSlider extends JSlider {
 		int oldExtent = getExtent();
 		//int newValue = Math.min(Math.max(getMinimum(), value), oldValue + oldExtent);
 		int newValue = Math.min(Math.max(getMinimum(), value), oldValue + oldExtent - 1);
-		int newExtent = oldExtent + oldValue - newValue;
+		int newExtent = oldExtent + oldValue - newValue; // max - min ということ
 
 		// Set new value and extent, and fire a single change event.
 		getModel().setRangeProperties(newValue, newExtent, getMinimum(),
