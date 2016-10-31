@@ -1339,21 +1339,6 @@ public class ApplicationController implements ApplicationMediator {
 		convert_swing_worker.execute();
 	}
 
-	public boolean isIncludeTif() {
-		JCheckBox checkbox = this.baseFrame.getTif_checkbox();
-		return checkbox.isSelected();
-	}
-
-	public boolean isIncludeJpg() {
-		JCheckBox checkbox = this.baseFrame.getJpg_checkbox();
-		return checkbox.isSelected();
-	}
-
-	public boolean isIncludePng() {
-		JCheckBox checkbox = this.baseFrame.getPng_checkbox();
-		return checkbox.isSelected();
-	}
-
 	public int getBallSize() {
 		Integer size = (Integer) this.baseFrame.getBallSizeSpinner().getValue();
 		if (size != null) {
