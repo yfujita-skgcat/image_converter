@@ -453,8 +453,8 @@ public class ApplicationController implements ApplicationMediator {
 		}
 
 		area.append("Resize: ");
-		if (this.getScaleX() > 0) {
-			area.append(Integer.toString(this.getScaleX()) + " pixel (width)");
+		if (this.getResizeX() > 0) {
+			area.append(Integer.toString(this.getResizeX()) + " pixel (width)");
 		} else {
 			area.append("NO");
 		}
@@ -1183,11 +1183,6 @@ public class ApplicationController implements ApplicationMediator {
 
 		final boolean addparam = baseFrame.getAddParamRadioButton().isSelected();
 
-		int s_x = this.getScaleX();
-		int s_y = s_x * 1024 / 1344;
-		final int scale_x = s_x;
-		final int scale_y = s_y;
-
 		convert_swing_worker = new SwingWorker<Integer, String>() {
 			@Override
 			protected void process(java.util.List<String> chunks) {
@@ -1206,6 +1201,7 @@ public class ApplicationController implements ApplicationMediator {
 				int crop_width = imgPanel.getRoiWidth();
 				int crop_x = imgPanel.getLeftTopX();
 				int crop_y = imgPanel.getLeftTopY();
+				int resize_x = getResizeX();
 
 				for (CaptureImage _cm : getImageSet().getFiles()) {
 					if (isCancelled()) {
@@ -1292,10 +1288,16 @@ public class ApplicationController implements ApplicationMediator {
 							dstbase = dstbase + "_CROPx" + crop_x + "y" + crop_y + "w" + crop_width + "h" + crop_height;
 						}
 					}
+					int width  = _imp.getWidth();
+					int height = _imp.getHeight();
+					int resize_y = 0;
+					if(width != resize_x && resize_x != 0 ){
+						resize_y = height * resize_x / width;
+					}
 
 					// resize
-					if (scale_x > 0 && scale_y > 0) {
-						IJ.run(_imp, "Size...", "width=" + scale_x + " height=" + scale_y + "512 constrain average interpolation=Bilinear");
+					if (resize_x > 0 && resize_y > 0) {
+						IJ.run(_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
 					}
 
 					String fpath = "";
@@ -1357,7 +1359,7 @@ public class ApplicationController implements ApplicationMediator {
 	 *
 	 * @return
 	 */
-	public int getScaleX() {
+	public int getResizeX() {
 		JSpinner sp = this.baseFrame.getResizeSpinner();
 		if (sp.isEnabled()) {
 			Integer x_scale = (Integer) sp.getValue();
