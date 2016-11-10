@@ -154,6 +154,22 @@ public class BaseFrame extends javax.swing.JFrame {
 				regexString = AutoConverterConfig.IX81RegexpString;
 				this.getFilePatternTextField().setEditable(false);
 				this.filePatternComboBox.setEditable(false);
+			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81A)) {
+				regexString = AutoConverterConfig.IX81RegexString_A;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81B)) {
+				regexString = AutoConverterConfig.IX81RegexString_B;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81C)) {
+				regexString = AutoConverterConfig.IX81RegexString_C;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81D)) {
+				regexString = AutoConverterConfig.IX81RegexString_D;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
 			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CUSTOM)) {
 				regexString = "";
 			}

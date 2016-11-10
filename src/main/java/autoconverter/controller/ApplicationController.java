@@ -426,6 +426,7 @@ public class ApplicationController implements ApplicationMediator {
 		area.append("================ summary ==============\n");
 		area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
 		area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n\n");
+		area.append("Image format: " + this.baseFrame.getImageFormatComboBox().getSelectedItem() + "\n\n");
 		area.append("Remove special chars: ");
 		if (this.baseFrame.getRemoveSpecialCharRadioButton().isSelected()) {
 			area.append("YES");
@@ -1304,11 +1305,12 @@ public class ApplicationController implements ApplicationMediator {
 					if (type.equals("jpg")) {
 						fpath = dstbase + ".jpg";
 						IJ.saveAs(_imp, "jpg", fpath);
-					} else if (type.equals("ping")) {
+					} else if (type.equals("png") || type.equals("ping")) {
 						fpath = dstbase + ".png";
 						IJ.saveAs(_imp, "png", fpath);
-					} else if (type.equals("tif")) {
+					} else if (type.equals("tif") || type.equals("8bit tiff")) {
 						fpath = dstbase + ".tif";
+						IJ.run(_imp, "RGB Color", null);
 						IJ.saveAsTiff(_imp, fpath);
 					}
 					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");

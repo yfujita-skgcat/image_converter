@@ -35,8 +35,17 @@ public class AutoConverterConfig {
 	//public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\(fld (?<POS>\\d+) wv (?<FILTER>[^\\)]+)\\)\\.(?:tif|TIFF|tiff|TIFF)";
 	public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\((fld (?<POS>\\d+))? ?(z (?<ZPOS>\\d+))? ?(wv (?<FILTER>[^\\)]+))?\\)\\.(?:tif|TIFF|tiff|TIFF)";
 	public static final Pattern inCell6000Pattern = Pattern.compile(inCell6000RegexpString);
-	public static final String IX81RegexpString = ".*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	public static final String IX81RegexpString = "(?!.*_thumb_)(?!.*_univ).*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	
 	public static final Pattern ixPattern = Pattern.compile(IX81RegexpString);
+	public static final String IX81RegexString_A = "(?!.*_thumb_)(?!.*_univ)(?<WELL>\\d+)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	public static final Pattern ix81Pattern_A = Pattern.compile(IX81RegexString_A);
+	public static final String IX81RegexString_B = "(?!.*_thumb_)(?!.*_univ)(?<WELL>.*)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	public static final Pattern ix81Pattern_B = Pattern.compile(IX81RegexString_B);
+	public static final String IX81RegexString_C = "(?!.*_thumb_)(?!.*_univ)(?<WELL>.+[^\\d])(?<POS>\\d+)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	public static final Pattern ix81Pattern_C = Pattern.compile(IX81RegexString_C);
+	public static final String IX81RegexString_D = "(?!.*_thumb_)(?!.*_univ)(?<WELL>.*)[ -](?<POS>\\d+)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
+	public static final Pattern ix81Pattern_D = Pattern.compile(IX81RegexString_D);
 	public static final String KEY_CROP_AREA_X = "CROP_AREA_X";
 	public static final String KEY_CROP_AREA_Y = "CROP_AREA_Y";
 	public static final String KEY_CROP_AREA_W = "CROP_AREA_W";
@@ -62,6 +71,10 @@ public class AutoConverterConfig {
 	public static final String REGEXP_NAME_CELAVIEW = "Celaview";
 	public static final String REGEXP_NAME_INCELL6000 = "In Cell 6000";
 	public static final String REGEXP_NAME_IX81 = "IX81";
+	public static final String REGEXP_NAME_IX81A = "IX81 (e.g. 13_w1BF.tif)";
+	public static final String REGEXP_NAME_IX81B = "IX81 (e.g. iPS_wNIBA.tif)";
+	public static final String REGEXP_NAME_IX81C = "IX81 (e.g. 2016310_293FT13_wNIBA.tif)";
+	public static final String REGEXP_NAME_IX81D = "IX81 (e.g. 293FT 10_wNIBA.tif)";
 	private static String file_path = System.getProperty("user.home") + File.separator + ".ImageJ" + File.separator + "autoconverter.config";
 	private static Logger logger = AutoConverterUtils.getLogger();
 
@@ -255,6 +268,10 @@ public class AutoConverterConfig {
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_CELAVIEW, AutoConverterConfig.celaviewRegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_INCELL6000, AutoConverterConfig.inCell6000RegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81, AutoConverterConfig.IX81RegexpString);
+		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81A, AutoConverterConfig.IX81RegexString_A);
+		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81B, AutoConverterConfig.IX81RegexString_B);
+		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81C, AutoConverterConfig.IX81RegexString_C);
+		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81D, AutoConverterConfig.IX81RegexString_D);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_CUSTOM, "");
 		return pattern;
 	}
