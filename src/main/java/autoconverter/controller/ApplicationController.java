@@ -1278,6 +1278,9 @@ public class ApplicationController implements ApplicationMediator {
 							dstbase = dstbase + "_RANGE" + min + "-" + max;
 						}
 					}
+					if(_imp.getType() == ImagePlus.GRAY8 || _imp.getType() == ImagePlus.COLOR_256 || _imp.getType() == ImagePlus.COLOR_RGB){
+					  IJ.run(_imp, "Apply LUT", "");
+					}
 					// 色設定.
 					IJ.run(_imp, color, "");
 

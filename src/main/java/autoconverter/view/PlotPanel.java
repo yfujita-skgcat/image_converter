@@ -275,11 +275,23 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
       return;
     }
     this.imp = imp;
-    if (imp.getType() != ImagePlus.GRAY16) {
+    if (imp.getType() != ImagePlus.GRAY16 && imp.getType() != ImagePlus.GRAY8 && imp.getType() != ImagePlus.GRAY32) {
       throw new IllegalArgumentException("imp.getType() != ImagePlus.GRAY16");
     }
     this.ip = imp.getProcessor();
     this.stat = this.ip.getHistogram();
+    if(original_max > stat.length){
+	    int[] tmp = this.stat;
+	    this.stat = new int[original_max];
+	    for(int j=0; j < original_max; j++){
+		    if(j < tmp.length){
+			    this.stat[j] = tmp[j];
+		    } else {
+			    this.stat[j] = 0;
+		    }
+	    }
+	    original_max = stat.length;
+    }
     scaled_stat = new int[scaled_max];
 
     // remap

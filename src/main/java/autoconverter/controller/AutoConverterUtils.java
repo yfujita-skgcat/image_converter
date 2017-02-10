@@ -26,7 +26,7 @@ import java.io.StringWriter;
  */
 public class AutoConverterUtils {
 
-	static public final String VERSION = "0.3.9";
+	static public final String VERSION = "0.3.10";
 	static public final String COLOR_UNKNOWN = "unknown";
 	static public final String COLOR_GRAY = "Grays";
 	static public final String COLOR_CYAN = "Cyan";
