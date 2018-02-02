@@ -25,6 +25,7 @@ import autoconverter.view.ImagePanel;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
@@ -1331,7 +1332,10 @@ public class ApplicationController implements ApplicationMediator {
 				}
 				_area.append("Conversion finished.\n");
 				Calendar now = Calendar.getInstance();
-				String date = "" + now.get(Calendar.YEAR) + now.get(Calendar.MONDAY) + now.get(Calendar.DAY_OF_MONTH) + "_" + now.get(Calendar.HOUR_OF_DAY) + "h" + now.get(Calendar.MINUTE) + "m" + now.get(Calendar.SECOND) + "s";
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HH_mm_ss");
+				String date = sdf.format(now.getTime());
+
+				//String date = "" + now.get(Calendar.YEAR) + now.get(Calendar.MONDAY) + now.get(Calendar.DAY_OF_MONTH) + "_" + now.get(Calendar.HOUR_OF_DAY) + "h" + now.get(Calendar.MINUTE) + "m" + now.get(Calendar.SECOND) + "s";
 				String memoPath = dst + File.separator + "conversion_log" + date + ".txt";
 				try {
 					BufferedWriter bw = new BufferedWriter(new FileWriter(new File(memoPath)));
