@@ -33,8 +33,10 @@ public class AutoConverterConfig {
 	public static final String celaviewRegexpString = "(?<WELL>[^-]+)--W(?<NUM>\\d+)--P(?<POS>\\d+)--Z(?<ZPOS>\\d+)--T(?<TIME>\\d+)--(?<FILTER>.*)\\.(?:tif|TIF|tiff|TIFF)";
 	public static final Pattern celaviewPattern = Pattern.compile(celaviewRegexpString);
 	//public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\(fld (?<POS>\\d+) wv (?<FILTER>[^\\)]+)\\)\\.(?:tif|TIFF|tiff|TIFF)";
-	public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\((fld (?<POS>\\d+))? ?(z (?<ZPOS>\\d+))? ?(wv (?<FILTER>[^\\)]+))?\\)\\.(?:tif|TIFF|tiff|TIFF)";
+	public static final String inCell6000RegexpString = "(?<WELL>[A-Q] - \\d+)\\((fld (?<POS>\\d+))? ?(z (?<ZPOS>\\d+))? ?(wv (?<FILTER>[^\\)]+))?\\)\\.(?:tif|TIF|tiff|TIFF)";
 	public static final Pattern inCell6000Pattern = Pattern.compile(inCell6000RegexpString);
+	//public static final String CytellRegexpString =     "(?<WELL>[A-Q] - \\d+)\\((fld (?<POS>\\d+))? ?(z (?<ZPOS>\\d+))? ?(wv (?<FILTER>[^\\)]+))?\\)\\.(?:tif|TIF|tiff|TIFF)";
+	//public static final Pattern CytellPattern     = Pattern.compile("");
 	public static final String IX81RegexpString = "(?!.*_thumb_)(?!.*_univ).*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
 	
 	public static final Pattern ixPattern = Pattern.compile(IX81RegexpString);
