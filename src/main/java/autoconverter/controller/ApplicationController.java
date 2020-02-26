@@ -4,6 +4,7 @@
  */
 package autoconverter.controller;
 
+import autoconverter.model.CaptureImage;
 import ij.IJ;
 import ij.ImagePlus;
 import java.awt.CardLayout;
@@ -18,16 +19,28 @@ import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
-import autoconverter.model.CaptureImage;
+import autoconverter.model.ExImagePlus;
 import autoconverter.model.ImageSet;
 import autoconverter.view.BaseFrame;
 import autoconverter.view.ImagePanel;
+import ij.CompositeImage;
+import ij.ImageStack;
+import ij.io.FileInfo;
+import ij.plugin.RGBStackMerge;
+import ij.process.ImageProcessor;
+import ij.process.LUT;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -115,6 +128,8 @@ public class ApplicationController implements ApplicationMediator {
 	private String lastSelectedFilter;
 	// loadCurrentFilterSettings() 実行中かどうか
 	private static boolean loading = false;
+	// 値が update されたかどうか
+	private static boolean ischanged = true;
 	private static int loading_stack = 1;
 	// updateImage() 実行中かどうか
 	private static boolean updating = false;
@@ -127,6 +142,9 @@ public class ApplicationController implements ApplicationMediator {
 	public static final int ADJUST_MIN_MAX = 1;
 	public static final int ADJUST_MIN_TWO_THIRD_MAX = 2;
 	private boolean running_store_process = false;
+	private int current_image_mode = BaseFrame.IMAGE_MODE_SINGLE;
+	private static String[] COLOR_INDEX = {"Red", "Green", "Blue", "Grays", "Cyan", "Magenta", "Yellow"};
+
 	public ApplicationController(BaseFrame _base) {
 		cardIndex = 0;
 		cardSize = BaseFrame.MAX_CARD_SIZE;
@@ -134,6 +152,7 @@ public class ApplicationController implements ApplicationMediator {
 		oldSearchPath = null;
 		imageSet = new ImageSet();
 		baseFrame = _base;
+
 		storedMaxValues = new HashMap<String, Integer>();
 		storedMinValues = new HashMap<String, Integer>();
 		storedAuto = new HashMap<String, Boolean>();
@@ -144,6 +163,179 @@ public class ApplicationController implements ApplicationMediator {
 		lastSelectedFilter = "filter";
 		running_store_process = false;
 		self = this;
+	}
+
+	/**
+	 * 各種パラメータを集めて store... に保存する
+	 */
+	public synchronized void collectParams(){
+		collectParams(null);
+	}
+
+	public synchronized void collectParams(Object obj){
+		logger.fine("================== IN collectParams() ==================");
+		String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
+		if(filter.equals("filter")){
+			return;
+		}
+		logger.fine("filter=" + filter);
+		if       (obj == this.baseFrame.getMinSpinner()){
+			int min = this.getMinSpinnerValue();
+			logger.fine("get min="+min);
+			if(min != this.storedMinValues.get(filter)){
+				this.storedMinValues.put(filter, min);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, min, AutoConverterConfig.PREFIX_MIN);
+			}
+		}
+		if(obj == this.baseFrame.getMaxSpinner()){
+			int max = this.getMaxSpinnerValue();
+			logger.fine("get max="+max);
+			if(max != this.storedMaxValues.get(filter)){
+				this.storedMaxValues.put(filter, max);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, max, AutoConverterConfig.PREFIX_MAX);
+			}
+		}
+		if(obj == this.baseFrame.getScaleRangeSlider() || obj == null){
+			int min = this.baseFrame.getScaleRangeSlider().getLowValue();
+			int max = this.baseFrame.getScaleRangeSlider().getUpperValue();
+			int c_min = this.storedMinValues.get(filter);
+			int c_max = this.storedMaxValues.get(filter);
+			logger.fine("get min,max=("+c_min+","+c_max+") => ("+min+","+max+") [Filter:" + filter + "]");
+			if(min != this.storedMinValues.get(filter)){
+				logger.fine("min update! " + c_min + " => " + min);
+				this.storedMinValues.put(filter, min);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, min, AutoConverterConfig.PREFIX_MIN);
+			}
+			if(max != this.storedMaxValues.get(filter)){
+				logger.fine("max update! " + c_max + " => " + max);
+				this.storedMaxValues.put(filter, max);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, max, AutoConverterConfig.PREFIX_MAX);
+			}
+		}
+		if(obj == this.baseFrame.getAutoRadioButton() || obj == this.baseFrame.getManualRadioButton() || obj == null){
+			boolean isAuto = this.baseFrame.getAutoRadioButton().isSelected();
+			logger.fine("get isAuto="+isAuto);
+			if(isAuto != this.storedAuto.get(filter)){
+			        this.storedAuto.put(filter, isAuto);
+				ischanged = true;
+				if(isAuto){
+					AutoConverterConfig.setConfig(filter, "true", AutoConverterConfig.PREFIX_AUTO);
+				} else {
+					AutoConverterConfig.setConfig(filter, "false", AutoConverterConfig.PREFIX_AUTO);
+				}
+			}
+		}
+		if(obj == this.baseFrame.getAutoTypeComboBox() || obj == null){
+			String saturation_value = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
+			logger.fine("get saturation_value="+saturation_value);
+			if( ! saturation_value.equals(this.storedAutoType.get(filter))  ){
+				this.storedAutoType.put(filter, saturation_value);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, saturation_value, AutoConverterConfig.PREFIX_AUTO_TYPE);
+			}
+		}
+		if(obj == this.baseFrame.getColorChannelSelector() || obj == null){
+			String color = (String) this.baseFrame.getColorChannelSelector().getSelectedItem();
+			logger.fine("get color="+color + "  (filter: " + filter +")");
+			if( ! color.equals(this.storedColor.get(filter))  ){
+				this.storedColor.put(filter, color);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, color, AutoConverterConfig.PREFIX_COLOR);
+			}
+		}
+		if(obj == this.baseFrame.getModeSelector() || obj == null){
+			String mode = (String) this.baseFrame.getModeSelector().getSelectedItem();
+			//logger.fine("get mode="+mode);
+			if( ! mode.equals(this.storedMode.get(filter))  ){
+				this.storedMode.put(filter, mode);
+				ischanged = true;
+			}
+		}
+		if(obj == this.baseFrame.getBallSizeSpinner() || obj == null){
+			int ballsize = this.getBallSize();
+			logger.fine("get ballsize="+ballsize);
+			if( ballsize != this.storedBallSizes.get(filter)  ){
+				this.storedBallSizes.put(filter, ballsize);
+				ischanged = true;
+				AutoConverterConfig.setConfig(filter, ballsize, AutoConverterConfig.PREFIX_BALL);
+			}
+		}
+		if(ischanged){
+			AutoConverterConfig.save(baseFrame, true);
+		}
+		logger.fine("\n-------------END collectParam()-------------");
+	}
+	public synchronized void applyParams(){
+		applyParams(null, false);
+	}
+	public synchronized void applyParams(boolean is_force_update){
+		this.applyParams(null, is_force_update);
+	}
+	public synchronized void applyParams(Object obj){
+		this.applyParams(obj, false);
+	}
+	public synchronized void applyParams(Object obj, boolean is_force_update){
+		logger.fine("applyParam 内");
+		if(ischanged == false && !is_force_update){
+			// stored... に変更がないならスキップ
+			logger.fine("変更がないのでスキップ (applyParam)");
+			return;
+		}
+		try{
+			this.baseFrame.enableListener(false);
+			String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
+			if(obj == this.baseFrame.getMinSpinner() || obj == this.baseFrame.getMaxSpinner() || obj == null){
+				int min = this.storedMinValues.get(filter);
+				int max = this.storedMaxValues.get(filter);
+				logger.fine("apply min, max=("+min+","+max+") [filter:" + filter + "]");
+				//this.baseFrame.getMinSpinner().setValue(min);
+				this.setScaleValues(min, max, false);
+			} 
+			if(obj == this.baseFrame.getAutoRadioButton() || obj == this.baseFrame.getManualRadioButton() || obj == null){
+				boolean isAuto = this.storedAuto.get(filter);
+				logger.fine("apply isAuto=" + isAuto);
+				this.setAutoSelected(isAuto);
+				//this.baseFrame.getAutoRadioButton().setSelected(isAuto);
+			}
+			if(obj == this.baseFrame.getAutoTypeComboBox() || obj == null){
+				String saturation_value = this.storedAutoType.get(filter);
+				logger.fine("apply saturation_value=" + saturation_value);
+				if(saturation_value != null){
+					this.baseFrame.getAutoTypeComboBox().getModel().setSelectedItem(saturation_value);
+				}
+			}
+			if(obj == this.baseFrame.getColorChannelSelector() || obj == null){
+				String color = this.storedColor.get(filter);
+				logger.fine("apply color=" + color);
+				if(color != null){
+					this.baseFrame.getColorChannelSelector().setSelectedItem(color);
+				}
+			}
+			/*
+			if(obj == this.baseFrame.getModeSelector() || obj == null){
+				String mode = this.storedMode.get(filter);
+				//logger.fine("apply mode=" + mode);
+				if(mode != null){
+					this.baseFrame.getModeSelector().setSelectedItem(mode);
+				}
+			}
+			*/
+			if(obj == this.baseFrame.getBallSizeSpinner() || obj == null){
+				int ballsize = this.storedBallSizes.get(filter);
+				logger.fine("apply ballsize=" + ballsize);
+				this.baseFrame.getBallSizeSpinner().setValue(ballsize);
+			}
+		} finally {
+			this.baseFrame.enableListener(true);
+			if(obj == null){ // 全コンポーネント対象にアプライした時
+				ischanged = false;
+			}
+			logger.fine("\n-------------END applyParam()-------------");
+		}
 	}
 
 	public void enableSaveCurrentFilterSettings(boolean flg){
@@ -202,8 +394,88 @@ public class ApplicationController implements ApplicationMediator {
 	 * 現在選択中の画像でアップデートする.
 	 */
 	public void updateImage() {
+		//String imageID = this.getCurrentSelectedImageID(current_image_mode);
 		String imageID = this.getCurrentSelectedImageID();
 		this.updateImage(imageID);
+	}
+
+
+	/**
+	 * (Ex)ImagePlus に各種設定を適用していく. 適用後のExImagePlus を返す
+	 * filter が指定されていれば、そのフィルタの設定で処理する
+	 * @param imp
+	 * @param filter
+	 * @return 
+	 */
+	public synchronized ExImagePlus processImage(ExImagePlus imp, String filter, boolean isColor){
+		if(imp == null){
+			return null;
+		}
+		//baseFrame.getImageDisplayPanel().setImp(imp);
+		if(filter == null){
+			filter = imp.getFilter();
+		}
+		Integer val = this.storedBallSizes.get(filter);
+		if (val != null && val != 0) {
+			logger.fine("Subtract");
+			AutoConverterUtils.printStackTrace(15);
+			this.subtractBackground(imp, val);
+		}
+		if (this.storedAuto.get(filter)) {
+			this.adjustValues(imp, filter);
+		} else {
+			Integer min = this.storedMinValues.get(filter);
+			Integer max = this.storedMaxValues.get(filter);
+			imp.setDisplayRange(min, max);
+		}
+		if(isColor){
+			String color = this.storedColor.get(filter);
+			IJ.run(imp, color, "");
+		}
+		return imp;
+	}
+	public synchronized ExImagePlus processImage(ExImagePlus imp){
+		return this.processImage(imp, null, true);
+	}
+	public synchronized ExImagePlus processImage(ExImagePlus imp, boolean isColor){
+		return this.processImage(imp, null, isColor);
+	}
+
+	/**
+	 * Merge モードで選択されているフィルタリストを取得する
+	 * @return 
+	 */
+	public ArrayList<String> getSelectedFilters(){
+		ArrayList list = new ArrayList<String>();
+		if( this.baseFrame.getjCheckBoxFilter1().isSelected()){
+			//logger.fine("1 getText(): " + this.baseFrame.getjCheckBoxFilter1().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter1().getText());
+		}
+		if( this.baseFrame.getjCheckBoxFilter2().isSelected()){
+			//logger.fine("2 getText(): " + this.baseFrame.getjCheckBoxFilter2().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter2().getText());
+		}
+		if( this.baseFrame.getjCheckBoxFilter3().isSelected()){
+			//logger.fine("3 getText(): " + this.baseFrame.getjCheckBoxFilter3().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter3().getText());
+		}
+		if( this.baseFrame.getjCheckBoxFilter4().isSelected()){
+			//logger.fine("4 getText(): " + this.baseFrame.getjCheckBoxFilter4().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter4().getText());
+		}
+		if( this.baseFrame.getjCheckBoxFilter5().isSelected()){
+			//logger.fine("5 getText(): " + this.baseFrame.getjCheckBoxFilter5().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter5().getText());
+		}
+		if( this.baseFrame.getjCheckBoxFilter6().isSelected()){
+			//logger.fine("6 getText(): " + this.baseFrame.getjCheckBoxFilter6().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter6().getText());
+		}
+		if( this.baseFrame.getjCheckBoxFilter7().isSelected()){
+			//logger.fine("7 getText(): " + this.baseFrame.getjCheckBoxFilter7().getText());
+			list.add(this.baseFrame.getjCheckBoxFilter7().getText());
+		}
+		return list;
 	}
 
 	/**
@@ -211,53 +483,131 @@ public class ApplicationController implements ApplicationMediator {
 	 *
 	 * @param _imageID
 	 */
-	public void updateImage(String _imageID) {
+	public synchronized void updateImage(String _imageID) {
+		/*
+		CaptureImage から getShotID() で shotID を撮ったらそれを使って、
+		getImageSet().getShotAt(shotID) で同じshotIDのCaptureImageのリストを取得できる
+		*/
 		if (updating == true) {
 			return;
 		}
 		try {
 			updating = true;
-			CaptureImage _cimg = getImageSet().getCaptureImageAt(_imageID);
+			CaptureImage _cimg = this.getImageSet().getCaptureImageAt(_imageID);
+			logger.fine("_imgeID=" + _imageID);
 			if (_cimg == null) {
 				this.setMessageLabel("ID:" + _imageID + " is not found.", Color.RED);
 				return;
 			} else {
 				this.setMessageLabel(_cimg.getFile().getAbsolutePath());
 			}
-
-			// 毎回元のファイルからimgPlusを作って毎回filter条件を適用する.
-			ImagePlus imp = new ImagePlus(_cimg.getFile().getAbsolutePath());
-			this.updateImage(imp);
-
+			ExImagePlus imp = _cimg.getImagePlus();
+			if(current_image_mode == BaseFrame.IMAGE_MODE_SINGLE){
+				imp = this.updateSingleImage(imp);
+			} else {
+				ArrayList<CaptureImage> _cimgs = getImageSet().getShotAt(_cimg.getShotID());
+				ArrayList<ExImagePlus> imps = new ArrayList<ExImagePlus>();
+				String current_filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
+				for(CaptureImage _ci: _cimgs){
+					imps.add(_ci.getImagePlus());
+				}
+				imp = this.updateMergeImage(imps);
+			}
+			if(imp != null){ // デンシティプロットが参照する画像をセットする
+				//baseFrame.getPlotPanel().setImp(_cimg.getImagePlus());
+				baseFrame.getPlotPanel().setImp(imp);
+				baseFrame.getPlotPanel().setColor(this.storedColor.get(imp.getFilter()));
+			}
 		} finally {
+			this.updateDensityPlot();
+			this.baseFrame.getImageDisplayPanel().repaint();
 			updating = false;
 		}
+	}
+
+
+	public synchronized ExImagePlus updateMergeImage(ArrayList<ExImagePlus> imps){
+		logger.fine("================= IN updateMergeImage() ===================");
+		//AutoConverterUtils.printStackTrace(20);
+		this.applyParams();
+		//this.loadCurrentFilterSettings();
+		if(imps == null){
+			return null;
+		}
+		// マージに使用するためにチェックされているフィルタ
+		// マージに使用するためにチェクしているフィルタ:
+	        // - 0 の場合は何もせず抜ける
+		// - 1 の場合は updateSingleImage と同じ扱い
+		// - 2 以上の場合にマージの扱いを行う
+		ArrayList<String> filters = this.getSelectedFilters();
+		ArrayList<ExImagePlus> targets = new ArrayList<ExImagePlus>();
+		// 画像セットの中で、マージのためにチェックされているフィルタだけ選ぶ
+		for(ExImagePlus _imp: imps){
+			if(filters.contains(_imp.getFilter())){
+				targets.add(_imp);
+			}
+		}
+		if( targets.size() < 1){
+			this.setMessageLabel("No image is selected. Skip update of image and plot.", Color.RED);
+			return null;
+		}
+
+		ExImagePlus[] _imps = new ExImagePlus[COLOR_INDEX.length];
+		ExImagePlus returnImp = null;
+		String current_filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
+		for(ExImagePlus _imp: targets){
+			String filter = _imp.getFilter();
+			if( ! filters.contains(filter)){ // チェックボックスで選択されていない場合
+				continue;
+			}
+			// 色の処理は行なわない (行っても変わらないっぽい)
+			_imp = this.processImage(_imp);
+			// 選択中のフィルタと一致したらそれを返却値として保存
+			if(current_filter.equals(filter)){
+				returnImp = _imp;
+			}
+			
+			String color_name = this.storedColor.get(filter);
+			// color_name が COLOR_INDEX[i] に一致したらそのインデックスに入れる (imps[i])
+			for(int i = 0; i < COLOR_INDEX.length; i++){
+				//logger.fine("Checking color color_name("+color_name+") ?= " + COLOR_INDEX[i]);
+				if(color_name.equals(COLOR_INDEX[i])){
+					//logger.fine("filter("+filter+") => " + color_name);
+					_imps[i] = _imp;
+					break;
+				}
+			}
+		}
+		// 上でfiters.size() == 1 のときにreturnしているので、imps.size() > 1
+		//merge 出来た場合は
+		if(targets.size() == 1){
+			ExImagePlus _imp = targets.get(0);
+			baseFrame.getImageDisplayPanel().setImp(_imp);
+			String _filter = _imp.getFilter();
+			this.setMessageLabel("Select only 1 filter (" + _filter + "): showing " + _imp.getFile().getName());
+		} else {
+			//  ImagePlus から ExImagePlus へのキャスト出来ないのでこのまま.
+			ImagePlus mergeImg =  RGBStackMerge.mergeChannels(_imps, false);
+			baseFrame.getImageDisplayPanel().setImp(mergeImg);
+		}
+		return returnImp;
 	}
 
 	/**
 	 * 設定にしたがって画像をアップデートする.
 	 * @param imp 
 	 */
-	public void updateImage(ImagePlus imp) {
+	public ExImagePlus updateSingleImage(ExImagePlus imp) {
 		// 設定をロードする
-		this.loadCurrentFilterSettings();
-		if (imp != null) {
-			// ImagePlus を表示領域に乗せたら、各種設定をapplyしていく.
-			// このあたりはもう少しすっきりした下記arterytoarteryをしないとバグの温床になりそう.
-			baseFrame.getImageDisplayPanel().setImp(imp);
-			Integer val = (Integer) this.baseFrame.getBallSizeSpinner().getValue();
-			if (val != null && val != 0) {
-				this.subtractBackground(imp, val.intValue());
-			}
-			if (baseFrame.getAutoRadioButton().isSelected()) {
-				this.adjustValues(imp);
-			}
-			this.setColor();
-
-			baseFrame.getPlotPanel().setImp(imp);
-			this.updateDensityPlot();
-			baseFrame.getPlotPanel().repaint();
+		logger.fine("updateSingleImage...");
+		//this.loadCurrentFilterSettings();
+		this.applyParams();
+		if (imp == null) {
+			return null;
 		}
+		imp = this.processImage(imp);
+		baseFrame.getImageDisplayPanel().setImp(imp);
+		return imp;
 
 	}
 
@@ -352,6 +702,8 @@ public class ApplicationController implements ApplicationMediator {
 		this.baseFrame.enableListener(false); // 初期化中はlistener 無効化
 		initializing = true;
 		try {
+			// モードをSingle に戻す
+			this.baseFrame.getModeSelector().setSelectedItem("Single");
 			// Crop Area のパネルを有効化
 			this.baseFrame.getCropAreaPanel().setVisible(true);
 
@@ -365,6 +717,24 @@ public class ApplicationController implements ApplicationMediator {
 			int max_value = this.getMaxDisplayRangeValue();
 			this.baseFrame.getScaleRangeSlider().setMaximum(max_value);
 			this.baseFrame.getPlotPanel().setOriginalMax(max_value + 1);
+
+			// jCheckBoxFilter などの文字列を初期化
+			this.setImageMode(BaseFrame.IMAGE_MODE_SINGLE);
+			/*
+			// 
+			String image_mode =  AutoConverterConfig.getConfig(AutoConverterConfig.KEY_IMAGE_MODE, "Single", null);
+			if(image_mode.equals("Single")){
+				this.setImageMode(BaseFrame.IMAGE_MODE_SINGLE);
+			} else if(image_mode.equals("Merge")){
+				this.setImageMode(BaseFrame.IMAGE_MODE_MERGE);
+			} else if(image_mode.equals("Relative")){
+				this.setImageMode(BaseFrame.IMAGE_MODE_RELATIVE);
+			} else {
+				logger.warning("不明なモード:" + image_mode);
+			}
+			*/
+			
+
 
 			this.initSelectorComboBoxes(getImageSet());
 
@@ -389,9 +759,9 @@ public class ApplicationController implements ApplicationMediator {
 				String _max = AutoConverterConfig.getConfig(s, "4095", AutoConverterConfig.PREFIX_MAX);
 				String _min = AutoConverterConfig.getConfig(s, "0", AutoConverterConfig.PREFIX_MIN);
 				String _ball = AutoConverterConfig.getConfig(s, "0", AutoConverterConfig.PREFIX_BALL);
-				this.storedMaxValues.put(s, new Integer(_max));
-				this.storedMinValues.put(s, new Integer(_min));
-				this.storedBallSizes.put(s, new Integer(_ball));
+				this.storedMaxValues.put(s, Integer.parseInt(_max));
+				this.storedMinValues.put(s, Integer.parseInt(_min));
+				this.storedBallSizes.put(s, Integer.parseInt(_ball));
 				String _auto = AutoConverterConfig.getConfig(s, null, AutoConverterConfig.PREFIX_AUTO);
 				if (_auto != null && _auto.equals("true")) {
 					this.storedAuto.put(s, true);
@@ -405,9 +775,12 @@ public class ApplicationController implements ApplicationMediator {
 				}
 
 			}
-			ImagePlus imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
+			//ImagePlus imp = new ImagePlus(this.getImageSet().getShotAt(0).get(0).getFile().getAbsolutePath());
+			ExImagePlus cimg = this.getImageSet().getShotAt(0).get(0).getImagePlus();
 
-			this.updateImage(imp);
+			this.updateSingleImage(cimg);
+			this.updateDensityPlot();
+			//this.baseFrame.getImageDisplayPanel().repaint();
 		} finally {
 			this.baseFrame.enableListener(true);
 			initializing = false;
@@ -420,7 +793,8 @@ public class ApplicationController implements ApplicationMediator {
 	 */
 	public void showFinalSetting() {
 		// cardIndex == 1 => フィルタセッティング終わり (ファイル保存する)
-		this.storeCurrentFilterSettings();
+		//this.storeCurrentFilterSettings();
+		this.collectParams();
 		// summary を表示
 		JTextArea area = this.baseFrame.getSummaryDisplayArea();
 		area.setText("");
@@ -461,6 +835,15 @@ public class ApplicationController implements ApplicationMediator {
 			area.append("NO");
 		}
 		area.append("\n\n");
+
+		//String mode = this.setim
+		String mode = this.getImageMode();
+		if (mode == null) {
+			mode = "Undefined (Single)";
+		}
+		area.append("Mode: " + mode);
+		area.append("\n\n");
+
 		area.append("Total file: " + getImageSet().size() + "\n");
 
 		area.append("\n");
@@ -476,11 +859,6 @@ public class ApplicationController implements ApplicationMediator {
 				area.append("Method: manual\n");
 				area.append("Range: " + this.storedMinValues.get(s) + "-" + this.storedMaxValues.get(s) + "\n");
 			}
-			String mode = this.storedMode.get(s);
-			if (mode == null) {
-				mode = "Undefined (Single)";
-			}
-			area.append("Mode: " + mode + "\n");
 			Integer bs = this.storedBallSizes.get(s);
 			String ball_str = "None";
 			if (bs == null || bs == 0) {
@@ -675,15 +1053,18 @@ public class ApplicationController implements ApplicationMediator {
 		JSpinner minSpinner = baseFrame.getMinSpinner();
 		JSpinner maxSpinner = baseFrame.getMaxSpinner();
 		this.baseFrame.enableListener(false);
+		this.setMinSpinnerMax(max);
+		this.setMaxSpinnerMin(min);
 		maxSpinner.setValue(max);
 		minSpinner.setValue(min);
 		baseFrame.getScaleRangeSlider().setMinAndMax(min, max);
 		this.baseFrame.enableListener(true);
 		// 毎回ファイルに保存するのはちょっと大変なので、
 		// config に保存するだけにしてみる.
-		if( saving ){
-		     this.storeCurrentFilterSettings(false);
-		}
+		//if( saving ){
+			this.collectParams(baseFrame.getScaleRangeSlider());
+			//this.storeCurrentFilterSettings(false);
+		//}
 	}
 	/**
 	 * スケールの最大値と最小値のspinnerの値をセットする.
@@ -696,47 +1077,69 @@ public class ApplicationController implements ApplicationMediator {
 	}
 
 
+	// ここがバグの温床だとおもう。merge モードでも最後にsingleで指定したものを撮ってきてる?
+	// __TODO__ __BUG__
 	public void adjustValues(){
-		if (this.getImp() == null) {
-			return;
+		String imageID = this.getCurrentSelectedImageID();
+		CaptureImage cimp = this.getImageSet().getCaptureImageAt(imageID);
+		if( cimp != null){
+			this.adjustValues(cimp.getImagePlus());
 		}
-		ImagePlus imp = this.getImp();
-		this.adjustValues(imp);
 	}
 
 	/**
 	 * 自動で設定する.
+	 * 自動で設定するときに filter のパラメータで設定する。
 	 */
-	public void adjustValues(ImagePlus imp) {
-		String sat_val = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
-		IJ.run(imp, "Enhance Contrast", "saturated=0.35");
-		int min = (int) this.getImp().getDisplayRangeMin();
+	public void adjustValues(ExImagePlus imp) {
+		//String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
+		String filter = imp.getFilter();
+		this.adjustValues(imp, filter);
+	}
 
-		try {
-			Double.parseDouble(sat_val);
-			IJ.run(imp, "Enhance Contrast", "saturated=" + sat_val);
-		} catch (NumberFormatException e) {
-			logger.fine(e.toString());
+	public void adjustValues(ExImagePlus imp, String filter) {
+		logger.fine("===================== Adjust [filter:" + filter + "] =======================");
+		// 最初に backgroundsubtraction がある場合は行っておかないと、subtraction前の輝度値で調整してしまう
+		int ballsize = this.storedBallSizes.get(filter);
+		if(ballsize != 0){
+			this.subtractBackground(imp, ballsize);
 		}
+		// これいる。なぜなら、min側はsaturatedの値に関わらず一定にしたいから。
+		IJ.run(imp, "Enhance Contrast", "saturated=0.35");
+		//int min = (int) this.getImp().getDisplayRangeMin();
+		int min = (int) imp.getDisplayRangeMin();
+		String sat_val = this.storedAutoType.get(filter);
+		//logger.fine("sat_val=" + sat_val);
+		if(sat_val == null){
+			sat_val = "0.35";
+		}
+		//Double.parseDouble(sat_val);
+		IJ.run(imp, "Enhance Contrast", "saturated=" + sat_val);
+
 		//this.getImp().setDisplayRange(min, max);
-		int max = (int) this.getImp().getDisplayRangeMax();
+		//int max = (int) this.getImp().getDisplayRangeMax();
+		int max = (int) imp.getDisplayRangeMax();
 		if (max > this.getMaxDisplayRangeValue()) {
 			max = this.getMaxDisplayRangeValue();
 		}
 		if (min < 0) {
 			min = 0;
 		}
-
+		this.storedMinValues.put(filter, min);
+		this.storedMaxValues.put(filter, max);
 		this.baseFrame.enableListener(false);
-		baseFrame.getMaxSpinner().setValue(max);
-		baseFrame.getMinSpinner().setValue(min);
+		this.applyParams(true);
+		//baseFrame.getMaxSpinner().setValue(max);
+		//baseFrame.getMinSpinner().setValue(min);
 		// max からセッティングしないとダメ. setLowerValue() 内で、
 		// 現時点で設定されているmax より大きなminの値を与えた場合、
 		// max の値が代わりに使われるため.
-		baseFrame.getScaleRangeSlider().setMinAndMax(min, max);
+		//baseFrame.getScaleRangeSlider().setMinAndMax(min, max);
+		this.baseFrame.getPlotPanel().setColor(this.storedColor.get(filter));
 		this.updateDensityPlot();
 		this.baseFrame.enableListener(true);
-		IJ.setMinAndMax(imp, (int) min, (int) max);
+		//IJ.setMinAndMax(imp, (int) min, (int) max);
+		imp.setDisplayRange(min, max);
 	}
 
 	/**
@@ -775,18 +1178,15 @@ public class ApplicationController implements ApplicationMediator {
 	 * 輝度分布の描画を更新する.
 	 */
 	public void updateDensityPlot() {
-		JSpinner minSpinner = baseFrame.getMinSpinner();
-		JSpinner maxSpinner = baseFrame.getMaxSpinner();
-		Integer min = (Integer) minSpinner.getValue();
-		Integer max = (Integer) maxSpinner.getValue();
+		//JSpinner minSpinner = baseFrame.getMinSpinner();
+		//JSpinner maxSpinner = baseFrame.getMaxSpinner();
+		//Integer min = (Integer) minSpinner.getValue();
+		//Integer max = (Integer) maxSpinner.getValue();
+		String filter = (String)this.baseFrame.getFilterSelectCBox().getSelectedItem();
+		int min = this.storedMinValues.get(filter);
+		int max = this.storedMaxValues.get(filter);
 		baseFrame.getPlotPanel().setLowLimit(min);
 		baseFrame.getPlotPanel().setHighLimit(max);
-		if (this.getImp() != null) {
-			this.getImp().setDisplayRange(min, max);
-			// updateImage -> repaint() で表示が更新される!!
-			this.getImp().updateImage();
-			this.baseFrame.getImageDisplayPanel().repaint();
-		}
 	}
 
 	/**
@@ -950,9 +1350,9 @@ public class ApplicationController implements ApplicationMediator {
 	 * ファイルに設定を保存せずにメモリ上(AutoConverterConfig.config)にのみ 保存する. ただし、loading
 	 * (起動中フラグ)が立っているときは無視する.
 	 */
-	public void storeCurrentFilterSettings() {
-		this.storeCurrentFilterSettings(true);
-	}
+	//public void storeCurrentFilterSettings() {
+	//	this.storeCurrentFilterSettings(true);
+	//}
 
 	/**
 	 * ファイルに設定を保存する. ただし、loading (起動中フラグ)が立っているときは無視する. 書き込む.
@@ -982,7 +1382,7 @@ public class ApplicationController implements ApplicationMediator {
 			// カラー, モード取得
 			String mode;
 			String color;
-			mode = (String) baseFrame.modeSelecter.getSelectedItem();
+			mode = (String) baseFrame.getModeSelector().getSelectedItem();
 			color = (String) baseFrame.colorChannelSelector.getSelectedItem();
 			this.storedColor.put(filter, color);
 			AutoConverterConfig.setConfig(filter, color, AutoConverterConfig.PREFIX_COLOR);
@@ -1079,13 +1479,16 @@ public class ApplicationController implements ApplicationMediator {
 	 * @param auto autoの状態を変更する.
 	 */
 	public void setAutoSelected(boolean auto) {
-
+		String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
 		this.baseFrame.getAutoRadioButton().setSelected(auto);
 		this.baseFrame.getManualRadioButton().setSelected(!auto);
 		this.configAutoRelatedComponents(auto);
-		if (auto == true) {
-			this.adjustValues();
-		}
+		this.storedAuto.put(filter, auto);
+
+		this.updateImage();
+		//if (auto == true) {
+		//	this.adjustValues();
+		//}
 	}
 
 	/**
@@ -1101,32 +1504,8 @@ public class ApplicationController implements ApplicationMediator {
 		//this.baseFrame.getAutoTypeComboBox().setEnabled(bool);
 	}
 
-	/**
-	 * 画像の色を設定する.
-	 *
-	 * @param toString
-	 */
-	public void setColor(String toString) {
-		if (this.getImp() == null) {
-			return;
-		}
-		IJ.run(this.getImp(), toString, "");
-		this.getImp().updateImage();
-		this.baseFrame.getImageDisplayPanel().repaint();
-		this.storeCurrentFilterSettings(false);
-	}
 
-	/**
-	 * バックグラウンド補正を行う.
-	 *
-	 * @param radius 直径.
-	 */
-	public void subtractBackground(int radius) {
-		ImagePlus _imp = this.getImp();
-		this.subtractBackground(_imp, radius);
-	}
-
-	public void subtractBackground(ImagePlus _imp, int radius) {
+	public void subtractBackground(ExImagePlus _imp, int radius) {
 		if (_imp == null) {
 			return;
 		}
@@ -1136,16 +1515,6 @@ public class ApplicationController implements ApplicationMediator {
 			return;
 		}
 		IJ.run(_imp, "Subtract Background...", "rolling=" + radius);
-		_imp.updateImage();
-		this.baseFrame.getImageDisplayPanel().repaint();
-	}
-
-	/**
-	 * 現在のcolor channel combobox の色にする.
-	 */
-	public void setColor() {
-		String color = (String) this.baseFrame.colorChannelSelector.getModel().getSelectedItem();
-		this.setColor(color);
 	}
 
 	/**
@@ -1194,44 +1563,16 @@ public class ApplicationController implements ApplicationMediator {
 				}
 			}
 
-			@Override
-			protected Integer doInBackground() throws Exception {
+			private int convertSingleImage(){
 				int number = getImageSet().size();
 				int count = 1;
-				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
-				int crop_height = imgPanel.getRoiHeight();
-				int crop_width = imgPanel.getRoiWidth();
-				int crop_x = imgPanel.getLeftTopX();
-				int crop_y = imgPanel.getLeftTopY();
-				int resize_x = getResizeX();
 
 				for (CaptureImage _cm : getImageSet().getFiles()) {
 					if (isCancelled()) {
-						return new Integer(22);
+						return (22);
 					}
+					ExImagePlus imp = _cm.getImagePlus();
 					String _path = _cm.getFile().getAbsolutePath();
-					String filter = _cm.getFilter();
-					Integer bs = storedBallSizes.get(filter);
-					int ballsize = 0;
-					if (bs == null) {
-						ballsize = 0;
-					} else {
-						ballsize = bs.intValue();
-					}
-					Integer min = storedMinValues.get(filter);
-					Integer max = storedMaxValues.get(filter);
-					Boolean auto = storedAuto.get(filter);
-					String auto_type = storedAutoType.get(filter);
-					String mode = storedMode.get(filter);
-					String color = storedColor.get(filter);
-					if (color == null) {
-						color = "Grays";
-					}
-					if (mode == null) {
-						mode = "Single";
-					}
-
-					// directory check
 					String fname = _cm.getFile().getName();
 					String abssrc = _cm.getFile().getAbsolutePath();
 					// src     => /src
@@ -1247,7 +1588,7 @@ public class ApplicationController implements ApplicationMediator {
 					} else if (!dstdir.isDirectory()) {
 						// ディレクトリ以外!
 						IJ.showMessage(dstdir + " is not directory. stop.");
-						return new Integer(1);
+						return 1;
 					}
 					if (remove_char) { // special character 削除
 						fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
@@ -1255,73 +1596,238 @@ public class ApplicationController implements ApplicationMediator {
 					}
 
 					String dstbase = removeExtension(dstdir + File.separator + fname);
+					if(addparam){
+						dstbase = dstbase + this.getParamString(imp);
+					}
+					//ImagePlus _imp = this.imageProcessing(_cm);
+					imp = this.imageProcessing(imp);
 
-					ImagePlus _imp = IJ.openImage(_path);
-					if (ballsize != 0) {
-						IJ.run(_imp, "Subtract Background...", "rolling=" + ballsize);
-						if (addparam) {
-							dstbase = dstbase + "_BALL" + ballsize;
-						}
-					}
-
-					if (auto == true) {
-						IJ.run(_imp, "Enhance Contrast", "saturated=0.35");
-						min = (int) _imp.getDisplayRangeMin();
-						IJ.run(_imp, "Enhance Contrast", "saturated=" + auto_type);
-						max = (int) _imp.getDisplayRangeMax();
-						IJ.setMinAndMax(_imp, min, max);
-						if (addparam) {
-							dstbase = dstbase + "_AUTO" + auto_type;
-						}
-					} else {
-						IJ.setMinAndMax(_imp, (int) min, (int) max);
-						if (addparam) {
-							dstbase = dstbase + "_RANGE" + min + "-" + max;
-						}
-					}
-					if(_imp.getType() == ImagePlus.GRAY8 || _imp.getType() == ImagePlus.COLOR_256 || _imp.getType() == ImagePlus.COLOR_RGB){
-					  IJ.run(_imp, "Apply LUT", "");
-					}
-					// 色設定.
-					IJ.run(_imp, color, "");
-
-					if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
-						_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
-						IJ.run(_imp, "Crop", "");
-						//IJ.run(imp, "Select None", "");
-						if (addparam) {
-							dstbase = dstbase + "_CROPx" + crop_x + "y" + crop_y + "w" + crop_width + "h" + crop_height;
-						}
-					}
-					int width  = _imp.getWidth();
-					int height = _imp.getHeight();
-					int resize_y = 0;
-					if(width != resize_x && resize_x != 0 ){
-						resize_y = height * resize_x / width;
+					String fpath = "";
+					if (type.equals("jpg")) {
+						fpath = dstbase + ".jpg";
+						IJ.saveAs(imp, "jpg", fpath);
+					} else if (type.equals("png") || type.equals("ping")) {
+						fpath = dstbase + ".png";
+						IJ.saveAs(imp, "png", fpath);
+					} else if (type.equals("tif") || type.equals("8bit tiff")) {
+						fpath = dstbase + ".tif";
+						IJ.run(imp, "RGB Color", null);
+						IJ.saveAsTiff(imp, fpath);
 					}
 
-					// resize
-					if (resize_x > 0 && resize_y > 0) {
-						IJ.run(_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
+					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");
+					imp.close();
+					count++;
+				}
+				return 0;
+			}
+
+			private int convertMergeImage(){
+				logger.fine("======================== in covertMergeImage() =====================");
+				int number = getImageSet().getShotSize();
+				int count = 1;
+
+				// 選択されているフィルタ名を取得 
+				ArrayList<String> filters = getSelectedFilters();
+				for(int i=0; i < number; i++){
+					ArrayList<CaptureImage> image_set = getImageSet().getShotAt(i);
+					ImagePlus[] imps = new ImagePlus[COLOR_INDEX.length];
+					//logger.fine("image_set.size()=" + image_set.size());
+					ArrayList <String> merged_filters = new ArrayList<String>();
+					for(CaptureImage _cm: image_set){
+						ExImagePlus _imp = _cm.getImagePlus();
+						String filter = _imp.getFilter();
+						if( ! filters.contains(filter)){ // チェックボックスで選択されていない場合
+							//logger.fine("filter:" + filter + " はチェックされていません.");
+							continue;
+						}
+						//ImagePlus _imp = this.imageProcessing(_cm);
+						_imp = this.imageProcessing(_imp);
+						String color_name = storedColor.get(filter);
+						merged_filters.add(filter);
+						//logger.fine("color_name=" + color_name);
+						switch(color_name){
+							case "Red":
+								imps[0] = _imp; break;
+							case "Green":
+								imps[1] = _imp; break;
+							case "Blue":
+								imps[2] = _imp; break;
+							case "Grays":
+								imps[3] = _imp; break;
+							case "Cyan":
+								imps[4] = _imp; break;
+							case "Magenta":
+								imps[5] = _imp; break;
+							case "Yellow":
+								imps[6] = _imp; break;
+							default:
+						}
+					}
+					// ここからファイル一を調べる
+					int total_imps = 0;
+					ImagePlus cur_imp = null;
+					for( int k = 0; k < imps.length; k++){
+						if(imps[k] != null){
+							total_imps++;
+							cur_imp = imps[k];
+						}
+					}
+					ImagePlus flat_image = cur_imp;
+					if(total_imps > 1){
+						//logger.fine("Merging..");
+						flat_image = RGBStackMerge.mergeChannels(imps, false);
+						//logger.fine("flatten()");
+						flat_image = flat_image.flatten();
+					}
+					//logger.fine("Creating destination path...");
+					ExImagePlus _first_image = image_set.get(0).getImagePlus();
+					String _path = _first_image.getFile().getAbsolutePath();
+					String fname = _first_image.getFile().getName();
+					String abssrc = _first_image.getFile().getAbsolutePath();
+					String rpath = _path.replaceFirst(Pattern.quote(src), "");
+					String dstpath = dst + rpath;
+					File dstdir = new File(dstpath).getParentFile();
+					if (!dstdir.exists()) { //ディレクトリが無い!
+						dstdir.mkdirs();
+					} else if (!dstdir.isDirectory()) {
+						// ディレクトリ以外!
+						IJ.showMessage(dstdir + " is not directory. stop.");
+						return 1;
+					}
+					fname = removeExtension(fname).replaceFirst(_first_image.getFilter(), "") + merged_filters.stream().collect(Collectors.joining("-"));
+					if (remove_char) { // special character 削除
+						fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
+
+					}
+					String dstbase = dstdir + File.separator + fname;
+					if(addparam){
+						dstbase = dstbase + this.getParamString(_first_image);
 					}
 
 					String fpath = "";
 					if (type.equals("jpg")) {
 						fpath = dstbase + ".jpg";
-						IJ.saveAs(_imp, "jpg", fpath);
+						IJ.saveAs(flat_image, "jpg", fpath);
 					} else if (type.equals("png") || type.equals("ping")) {
 						fpath = dstbase + ".png";
-						IJ.saveAs(_imp, "png", fpath);
+						IJ.saveAs(flat_image, "png", fpath);
 					} else if (type.equals("tif") || type.equals("8bit tiff")) {
 						fpath = dstbase + ".tif";
-						IJ.run(_imp, "RGB Color", null);
-						IJ.saveAsTiff(_imp, fpath);
+						IJ.run(flat_image, "RGB Color", null);
+						IJ.saveAsTiff(flat_image, fpath);
 					}
+
 					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");
-					_imp.close();
+					flat_image.close();
+					for( int k = 0; k < imps.length; k++){
+						if(imps[i] != null){
+							imps[i].close();
+						}
+					}
 					count++;
+
 				}
-				return new Integer(0);
+				return 0;
+			}
+
+			private String getParamString(ExImagePlus _cm){
+				StringBuffer param_str = new StringBuffer("");
+				String filter = _cm.getFilter();
+				int min = storedMinValues.get(filter);
+				int max = storedMaxValues.get(filter);
+				Boolean auto = storedAuto.get(filter);
+				String auto_type = storedAutoType.get(filter);
+				String mode = storedMode.get(filter);
+				String color = storedColor.get(filter);
+				int ballsize = storedBallSizes.get(filter);
+				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
+				int crop_height = imgPanel.getRoiHeight();
+				int crop_width = imgPanel.getRoiWidth();
+				int crop_x = imgPanel.getLeftTopX();
+				int crop_y = imgPanel.getLeftTopY();
+				int resize_x = getResizeX();
+
+				if(ballsize != 0){
+					param_str.append("_Ball"+ballsize);
+				}
+				if(auto){
+					param_str.append("_AUTO" + auto_type);
+				} else {
+					param_str.append("_RANG" + min + "-" + max);
+				}
+				if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
+					param_str.append("_CROPx" + crop_x + "y" + crop_y + "w" + crop_width + "h" + crop_height);
+				}
+				return param_str.toString();
+			}
+
+			private ExImagePlus imageProcessing(ExImagePlus _imp){
+				String _path = _imp.getFile().getAbsolutePath();
+				String filter = _imp.getFilter();
+				//ImagePlus _imp = IJ.openImage(_path);
+				int min = storedMinValues.get(filter);
+				int max = storedMaxValues.get(filter);
+				Boolean auto = storedAuto.get(filter);
+				String auto_type = storedAutoType.get(filter);
+				String mode = storedMode.get(filter);
+				String color = storedColor.get(filter);
+				int ballsize = storedBallSizes.get(filter);
+				if (ballsize != 0) {
+					logger.fine("Subtracting....");
+					subtractBackground(_imp, ballsize);
+					//IJ.run(_imp, "Subtract Background...", "rolling=" + ballsize);
+				}
+				if (auto == true) {
+					logger.fine("Autocontrasting....");
+					IJ.run(_imp, "Enhance Contrast", "saturated=0.35");
+					min = (int) _imp.getDisplayRangeMin();
+					IJ.run(_imp, "Enhance Contrast", "saturated=" + auto_type);
+					max = (int) _imp.getDisplayRangeMax();
+					IJ.setMinAndMax(_imp, min, max);
+				} else {
+					IJ.setMinAndMax(_imp, (int) min, (int) max);
+				}
+				if(_imp.getType() == ImagePlus.GRAY8 || _imp.getType() == ImagePlus.COLOR_256 || _imp.getType() == ImagePlus.COLOR_RGB){
+				  IJ.run(_imp, "Apply LUT", "");
+				}
+				// 色設定.
+				IJ.run(_imp, color, "");
+
+				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
+				int crop_height = imgPanel.getRoiHeight();
+				int crop_width = imgPanel.getRoiWidth();
+				int crop_x = imgPanel.getLeftTopX();
+				int crop_y = imgPanel.getLeftTopY();
+				int resize_x = getResizeX();
+				if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
+					_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
+					IJ.run(_imp, "Crop", "");
+				}
+				int width  = _imp.getWidth();
+				int height = _imp.getHeight();
+				int resize_y = 0;
+				if(width != resize_x && resize_x != 0 ){
+					resize_y = height * resize_x / width;
+				}
+
+				// resize
+				if (resize_x > 0 && resize_y > 0) {
+					IJ.run(_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
+				}
+				return _imp;
+			}
+
+			@Override
+			protected Integer doInBackground() throws Exception {
+				if(current_image_mode == BaseFrame.IMAGE_MODE_SINGLE){
+					this.convertSingleImage();
+				} else if(current_image_mode == BaseFrame.IMAGE_MODE_MERGE ){
+					this.convertMergeImage();
+				} else if(current_image_mode == BaseFrame.IMAGE_MODE_RELATIVE){
+					
+				}
+				return 0;
 			}
 
 			@Override
@@ -1390,7 +1896,10 @@ public class ApplicationController implements ApplicationMediator {
 		String slice = (String) this.baseFrame.getzSelectCBox().getSelectedItem();
 		String time = (String) this.baseFrame.getTimeSelectCBox().getSelectedItem();
 		String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
-		String imageID = createImageID(dir, wellname, position, slice, time, filter);
+		String imageID = null;
+		//logger.fine(""+image_mode);
+		imageID = createImageID(dir, wellname, position, slice, time, filter);
+		//logger.fine("imageID="+imageID);
 
 		return imageID;
 	}
@@ -1436,5 +1945,60 @@ public class ApplicationController implements ApplicationMediator {
 		this.baseFrame.getyTextField().setText("" + y);
 		this.baseFrame.getwTextField().setText("" + w);
 		this.baseFrame.gethTextField().setText("" + h);
+	}
+
+	public String getImageMode(){
+		String mode = (String) this.baseFrame.getModeSelector().getSelectedItem();
+		return mode;
+	}
+	public void setImageMode(int mode){
+		logger.fine("IN:  setImageMode()");
+		try{
+			this.baseFrame.enableListener(false);
+			TreeSet<String> filters = this.getImageSet().getFilters();
+			int nfilter = filters.size();
+			current_image_mode = mode;
+			ArrayList<JCheckBox> filterBoxes = this.baseFrame.getFilterCheckBoxList();
+			ArrayList<JCheckBox> visibleBoxes = this.baseFrame.getVisibleCheckBoxList();
+			if(mode == BaseFrame.IMAGE_MODE_SINGLE){
+				for(int i = 0; i < filterBoxes.size(); i++){
+					visibleBoxes.get(i).setEnabled(false);
+					filterBoxes.get(i).setEnabled(false);
+					filterBoxes.get(i).setText("---");
+				}
+			} else if(mode == BaseFrame.IMAGE_MODE_MERGE){
+				Iterator<String> it = filters.iterator();
+				for(int i = 0; i < filterBoxes.size(); i++){
+					if(it.hasNext()){
+						filterBoxes.get(i).setText(it.next());
+						//visibleBoxes.get(i).setEnabled(true);
+						visibleBoxes.get(i).setEnabled(false);
+						filterBoxes.get(i).setEnabled(true);
+					} else {
+						filterBoxes.get(i).setText("---");
+						visibleBoxes.get(i).setEnabled(false);
+						filterBoxes.get(i).setEnabled(false);
+					}
+				}
+			} else if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
+				Iterator<String> it = filters.iterator();
+				for(int i = 0; i < filterBoxes.size(); i++){
+					if(it.hasNext()){
+						filterBoxes.get(i).setText(it.next());
+						//visibleBoxes.get(i).setEnabled(true);
+						visibleBoxes.get(i).setEnabled(false);
+						filterBoxes.get(i).setEnabled(true);
+					} else {
+						filterBoxes.get(i).setText("---");
+						visibleBoxes.get(i).setEnabled(false);
+						filterBoxes.get(i).setEnabled(false);
+					}
+				}
+			} else {
+				logger.warning("不明なモード(番号):" + mode);
+			}
+		} finally{
+			this.baseFrame.enableListener(true);
+		}
 	}
 }

@@ -26,7 +26,7 @@ import java.io.StringWriter;
  */
 public class AutoConverterUtils {
 
-	static public final String VERSION = "0.3.12";
+	static public final String VERSION = "0.4.0";
 	static public final String COLOR_UNKNOWN = "unknown";
 	static public final String COLOR_GRAY = "Grays";
 	static public final String COLOR_CYAN = "Cyan";
@@ -204,6 +204,42 @@ public class AutoConverterUtils {
 			logger.setLevel(Level.FINE);
 		}
 		return logger;
+	}
+
+	public static String[] stackTraceString(int depth, boolean all){
+		StackTraceElement[] ste = new Throwable().getStackTrace();
+		ArrayList <String> al = new ArrayList<String>();
+		int depth_count = 0;
+		for(int i = 2; i < ste.length ; i++){
+			String str = ste[i].toString();
+			//logger.fine("str=" + str);
+			if(!all && ! str.matches("java.*")){
+				al.add(str);
+				depth_count++;
+				if(depth_count>depth){
+					break;
+				}
+				continue;
+			}
+		}
+		//logger.fine("depth_count=" + depth_count);
+		return al.toArray(new String[0]);
+	}
+	public static void printStackTrace(int depth){
+		AutoConverterUtils.printStackTrace(depth, false);
+	}
+
+	public static void printStackTrace(int depth, boolean all){
+		if(logger == null){
+			logger = getLogger();
+		}
+		String[] str = AutoConverterUtils.stackTraceString(depth, all);
+		logger.fine("\n========= stack tracing ==========");
+		for(String s: str){
+			logger.fine(s);
+		}
+		//logger.fine("\n---------------------------------");
+		logger.fine("\n---");
 	}
 
 	public static Logger getFullLogger() {

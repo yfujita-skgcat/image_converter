@@ -62,6 +62,7 @@ public class AutoConverterConfig {
 	public static final String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
 	public static final String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
 	public static final String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
+	public static final String KEY_IMAGE_MODE = "IMAGE_MODE";
 	public static final String PREFIX_BALL = "BALL";
 	public static final String PREFIX_MIN = "MIN";
 	public static final String PREFIX_MAX = "MAX";
@@ -191,7 +192,7 @@ public class AutoConverterConfig {
 	 * @param path
 	 * @throws java.io.FileNotFoundException
 	 */
-	public static void save(String path) throws FileNotFoundException {
+	public static synchronized void save(String path) throws FileNotFoundException {
 		File dir = new File((new File(path)).getParent());
 		dir.mkdirs();
 		logger.log(Level.INFO, "Writing config to {0}...", path);

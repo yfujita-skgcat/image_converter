@@ -1,5 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package autoconverter.model;
@@ -7,6 +8,9 @@ package autoconverter.model;
 import autoconverter.controller.ApplicationController;
 import autoconverter.controller.AutoConverterUtils;
 import ij.ImagePlus;
+import ij.ImageStack;
+import ij.process.ImageProcessor;
+import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,54 +20,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * キャプチャ画像. 画像のshotIDやその他の情報をカプセル化する.
  *
  * @author yfujita
  */
-public class CaptureImage {
+public class ExImagePlus extends ImagePlus {
+	// コンストラクタ
 
-	private static final Logger logger = AutoConverterUtils.getLogger();
-	public static final int TYPE_CELAVIEW = 1;
-	public static final int TYPE_IX = 2;
-	public static final int TYPE_UNKNOWN = 3;
-	public static final String NO_SPECIFIED = "";
+	public ExImagePlus(){
+		super();
+	}
+	public ExImagePlus(String title, java.awt.Image image){
+		super(title, image);
+		this.initParameter(new File(title));
+	}
+	public ExImagePlus(String title, ImageProcessor ip){
+		super(title, ip);
+		this.initParameter(new File(title));
+	}
+	public ExImagePlus(String path){
+		super(path);
+		this.initParameter(new File(path));
+	}
+	public ExImagePlus(String title, ImageStack stack){
+		super(title, stack);
+		this.initParameter(new File(title));
+	}
 	/**
-	 * イメージの保存先ディレクトリ
-	 */
-	private String directory;
-	/**
-	 * shotID = [directory, wellName, well, position, slice, time].join("-")
-	 */
-	private String shotID;
-	/**
-	 * imageID = [directory, wellName, well, position, slice, time,
-	 * filter].join("-")
-	 */
-	private String imageID;
-	/**
-	 * 実態のファイル.
-	 */
-	private File file;
-
-	/**
-	 * ApplicationController のinstance
-	 */
-	private ApplicationController appCtrl;
-
-	/**
-	 * ファイルのパラメータ(well, time 等)を保存するHashMap
-	 */
-	private HashMap<String, String> params;
-
-	private final ArrayList<String> keys;
-
-	/**
-	 * ファイルを指定してインスタンスを作製する.
+	 * パスを指定してインスタンスを作製する.
 	 *
 	 * @param _f
 	 */
-	public CaptureImage(File _f) throws IllegalArgumentException, IllegalStateException {
-		this.keys = new ArrayList(Arrays.asList("WELL", "NUM", "POS", "ZPOS", "TIME", "FILTER"));
+	public ExImagePlus(File _f) throws IllegalArgumentException, IllegalStateException {
+		super(_f.getAbsolutePath());
+		this.initParameter(_f);
+	}
+
+	public void initParameter(File _f){
+		//this.keys = new ArrayList(Arrays.asList("WELL", "NUM", "POS", "ZPOS", "TIME", "FILTER"));
+
 		if (_f == null || !_f.canRead()) {
 			return;
 		}
@@ -74,16 +68,16 @@ public class CaptureImage {
 		this.appCtrl = ApplicationController.getInstance();
 		this.file = _f;
 		this.directory = _f.getParent();
-
+		
 		Pattern filePattern = appCtrl.getFilePattern();
 		Matcher matcher = filePattern.matcher(_f.getName());
 		if (matcher.matches()) {
-			for(String key: keys){
+			for(String key: ExImagePlus.keys){
 				try{
 					if(matcher.group(key) == null){
 						params.put(key, "");
 					} else {
-					        params.put(key, matcher.group(key));
+						params.put(key, matcher.group(key));
 					}
 				} catch(IllegalArgumentException e){
 					params.put(key, ""); // "" を入れとかないとエラーになるので...
@@ -103,16 +97,47 @@ public class CaptureImage {
 		this.shotID = ApplicationController.createShotID(directory, params.get("WELL"), params.get("POS"),  params.get("ZPOS"), params.get("TIME"));
 		this.imageID = ApplicationController.createImageID(directory, params.get("WELL"), params.get("POS"),  params.get("ZPOS"), params.get("TIME"), params.get("FILTER"));
 		this.file = _f;
+		
 	}
+	
+	
+	// static メソッドとか
+	private static final Logger logger = AutoConverterUtils.getLogger();
+	public static final int TYPE_CELAVIEW = 1;
+	public static final int TYPE_IX = 2;
+	public static final int TYPE_UNKNOWN = 3;
+	public static final String NO_SPECIFIED = "";
 
 	/**
-	 * パスを指定してインスタンスを作製する.
-	 *
-	 * @param _f
+	 * イメージの保存先ディレクトリ
 	 */
-	public CaptureImage(String _f) {
-		this(new File(_f));
-	}
+	private String directory = null;
+	/**
+	 * shotID = [directory, wellName, well, position, slice, time].join("-")
+	 */
+	private String shotID = null;
+	/**
+	 * imageID = [directory, wellName, well, position, slice, time,
+	 * filter].join("-")
+	 */
+	private String imageID = null;
+	/**
+	 * 実態のファイル.
+	 */
+	private File file = null;
+
+	/**
+	 * ApplicationController のinstance
+	 */
+	private ApplicationController appCtrl = null;
+
+	/**
+	 * ファイルのパラメータ(well, time 等)を保存するHashMap
+	 */
+	private HashMap<String, String> params = null;
+
+	private static final ArrayList<String> keys = new ArrayList(Arrays.asList("WELL", "NUM", "POS", "ZPOS", "TIME", "FILTER"));;
+
 
 	/**
 	 * imageIDが一致するか調べる. nullが与えられると、trueを返す.
@@ -202,7 +227,7 @@ public class CaptureImage {
 		if (_slice == CaptureImage.NO_SPECIFIED) {
 			return true;
 		}
-		return this.getSlice() == _slice;
+		return this.getZPos() == _slice;
 	}
 
 	/**
@@ -262,7 +287,7 @@ public class CaptureImage {
 	/**
 	 * @return the slice
 	 */
-	public String getSlice() {
+	public String getZPos() {
 		return params.get("ZPOS");
 	}
 
@@ -316,8 +341,8 @@ public class CaptureImage {
 
 	}
 
-	public ExImagePlus getImagePlus(){
-		ExImagePlus imp = new ExImagePlus(this.getFile().getAbsolutePath());
+	public ImagePlus getImagePlus(){
+		ImagePlus imp = new ImagePlus(this.getFile().getAbsolutePath());
 		return imp;
 		//ImagePlus imp = new ImagePlus(_cimg.getFile().getAbsolutePath());
 	}

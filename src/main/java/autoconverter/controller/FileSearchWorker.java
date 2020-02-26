@@ -58,6 +58,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		try{
 			for (Iterator<File> it = imageList.iterator(); it.hasNext();) {
 				File f = it.next();
+				logger.fine("Adding: " + f.getName());
 				this.imageSet.addFile(f);
 			}
 		} catch(IllegalArgumentException e){

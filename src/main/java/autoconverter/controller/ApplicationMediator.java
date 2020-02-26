@@ -129,7 +129,8 @@ public interface ApplicationMediator {
 	/**
 	 * 現在のフィルタ設定を保存する.
 	 */
-	public abstract void storeCurrentFilterSettings();
+	public abstract void collectParams();
+	//public abstract void storeCurrentFilterSettings();
 
 	public abstract void setAutoSelected(boolean auto);
 

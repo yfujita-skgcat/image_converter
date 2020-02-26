@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.logging.Logger;
 import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.PlotPanelMediator;
+import ij.process.LUT;
+import java.awt.Color;
 
 /**
  *
@@ -27,6 +29,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
   private ImageProcessor ip;
   private int[] stat;
   private int[] scaled_stat;
+  private Color color;
   private static Logger logger = AutoConverterUtils.getLogger();
   private ImagePlus imp;
   private int original_max; // mean 0-4095
@@ -50,6 +53,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
   public PlotPanel() {
     initComponents();
     original_max = 4096;
+    color = Color.BLACK;
     //File _f1 = new File("/home/yfujita/work/2009/experiment/data/tmp/A1--W00001--P00001--Z00000--T00000--yfujita-BF-10x.tif");
     //File _f2 = new File("/home/yfujita/jst/2009/experiment/data/tmp/A1--W00001--P00001--Z00000--T00000--yfujita-BF-10x.tif");
     //ImagePlus _imp = null;
@@ -184,6 +188,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
     }
     //logger.fine("width = " + x_width);
     //logger.fine("height = " + y_height);
+    g.setColor(color); // 色設定
     if (this.y_max > this.y_height) {
       for (int i = 0; i < this.scaled_stat.length; i++) {
         g.drawLine(this.x_init + i, this.y_init + this.y_height - scaled_stat[i] * y_height / this.y_max, this.x_init + i, this.y_init + this.y_height);
@@ -193,6 +198,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
         g.drawLine(this.x_init + i, this.y_init + this.y_height - scaled_stat[i] , this.x_init + i, this.y_init + this.y_height);
       }
     }
+    g.setColor(Color.BLACK); // 色設定
     // low
     g.drawLine(this.x_init + this.scaled_low_limit, this.y_init, this.x_init + this.scaled_low_limit, this.y_init + this.y_height);
     // high
@@ -267,6 +273,26 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
     return imp;
   }
 
+  public void setColor(String c){
+	  switch(c){
+		 case "Red":
+			 color = Color.RED; break;
+		 case "Green":
+			 color = Color.GREEN; break;
+		 case "Blue":
+			 color = Color.BLUE; break;
+		 case "Gray":
+			 color = Color.GRAY; break;
+		 case "Cyan":
+			 color = Color.CYAN; break;
+		 case "Magenta":
+			 color = Color.MAGENTA; break;
+		 case "Yellow":
+			 color = Color.YELLOW; break;
+		 default: 
+			 color = Color.GRAY; break;
+	  }
+  }
   /**
    * @param imp the imp to set
    */

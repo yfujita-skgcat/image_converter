@@ -24,7 +24,10 @@ import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.ApplicationController;
 import autoconverter.view.range.RangeSlider;
 import java.awt.event.ItemEvent;
+import java.time.Instant;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
 
@@ -34,15 +37,220 @@ import javax.swing.JSpinner;
  */
 public class BaseFrame extends javax.swing.JFrame {
 
+	/**
+	 * @return the jCheckBoxFilter1
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter1() {
+		return jCheckBoxFilter1;
+	}
+
+	/**
+	 * @param jCheckBoxFilter1 the jCheckBoxFilter1 to set
+	 */
+	public void setjCheckBoxFilter1(javax.swing.JCheckBox jCheckBoxFilter1) {
+		this.jCheckBoxFilter1 = jCheckBoxFilter1;
+	}
+
+	/**
+	 * @return the jCheckBoxFilter2
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter2() {
+		return jCheckBoxFilter2;
+	}
+
+	/**
+	 * @param jCheckBoxFilter2 the jCheckBoxFilter2 to set
+	 */
+	public void setjCheckBoxFilter2(javax.swing.JCheckBox jCheckBoxFilter2) {
+		this.jCheckBoxFilter2 = jCheckBoxFilter2;
+	}
+
+	/**
+	 * @return the jCheckBoxFilter3
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter3() {
+		return jCheckBoxFilter3;
+	}
+
+	/**
+	 * @param jCheckBoxFilter3 the jCheckBoxFilter3 to set
+	 */
+	public void setjCheckBoxFilter3(javax.swing.JCheckBox jCheckBoxFilter3) {
+		this.jCheckBoxFilter3 = jCheckBoxFilter3;
+	}
+
+	/**
+	 * @return the jCheckBoxFilter4
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter4() {
+		return jCheckBoxFilter4;
+	}
+
+	/**
+	 * @param jCheckBoxFilter4 the jCheckBoxFilter4 to set
+	 */
+	public void setjCheckBoxFilter4(javax.swing.JCheckBox jCheckBoxFilter4) {
+		this.jCheckBoxFilter4 = jCheckBoxFilter4;
+	}
+
+	/**
+	 * @return the jCheckBoxFilter5
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter5() {
+		return jCheckBoxFilter5;
+	}
+
+	/**
+	 * @param jCheckBoxFilter5 the jCheckBoxFilter5 to set
+	 */
+	public void setjCheckBoxFilter5(javax.swing.JCheckBox jCheckBoxFilter5) {
+		this.jCheckBoxFilter5 = jCheckBoxFilter5;
+	}
+
+	/**
+	 * @return the jCheckBoxFilter6
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter6() {
+		return jCheckBoxFilter6;
+	}
+
+	/**
+	 * @param jCheckBoxFilter6 the jCheckBoxFilter6 to set
+	 */
+	public void setjCheckBoxFilter6(javax.swing.JCheckBox jCheckBoxFilter6) {
+		this.jCheckBoxFilter6 = jCheckBoxFilter6;
+	}
+
+	/**
+	 * @return the jCheckBoxFilter7
+	 */
+	public javax.swing.JCheckBox getjCheckBoxFilter7() {
+		return jCheckBoxFilter7;
+	}
+
+	/**
+	 * @param jCheckBoxFilter7 the jCheckBoxFilter7 to set
+	 */
+	public void setjCheckBoxFilter7(javax.swing.JCheckBox jCheckBoxFilter7) {
+		this.jCheckBoxFilter7 = jCheckBoxFilter7;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible1
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible1() {
+		return jCheckBoxVisible1;
+	}
+
+	/**
+	 * @param jCheckBoxVisible1 the jCheckBoxVisible1 to set
+	 */
+	public void setjCheckBoxVisible1(javax.swing.JCheckBox jCheckBoxVisible1) {
+		this.jCheckBoxVisible1 = jCheckBoxVisible1;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible2
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible2() {
+		return jCheckBoxVisible2;
+	}
+
+	/**
+	 * @param jCheckBoxVisible2 the jCheckBoxVisible2 to set
+	 */
+	public void setjCheckBoxVisible2(javax.swing.JCheckBox jCheckBoxVisible2) {
+		this.jCheckBoxVisible2 = jCheckBoxVisible2;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible3
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible3() {
+		return jCheckBoxVisible3;
+	}
+
+	/**
+	 * @param jCheckBoxVisible3 the jCheckBoxVisible3 to set
+	 */
+	public void setjCheckBoxVisible3(javax.swing.JCheckBox jCheckBoxVisible3) {
+		this.jCheckBoxVisible3 = jCheckBoxVisible3;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible4
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible4() {
+		return jCheckBoxVisible4;
+	}
+
+	/**
+	 * @param jCheckBoxVisible4 the jCheckBoxVisible4 to set
+	 */
+	public void setjCheckBoxVisible4(javax.swing.JCheckBox jCheckBoxVisible4) {
+		this.jCheckBoxVisible4 = jCheckBoxVisible4;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible5
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible5() {
+		return jCheckBoxVisible5;
+	}
+
+	/**
+	 * @param jCheckBoxVisible5 the jCheckBoxVisible5 to set
+	 */
+	public void setjCheckBoxVisible5(javax.swing.JCheckBox jCheckBoxVisible5) {
+		this.jCheckBoxVisible5 = jCheckBoxVisible5;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible6
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible6() {
+		return jCheckBoxVisible6;
+	}
+
+	/**
+	 * @param jCheckBoxVisible6 the jCheckBoxVisible6 to set
+	 */
+	public void setjCheckBoxVisible6(javax.swing.JCheckBox jCheckBoxVisible6) {
+		this.jCheckBoxVisible6 = jCheckBoxVisible6;
+	}
+
+	/**
+	 * @return the jCheckBoxVisible7
+	 */
+	public javax.swing.JCheckBox getjCheckBoxVisible7() {
+		return jCheckBoxVisible7;
+	}
+
+	/**
+	 * @param jCheckBoxVisible7 the jCheckBoxVisible7 to set
+	 */
+	public void setjCheckBoxVisible7(javax.swing.JCheckBox jCheckBoxVisible7) {
+		this.jCheckBoxVisible7 = jCheckBoxVisible7;
+	}
+
 	private static Logger logger = AutoConverterUtils.getLogger();
 	public static final int MAX_CARD_SIZE = 3;
 	private boolean active = true;
 	private int active_stack = 1;
 	private final IntegerVerifier inputverifier;
 	private final ApplicationController appController;
+	public static final int IMAGE_MODE_SINGLE = 1;
+	public static final int IMAGE_MODE_MERGE  = 2;
+	public static final int IMAGE_MODE_RELATIVE = 3;
+	private ArrayList<JCheckBox> filterCheckBoxList;
+	private ArrayList<JCheckBox> visibleCheckBoxList;
+	private Object lastObj = null; // 最後にイベントから呼ばれたオブジェクト
+	//private Instant timer; // 最後にイベントから呼ばれた時間
+	private long timer = 0; // 最後にイベントから呼ばれた時間
+	private static final long inactive_time = 500; // 連続で同じイベントが来たときに無視する時間
 
 	public void enableListener(boolean flag) {
-// enable するとactive状態になる. < 1 の時はListenerが動かない
+	// enable するとactive状態になる. < 1 の時はListenerが動かない
 		if (flag) {
 			active_stack++;
 		} else {
@@ -53,7 +261,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		} else {
 			active = false;
 		}
-//logger.fine("active_stack = " + active_stack);
+	//logger.fine("active_stack = " + active_stack);
 	}
 
 	/**
@@ -80,6 +288,24 @@ public class BaseFrame extends javax.swing.JFrame {
 		inputverifier = new IntegerVerifier();
 
 		initComponents();
+
+		// checkbox をまとめておく
+		this.filterCheckBoxList = new ArrayList();
+		this.visibleCheckBoxList = new ArrayList();
+		this.filterCheckBoxList.add(jCheckBoxFilter1);
+		this.filterCheckBoxList.add(jCheckBoxFilter2);
+		this.filterCheckBoxList.add(jCheckBoxFilter3);
+		this.filterCheckBoxList.add(jCheckBoxFilter4);
+		this.filterCheckBoxList.add(jCheckBoxFilter5);
+		this.filterCheckBoxList.add(jCheckBoxFilter6);
+		this.filterCheckBoxList.add(jCheckBoxFilter7);
+		this.visibleCheckBoxList.add(jCheckBoxVisible1);
+		this.visibleCheckBoxList.add(jCheckBoxVisible2);
+		this.visibleCheckBoxList.add(jCheckBoxVisible3);
+		this.visibleCheckBoxList.add(jCheckBoxVisible4);
+		this.visibleCheckBoxList.add(jCheckBoxVisible5);
+		this.visibleCheckBoxList.add(jCheckBoxVisible6);
+		this.visibleCheckBoxList.add(jCheckBoxVisible7);
 
 // crop 位置のロード
 		this.xTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, "0", null));
@@ -223,29 +449,29 @@ public class BaseFrame extends javax.swing.JFrame {
                 wellSelectCBox = new javax.swing.JComboBox();
                 positionSelectCBox = new javax.swing.JComboBox();
                 timeSelectCBox = new javax.swing.JComboBox();
-                filterSelectCBox = new javax.swing.JComboBox();
                 zSelectCBox = new javax.swing.JComboBox();
                 imagePropertyPanel = new javax.swing.JPanel();
                 colorSelectScrollPane = new javax.swing.JScrollPane();
                 colorSelectPanel = new javax.swing.JPanel();
-                modeSelecter = new javax.swing.JComboBox();
+                modeSelector = new javax.swing.JComboBox();
                 colorChannelSelector = new javax.swing.JComboBox();
-                channelLabel = new java.awt.Label();
-                jCheckBox1 = new javax.swing.JCheckBox();
-                jCheckBox2 = new javax.swing.JCheckBox();
-                jCheckBox3 = new javax.swing.JCheckBox();
-                jCheckBox4 = new javax.swing.JCheckBox();
-                jCheckBox5 = new javax.swing.JCheckBox();
-                jCheckBox6 = new javax.swing.JCheckBox();
-                jCheckBox7 = new javax.swing.JCheckBox();
-                visibleLabel = new java.awt.Label();
-                jCheckBox8 = new javax.swing.JCheckBox();
-                jCheckBox9 = new javax.swing.JCheckBox();
-                jCheckBox10 = new javax.swing.JCheckBox();
-                jCheckBox11 = new javax.swing.JCheckBox();
-                jCheckBox12 = new javax.swing.JCheckBox();
-                jCheckBox13 = new javax.swing.JCheckBox();
-                jCheckBox14 = new javax.swing.JCheckBox();
+                jCheckBoxFilter1 = new javax.swing.JCheckBox();
+                jCheckBoxFilter2 = new javax.swing.JCheckBox();
+                jCheckBoxFilter3 = new javax.swing.JCheckBox();
+                jCheckBoxFilter4 = new javax.swing.JCheckBox();
+                jCheckBoxFilter5 = new javax.swing.JCheckBox();
+                jCheckBoxFilter6 = new javax.swing.JCheckBox();
+                jCheckBoxFilter7 = new javax.swing.JCheckBox();
+                jCheckBoxVisible1 = new javax.swing.JCheckBox();
+                jCheckBoxVisible2 = new javax.swing.JCheckBox();
+                jCheckBoxVisible3 = new javax.swing.JCheckBox();
+                jCheckBoxVisible4 = new javax.swing.JCheckBox();
+                jCheckBoxVisible5 = new javax.swing.JCheckBox();
+                jCheckBoxVisible6 = new javax.swing.JCheckBox();
+                jCheckBoxVisible7 = new javax.swing.JCheckBox();
+                jLabelVisible = new javax.swing.JLabel();
+                jLabelFilter = new javax.swing.JLabel();
+                filterSelectCBox = new javax.swing.JComboBox();
                 brightnessPanel = new javax.swing.JPanel();
                 scalePanel = new javax.swing.JPanel();
                 spinnerPanel = new javax.swing.JPanel();
@@ -297,11 +523,11 @@ public class BaseFrame extends javax.swing.JFrame {
                         }
                 });
                 addWindowListener(new java.awt.event.WindowAdapter() {
-                        public void windowClosing(java.awt.event.WindowEvent evt) {
-                                formWindowClosing(evt);
-                        }
                         public void windowClosed(java.awt.event.WindowEvent evt) {
                                 formWindowClosed(evt);
+                        }
+                        public void windowClosing(java.awt.event.WindowEvent evt) {
+                                formWindowClosing(evt);
                         }
                 });
 
@@ -547,14 +773,6 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 imageChangePanel.add(timeSelectCBox);
 
-                filterSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<FILTER>" }));
-                filterSelectCBox.addItemListener(new java.awt.event.ItemListener() {
-                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                                imageSelectorChanged(evt);
-                        }
-                });
-                imageChangePanel.add(filterSelectCBox);
-
                 zSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<ZPOS>" }));
                 zSelectCBox.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -575,20 +793,19 @@ public class BaseFrame extends javax.swing.JFrame {
                 colorSelectPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, bundle.getString("BaseFrame.colorSelectPanel.border.title"), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION)); // NOI18N
                 colorSelectPanel.setLayout(new java.awt.GridBagLayout());
 
-                modeSelecter.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Single", "Merge" }));
-                modeSelecter.setEnabled(false);
-                modeSelecter.setPreferredSize(new java.awt.Dimension(150, 30));
-                modeSelecter.addItemListener(new java.awt.event.ItemListener() {
+                modeSelector.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Single", "Merge", "Relative" }));
+                modeSelector.setPreferredSize(new java.awt.Dimension(150, 30));
+                modeSelector.addItemListener(new java.awt.event.ItemListener() {
                         public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                                modeSelecterItemStateChanged(evt);
+                                modeSelectorItemStateChanged(evt);
                         }
                 });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 0;
                 gridBagConstraints.gridwidth = 2;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(modeSelecter, gridBagConstraints);
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(modeSelector, gridBagConstraints);
 
                 colorChannelSelector.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Grays", "Magenta", "Blue", "Cyan", "Green", "Yellow", "Red" }));
                 colorChannelSelector.setPreferredSize(new java.awt.Dimension(150, 30));
@@ -601,126 +818,220 @@ public class BaseFrame extends javax.swing.JFrame {
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 1;
                 gridBagConstraints.gridwidth = 2;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
                 colorSelectPanel.add(colorChannelSelector, gridBagConstraints);
 
-                channelLabel.setAlignment(java.awt.Label.CENTER);
-                channelLabel.setText(bundle.getString("BaseFrame.channelLabel.text")); // NOI18N
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 1;
-                gridBagConstraints.gridy = 2;
-                colorSelectPanel.add(channelLabel, gridBagConstraints);
-
-                jCheckBox1.setText(bundle.getString("BaseFrame.jCheckBox1.text")); // NOI18N
-                jCheckBox1.setEnabled(false);
-                jCheckBox1.setMaximumSize(new java.awt.Dimension(200, 22));
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 1;
-                gridBagConstraints.gridy = 3;
-                colorSelectPanel.add(jCheckBox1, gridBagConstraints);
-
-                jCheckBox2.setText(bundle.getString("BaseFrame.jCheckBox2.text")); // NOI18N
-                jCheckBox2.setEnabled(false);
-                jCheckBox2.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter1.setText(bundle.getString("BaseFrame.jCheckBoxFilter1.text")); // NOI18N
+                jCheckBoxFilter1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter1.setBorderPainted(true);
+                jCheckBoxFilter1.setEnabled(false);
+                jCheckBoxFilter1.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter1.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter1ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.gridy = 4;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(jCheckBox2, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter1, gridBagConstraints);
+                jCheckBoxFilter1.getAccessibleContext().setAccessibleDescription(bundle.getString("BaseFrame.jCheckBoxFilter1.AccessibleContext.accessibleDescription")); // NOI18N
 
-                jCheckBox3.setText(bundle.getString("BaseFrame.jCheckBox3.text")); // NOI18N
-                jCheckBox3.setEnabled(false);
-                jCheckBox3.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter2.setText(bundle.getString("BaseFrame.jCheckBoxFilter2.text")); // NOI18N
+                jCheckBoxFilter2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter2.setBorderPainted(true);
+                jCheckBoxFilter2.setEnabled(false);
+                jCheckBoxFilter2.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter2.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter2ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.gridy = 5;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(jCheckBox3, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter2, gridBagConstraints);
 
-                jCheckBox4.setText(bundle.getString("BaseFrame.jCheckBox4.text")); // NOI18N
-                jCheckBox4.setEnabled(false);
-                jCheckBox4.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter3.setText(bundle.getString("BaseFrame.jCheckBoxFilter3.text")); // NOI18N
+                jCheckBoxFilter3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter3.setBorderPainted(true);
+                jCheckBoxFilter3.setEnabled(false);
+                jCheckBoxFilter3.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter3.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter3ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.gridy = 6;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(jCheckBox4, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter3, gridBagConstraints);
 
-                jCheckBox5.setText(bundle.getString("BaseFrame.jCheckBox5.text")); // NOI18N
-                jCheckBox5.setEnabled(false);
-                jCheckBox5.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter4.setText(bundle.getString("BaseFrame.jCheckBoxFilter4.text")); // NOI18N
+                jCheckBoxFilter4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter4.setBorderPainted(true);
+                jCheckBoxFilter4.setEnabled(false);
+                jCheckBoxFilter4.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter4.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter4ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.gridy = 7;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(jCheckBox5, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter4, gridBagConstraints);
 
-                jCheckBox6.setText(bundle.getString("BaseFrame.jCheckBox6.text")); // NOI18N
-                jCheckBox6.setEnabled(false);
-                jCheckBox6.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter5.setText(bundle.getString("BaseFrame.jCheckBoxFilter5.text")); // NOI18N
+                jCheckBoxFilter5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter5.setBorderPainted(true);
+                jCheckBoxFilter5.setEnabled(false);
+                jCheckBoxFilter5.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter5.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter5ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.gridy = 8;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(jCheckBox6, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter5, gridBagConstraints);
 
-                jCheckBox7.setText(bundle.getString("BaseFrame.jCheckBox7.text")); // NOI18N
-                jCheckBox7.setEnabled(false);
-                jCheckBox7.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter6.setText(bundle.getString("BaseFrame.jCheckBoxFilter6.text")); // NOI18N
+                jCheckBoxFilter6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter6.setBorderPainted(true);
+                jCheckBoxFilter6.setEnabled(false);
+                jCheckBoxFilter6.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter6.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter6ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 1;
                 gridBagConstraints.gridy = 9;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                colorSelectPanel.add(jCheckBox7, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter6, gridBagConstraints);
 
-                visibleLabel.setAlignment(java.awt.Label.RIGHT);
-                visibleLabel.setText(bundle.getString("BaseFrame.visibleLabel.text")); // NOI18N
+                jCheckBoxFilter7.setText(bundle.getString("BaseFrame.jCheckBoxFilter7.text")); // NOI18N
+                jCheckBoxFilter7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxFilter7.setBorderPainted(true);
+                jCheckBoxFilter7.setEnabled(false);
+                jCheckBoxFilter7.setMaximumSize(new java.awt.Dimension(200, 22));
+                jCheckBoxFilter7.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jCheckBoxFilter7ActionPerformed(evt);
+                        }
+                });
                 gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 2;
-                colorSelectPanel.add(visibleLabel, gridBagConstraints);
+                gridBagConstraints.gridx = 1;
+                gridBagConstraints.gridy = 10;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jCheckBoxFilter7, gridBagConstraints);
 
-                jCheckBox8.setEnabled(false);
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 3;
-                colorSelectPanel.add(jCheckBox8, gridBagConstraints);
-
-                jCheckBox9.setEnabled(false);
+                jCheckBoxVisible1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible1.setBorderPainted(true);
+                jCheckBoxVisible1.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 4;
-                colorSelectPanel.add(jCheckBox9, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible1, gridBagConstraints);
 
-                jCheckBox10.setEnabled(false);
+                jCheckBoxVisible2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible2.setBorderPainted(true);
+                jCheckBoxVisible2.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 5;
-                colorSelectPanel.add(jCheckBox10, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible2, gridBagConstraints);
 
-                jCheckBox11.setEnabled(false);
+                jCheckBoxVisible3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible3.setBorderPainted(true);
+                jCheckBoxVisible3.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 6;
-                colorSelectPanel.add(jCheckBox11, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible3, gridBagConstraints);
 
-                jCheckBox12.setEnabled(false);
+                jCheckBoxVisible4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible4.setBorderPainted(true);
+                jCheckBoxVisible4.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 7;
-                colorSelectPanel.add(jCheckBox12, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible4, gridBagConstraints);
 
-                jCheckBox13.setEnabled(false);
+                jCheckBoxVisible5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible5.setBorderPainted(true);
+                jCheckBoxVisible5.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 8;
-                colorSelectPanel.add(jCheckBox13, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible5, gridBagConstraints);
 
-                jCheckBox14.setEnabled(false);
+                jCheckBoxVisible6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible6.setBorderPainted(true);
+                jCheckBoxVisible6.setEnabled(false);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 9;
-                colorSelectPanel.add(jCheckBox14, gridBagConstraints);
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible6, gridBagConstraints);
+
+                jCheckBoxVisible7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                jCheckBoxVisible7.setBorderPainted(true);
+                jCheckBoxVisible7.setEnabled(false);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 10;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                colorSelectPanel.add(jCheckBoxVisible7, gridBagConstraints);
+
+                jLabelVisible.setText(bundle.getString("BaseFrame.jLabelVisible.text")); // NOI18N
+                jLabelVisible.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 3;
+                colorSelectPanel.add(jLabelVisible, gridBagConstraints);
+
+                jLabelFilter.setText(bundle.getString("BaseFrame.jLabelFilter.text")); // NOI18N
+                jLabelFilter.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 1;
+                gridBagConstraints.gridy = 3;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(jLabelFilter, gridBagConstraints);
+
+                filterSelectCBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<FILTER>" }));
+                filterSelectCBox.addItemListener(new java.awt.event.ItemListener() {
+                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                                imageSelectorChanged(evt);
+                        }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 2;
+                gridBagConstraints.gridwidth = 2;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                colorSelectPanel.add(filterSelectCBox, gridBagConstraints);
 
                 colorSelectScrollPane.setViewportView(colorSelectPanel);
 
@@ -847,7 +1158,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1110, Short.MAX_VALUE)
+                        .addGap(0, 1098, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1246,18 +1557,39 @@ private void recursiveRadioButtonActionPerformed(java.awt.event.ActionEvent evt)
 	appController.storeRecursiveSetting(false);
 }//GEN-LAST:event_recursiveRadioButtonActionPerformed
 
-private void modeSelecterItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeSelecterItemStateChanged
+private void modeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeSelectorItemStateChanged
 	if (!active) {
 		return;
 	}
+	String mode = evt.getItem().toString();
+	this.enableListener(false);
+	if(mode.equals("Single")){
+		appController.setImageMode(BaseFrame.IMAGE_MODE_SINGLE);
+	} else if(mode.equals("Merge")){
+		appController.setImageMode(BaseFrame.IMAGE_MODE_MERGE);
+	} else if(mode.equals("Relative")){
+		appController.setImageMode(BaseFrame.IMAGE_MODE_RELATIVE);
+	} else {
+		getLogger().warning("不明なモード:" + mode);
+	}
+	this.enableListener(true);
+	appController.collectParams();
+	appController.updateImage();
 	getLogger().fine(evt.getItem().toString());
-}//GEN-LAST:event_modeSelecterItemStateChanged
+}//GEN-LAST:event_modeSelectorItemStateChanged
 
 private void colorChannelSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_colorChannelSelectorItemStateChanged
 	if (!active) {
 		return;
 	}
-	this.appController.setColor(evt.getItem().toString());
+	this.appController.collectParams(evt.getSource());
+	logger.fine("colorChannelSelector changed to " + evt.getItem().toString());
+	//this.appController.setColor(evt.getItem().toString());
+	this.appController.collectParams(evt.getSource());
+	this.enableListener(false);
+	appController.updateImage();
+	//this.appController.setColor();
+	this.enableListener(true);
 }//GEN-LAST:event_colorChannelSelectorItemStateChanged
 
 	/**
@@ -1278,9 +1610,17 @@ private void imageSelectorChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:eve
 	String slice = (String) this.getzSelectCBox().getSelectedItem();
 	String time = (String) this.getTimeSelectCBox().getSelectedItem();
 	String filter = (String) this.getFilterSelectCBox().getSelectedItem();
+	// filter が変更されたときは、現行のComponentのパラメータではなく、stored... 保存のパラメータにComponentの状態を復帰する
+	if(evt.getSource() == this.filterSelectCBox){
+		logger.fine("================ filter => " + filter + " ===================");
+		// フィルタが変更された場合はパラメータを設定し直さなければならないので、強制的にcomponentの状態をupdateする
+		// ただし、merge モードだったらmin, max
+		this.getAppController().applyParams(true);
+	}
+	//this.getAppController().collectParams();
 	String imageID = ApplicationController.createImageID(dir, wellname, position, slice, time, filter);
 	this.getAppController().updateImage(imageID);
-	this.getAppController().updateDensityPlot();
+	//this.getAppController().updateDensityPlot();
 
 }//GEN-LAST:event_imageSelectorChanged
 
@@ -1291,13 +1631,10 @@ private void scaleRangeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//
 	}
 // TODO add your handling code here:
 	if (evt.getSource() == this.getScaleRangeSlider()) {
-		int lower = this.scaleRangeSlider.getValue();
-		int upper = this.getScaleRangeSlider().getUpperValue();
-		this.enableListener(false);
-		this.getAppController().setScaleValues(lower, upper, false);
-		this.getAppController().setScaleMaxValues(upper);
-		this.getAppController().updateDensityPlot();
-		this.enableListener(true);
+		logger.fine("Slider Changed");
+		this.getAppController().collectParams(evt.getSource());
+		this.getAppController().applyParams();
+		//this.getAppController().updateImage();
 	}
 }//GEN-LAST:event_scaleRangeSliderStateChanged
 
@@ -1320,9 +1657,9 @@ private void maxSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
 		}
 		this.getAppController().setMinSpinnerMax(max - 1);
 		this.getScaleRangeSlider().setUpperValue(max);
-		this.getAppController().updateDensityPlot();
+		this.appController.collectParams(evt.getSource());
+		this.getAppController().updateImage();
 		this.enableListener(true);
-		this.appController.storeCurrentFilterSettings(false);
 	}
 }//GEN-LAST:event_maxSpinnerStateChanged
 
@@ -1345,9 +1682,9 @@ private void minSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
 		}
 		this.getAppController().setMaxSpinnerMin(min + 1);
 		this.getScaleRangeSlider().setLowerValue(min);
-		this.getAppController().updateDensityPlot();
+		this.appController.collectParams(evt.getSource());
+		this.getAppController().updateImage();
 		this.enableListener(true);
-		this.appController.storeCurrentFilterSettings(false);
 	}
 }//GEN-LAST:event_minSpinnerStateChanged
 
@@ -1357,8 +1694,11 @@ private void autoRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 	}
 	if (evt.getSource() == this.getAutoRadioButton() && this.getAutoRadioButton().isSelected()) {
 		this.appController.configAutoRelatedComponents(true);
+		this.getAppController().collectParams();
 		this.appController.adjustValues();
-		this.appController.storeCurrentFilterSettings(false);
+		this.getAppController().applyParams(evt.getSource());
+		this.appController.updateImage();
+		//this.appController.storeCurrentFilterSettings(false);
 	}
 }//GEN-LAST:event_autoRadioButtonActionPerformed
 
@@ -1368,7 +1708,10 @@ private void manualRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {/
 	}
 	if (evt.getSource() == this.getManualRadioButton() && this.getManualRadioButton().isSelected()) {
 		this.appController.configAutoRelatedComponents(false);
-		this.appController.storeCurrentFilterSettings(false);
+		this.getAppController().collectParams(evt.getSource());
+		this.getAppController().applyParams(evt.getSource());
+		//this.appController.storeCurrentFilterSettings(false);
+		this.appController.updateImage();
 	}
 }//GEN-LAST:event_manualRadioButtonActionPerformed
 
@@ -1382,7 +1725,8 @@ private void adjustButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 		return;
 	}
 	this.appController.adjustValues();
-	this.appController.storeCurrentFilterSettings(false);
+	//this.appController.storeCurrentFilterSettings(false);
+	this.appController.updateImage();
 }//GEN-LAST:event_adjustButtonActionPerformed
 
 private void convertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertButtonActionPerformed
@@ -1398,7 +1742,8 @@ private void ballSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//G
 	}
 	if (evt.getSource() == this.getBallSizeSpinner()) {
 		JSpinner spinner = (JSpinner) evt.getSource();
-		this.appController.storeCurrentFilterSettings(false);
+		//this.appController.storeCurrentFilterSettings(false);
+		this.appController.collectParams(evt.getSource());
 		this.appController.updateImage();
 	}
 }//GEN-LAST:event_ballSizeSpinnerStateChanged
@@ -1469,11 +1814,12 @@ private void autoTypeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//G
 	if (evt.getStateChange() != ItemEvent.SELECTED) {
 		return;
 	}
+	appController.collectParams(evt.getSource());
 
 	if (this.autoRadioButton.isSelected()) {
 		appController.adjustValues();
 	}
-	appController.storeCurrentFilterSettings(false);
+	//appController.storeCurrentFilterSettings(false);
 }//GEN-LAST:event_autoTypeComboBoxItemStateChanged
 
 private void addParamRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_addParamRadioButtonStateChanged
@@ -1551,7 +1897,8 @@ private void scaleRangeSliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN
 * rangeSlider をドラッグ中に毎回Hashに保存しているとちょっと付加が高い & どうなるかわからないので
 * マウスを離した時にだけ保存するようにしてみた.
 	 */
-	appController.storeCurrentFilterSettings(false);
+	//appController.storeCurrentFilterSettings(false);
+	appController.collectParams(evt.getSource());
 }//GEN-LAST:event_scaleRangeSliderMouseReleased
 
 private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -1575,6 +1922,56 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	System.exit(0);
 }//GEN-LAST:event_exitButtonActionPerformed
 
+
+        private void jCheckBoxFilter1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter1ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter1ActionPerformed
+
+        private void jCheckBoxFilter2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter2ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter2ActionPerformed
+
+        private void jCheckBoxFilter3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter3ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter3ActionPerformed
+
+        private void jCheckBoxFilter4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter4ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter4ActionPerformed
+
+        private void jCheckBoxFilter5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter5ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter5ActionPerformed
+
+        private void jCheckBoxFilter6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter6ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter6ActionPerformed
+
+        private void jCheckBoxFilter7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter7ActionPerformed
+                // TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateImage();
+		this.enableListener(true);
+        }//GEN-LAST:event_jCheckBoxFilter7ActionPerformed
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JRadioButton addParamRadioButton;
         private javax.swing.JButton adjustButton;
@@ -1587,7 +1984,6 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         private javax.swing.JButton cancelButton;
         private javax.swing.JPanel cardMovePanel;
         private javax.swing.JPanel centerPanel;
-        private java.awt.Label channelLabel;
         private javax.swing.JPanel checkBoxPanel;
         public javax.swing.JComboBox colorChannelSelector;
         private javax.swing.JPanel colorSelectPanel;
@@ -1615,20 +2011,22 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         private autoconverter.view.ImagePanel imagePanel;
         private javax.swing.JPanel imagePropertyPanel;
         private javax.swing.JScrollPane imageScrollPane;
-        private javax.swing.JCheckBox jCheckBox1;
-        private javax.swing.JCheckBox jCheckBox10;
-        private javax.swing.JCheckBox jCheckBox11;
-        private javax.swing.JCheckBox jCheckBox12;
-        private javax.swing.JCheckBox jCheckBox13;
-        private javax.swing.JCheckBox jCheckBox14;
-        private javax.swing.JCheckBox jCheckBox2;
-        private javax.swing.JCheckBox jCheckBox3;
-        private javax.swing.JCheckBox jCheckBox4;
-        private javax.swing.JCheckBox jCheckBox5;
-        private javax.swing.JCheckBox jCheckBox6;
-        private javax.swing.JCheckBox jCheckBox7;
-        private javax.swing.JCheckBox jCheckBox8;
-        private javax.swing.JCheckBox jCheckBox9;
+        private javax.swing.JCheckBox jCheckBoxFilter1;
+        private javax.swing.JCheckBox jCheckBoxFilter2;
+        private javax.swing.JCheckBox jCheckBoxFilter3;
+        private javax.swing.JCheckBox jCheckBoxFilter4;
+        private javax.swing.JCheckBox jCheckBoxFilter5;
+        private javax.swing.JCheckBox jCheckBoxFilter6;
+        private javax.swing.JCheckBox jCheckBoxFilter7;
+        private javax.swing.JCheckBox jCheckBoxVisible1;
+        private javax.swing.JCheckBox jCheckBoxVisible2;
+        private javax.swing.JCheckBox jCheckBoxVisible3;
+        private javax.swing.JCheckBox jCheckBoxVisible4;
+        private javax.swing.JCheckBox jCheckBoxVisible5;
+        private javax.swing.JCheckBox jCheckBoxVisible6;
+        private javax.swing.JCheckBox jCheckBoxVisible7;
+        private javax.swing.JLabel jLabelFilter;
+        private javax.swing.JLabel jLabelVisible;
         private javax.swing.JMenuBar jMenuBar1;
         private javax.swing.JPanel jPanel1;
         private javax.swing.JPanel jPanel2;
@@ -1637,7 +2035,7 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         private javax.swing.JSpinner maxSpinner;
         private javax.swing.JLabel messageLabel;
         private javax.swing.JSpinner minSpinner;
-        public javax.swing.JComboBox modeSelecter;
+        private javax.swing.JComboBox modeSelector;
         private javax.swing.JButton nextButton;
         private javax.swing.JPanel paramPanel;
         private autoconverter.view.PlotPanel plotPanel;
@@ -1667,7 +2065,6 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         private javax.swing.JLabel summaryLabel;
         private javax.swing.JScrollPane summaryScrollPane;
         private javax.swing.JComboBox timeSelectCBox;
-        private java.awt.Label visibleLabel;
         private javax.swing.JLabel wLabel;
         private javax.swing.JFormattedTextField wTextField;
         private javax.swing.JComboBox wellSelectCBox;
@@ -1778,12 +2175,6 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		return centerPanel;
 	}
 
-	/**
-	 * @return the channelLabel
-	 */
-	public java.awt.Label getChannelLabel() {
-		return channelLabel;
-	}
 
 	/**
 	 * @return the colorSelectPanel
@@ -1848,115 +2239,18 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		return imageScrollPane;
 	}
 
-	/**
-	 * @return the jCheckBox1
-	 */
-	public javax.swing.JCheckBox getjCheckBox1() {
-		return jCheckBox1;
-	}
-
-	/**
-	 * @return the jCheckBox10
-	 */
-	public javax.swing.JCheckBox getjCheckBox10() {
-		return jCheckBox10;
-	}
-
-	/**
-	 * @return the jCheckBox11
-	 */
-	public javax.swing.JCheckBox getjCheckBox11() {
-		return jCheckBox11;
-	}
-
-	/**
-	 * @return the jCheckBox12
-	 */
-	public javax.swing.JCheckBox getjCheckBox12() {
-		return jCheckBox12;
-	}
-
-	/**
-	 * @return the jCheckBox13
-	 */
-	public javax.swing.JCheckBox getjCheckBox13() {
-		return jCheckBox13;
-	}
-
-	/**
-	 * @return the jCheckBox14
-	 */
-	public javax.swing.JCheckBox getjCheckBox14() {
-		return jCheckBox14;
-	}
-
-	/**
-	 * @return the jCheckBox2
-	 */
-	public javax.swing.JCheckBox getjCheckBox2() {
-		return jCheckBox2;
-	}
-
-	/**
-	 * @return the jCheckBox3
-	 */
-	public javax.swing.JCheckBox getjCheckBox3() {
-		return jCheckBox3;
-	}
-
-	/**
-	 * @return the jCheckBox4
-	 */
-	public javax.swing.JCheckBox getjCheckBox4() {
-		return jCheckBox4;
-	}
-
-	/**
-	 * @return the jCheckBox5
-	 */
-	public javax.swing.JCheckBox getjCheckBox5() {
-		return jCheckBox5;
-	}
-
-	/**
-	 * @return the jCheckBox6
-	 */
-	public javax.swing.JCheckBox getjCheckBox6() {
-		return jCheckBox6;
-	}
-
-	/**
-	 * @return the jCheckBox7
-	 */
-	public javax.swing.JCheckBox getjCheckBox7() {
-		return jCheckBox7;
-	}
-
-	/**
-	 * @return the jCheckBox8
-	 */
-	public javax.swing.JCheckBox getjCheckBox8() {
-		return jCheckBox8;
-	}
-
-	/**
-	 * @return the jCheckBox9
-	 */
-	public javax.swing.JCheckBox getjCheckBox9() {
-		return jCheckBox9;
-	}
 
 	/**
 	 * @return the jComboBox1
 	 */
 	public javax.swing.JComboBox getjComboBox1() {
-		return modeSelecter;
+		return getModeSelector();
 	}
 
 	/**
 	 * @return the jComboBox2
 	 */
-	public javax.swing.JComboBox getjComboBox2() {
+	public javax.swing.JComboBox getColorChannelSelector() {
 		return colorChannelSelector;
 	}
 
@@ -2079,12 +2373,6 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		return southPanel;
 	}
 
-	/**
-	 * @return the visibleLabel
-	 */
-	public java.awt.Label getVisibleLabel() {
-		return visibleLabel;
-	}
 
 	/**
 	 * @return the brightnessAutoGroup
@@ -2361,6 +2649,34 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	 */
 	public void sethTextField(javax.swing.JFormattedTextField hTextField) {
 		this.hTextField = hTextField;
+	}
+
+	/**
+	 * @return the filterCheckBoxList
+	 */
+	public ArrayList<JCheckBox> getFilterCheckBoxList() {
+		return filterCheckBoxList;
+	}
+
+	/**
+	 * @return the visibleCheckBoxList
+	 */
+	public ArrayList<JCheckBox> getVisibleCheckBoxList() {
+		return visibleCheckBoxList;
+	}
+
+	/**
+	 * @return the modeSelector
+	 */
+	public javax.swing.JComboBox getModeSelector() {
+		return modeSelector;
+	}
+
+	/**
+	 * @param modeSelector the modeSelector to set
+	 */
+	public void setModeSelector(javax.swing.JComboBox modeSelector) {
+		this.modeSelector = modeSelector;
 	}
 
 }
