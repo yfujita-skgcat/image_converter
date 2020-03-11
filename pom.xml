@@ -21,9 +21,10 @@
 	<description>A Maven project implementing an ImageJ 1.x plugin</description>
 	-->
 
+
 	<groupId>saitolab.imgconv</groupId>
 	<artifactId>Img_Conv</artifactId>
-	<version>0.3.12</version>
+	<version>0.5.0</version>
 
 	<name>image converter plugins/Img_Conv.jar</name>
 	<description>A project for image converter</description>
@@ -62,6 +63,7 @@
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
+		 <version>1.52t</version>
 		</dependency>
 	 <dependency>
 	  <groupId>org.jdesktop</groupId>
@@ -82,16 +84,35 @@
 					</archive>
 				</configuration>
 			</plugin>
-		 <plugin>
-		  <groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-compiler-plugin</artifactId>
-		  <version>2.3.2</version>
-		  <configuration>
-		   <source>1.8</source>
-		   <target>1.8</target>
-		  </configuration>
-		 </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
+			<!--
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					...
+				</configuration>
+			</plugin>
+			-->
+
 		</plugins>
+		<!--
+		<resources>
+			<resource>
+				<directory>#{project.basdir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		-->
+
 	</build>
 
 </project>

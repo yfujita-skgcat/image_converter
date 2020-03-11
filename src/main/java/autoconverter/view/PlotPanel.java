@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.logging.Logger;
 import autoconverter.controller.AutoConverterUtils;
 import autoconverter.controller.PlotPanelMediator;
+import ij.process.FloatProcessor;
 import ij.process.LUT;
 import java.awt.Color;
 
@@ -274,6 +275,10 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
   }
 
   public void setColor(String c){
+	  if(c==null){
+		  c = "Grays";
+	  }
+	  logger.fine("c=" + c);
 	  switch(c){
 		 case "Red":
 			 color = Color.RED; break;
@@ -281,7 +286,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 			 color = Color.GREEN; break;
 		 case "Blue":
 			 color = Color.BLUE; break;
-		 case "Gray":
+		 case "Grays":
 			 color = Color.GRAY; break;
 		 case "Cyan":
 			 color = Color.CYAN; break;
@@ -306,6 +311,21 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
     }
     this.ip = imp.getProcessor();
     this.stat = this.ip.getHistogram();
+    //logger.fine("original_max="+original_max);
+    //logger.fine("stat="+stat);
+    if(stat == null){
+	    logger.fine("stat=null");
+	    FloatProcessor fp = this.ip.convertToFloatProcessor();
+	    this.stat = fp.getHistogram();
+	    if(this.stat== null){
+		    logger.fine("fp.getHistgram() == null");
+		    logger.fine("fp.getHistgramMin()=" + fp.getHistogramMin());
+		    logger.fine("fp.getHistgramMax()="+ fp.getHistogramMax());
+		    logger.fine("fp.getHistgramSize()=" + fp.getHistogramSize());
+		    return;
+	    }
+	    return;
+    }
     if(original_max > stat.length){
 	    int[] tmp = this.stat;
 	    this.stat = new int[original_max];

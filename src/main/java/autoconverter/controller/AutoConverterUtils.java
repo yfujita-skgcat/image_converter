@@ -26,7 +26,7 @@ import java.io.StringWriter;
  */
 public class AutoConverterUtils {
 
-	static public final String VERSION = "0.4.0";
+	//static public final String VERSION = "0.4.0";
 	static public final String COLOR_UNKNOWN = "unknown";
 	static public final String COLOR_GRAY = "Grays";
 	static public final String COLOR_CYAN = "Cyan";
@@ -278,7 +278,9 @@ public class AutoConverterUtils {
 	 * @return
 	 */
 	public static String getVersion() {
-		return AutoConverterUtils.VERSION;
+		String version = AutoConverterUtils.class.getPackage().getImplementationVersion();
+		return version;
+		//return AutoConverterUtils.VERSION;
 	}
 
 	public static String tr(String from, String to, String str) {

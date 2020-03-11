@@ -15,6 +15,7 @@ import autoconverter.controller.AutoConverterConfig;
 import autoconverter.controller.AutoConverterUtils;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -119,7 +120,20 @@ public class ImagePanel extends javax.swing.JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (imp != null) {
+			//if( appCtrl.getImageMode() == BaseFrame.IMAGE_MODE_THRESHOLD){
+			//	IJ.run(imp, "Convert to Mask", "");
+			//}
+			//imp.draw();
 			g.drawImage(imp.getImage(), 0, 0, this);
+			/*
+			Roi roi = imp.getRoi();
+			if(roi != null){
+				logger.fine("drawing roi");
+				g.drawPolygon(roi.getPolygon());
+			} else {
+				logger.fine("roi == null" );
+			}
+			*/
 		}
 		if(rect.width > 0 && rect.height > 0){
 			g.setColor(Color.YELLOW);

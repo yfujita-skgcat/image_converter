@@ -63,6 +63,7 @@ public class AutoConverterConfig {
 	public static final String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
 	public static final String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
 	public static final String KEY_IMAGE_MODE = "IMAGE_MODE";
+
 	public static final String PREFIX_BALL = "BALL";
 	public static final String PREFIX_MIN = "MIN";
 	public static final String PREFIX_MAX = "MAX";
@@ -70,6 +71,22 @@ public class AutoConverterConfig {
 	public static final String PREFIX_AUTO = "AUTO";
 	public static final String PREFIX_REGEXP = "REGEXP";
 	public static final String PREFIX_AUTO_TYPE = "AUTO_SCALE_TYPE";
+
+	public static final String PREFIX_T_BALL = "T_BALL";
+	public static final String PREFIX_T_MIN = "T_MIN";
+	public static final String PREFIX_T_MAX = "T_MAX";
+	public static final String PREFIX_T_COLOR = "T_COLOR";
+	public static final String PREFIX_T_AUTO = "T_AUTO";
+	public static final String PREFIX_T_AUTO_TYPE = "T_AUTO_SCALE_TYPE";
+
+	public static final String PREFIX_R_BALL = "R_BALL";
+	public static final String PREFIX_R_MIN = "R_MIN";
+	public static final String PREFIX_R_MAX = "R_MAX";
+	public static final String PREFIX_R_COLOR = "R_COLOR";
+	public static final String PREFIX_R_AUTO = "R_AUTO";
+	public static final String PREFIX_R_AUTO_TYPE = "R_AUTO_SCALE_TYPE";
+
+
 	public static final String REGEXP_NAME_CUSTOM = "Custom";
 	public static final String REGEXP_NAME_CELAVIEW = "Celaview";
 	public static final String REGEXP_NAME_INCELL6000 = "In Cell 6000";
