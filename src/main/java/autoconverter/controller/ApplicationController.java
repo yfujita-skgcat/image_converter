@@ -2007,10 +2007,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 							}
 						} catch (IllegalArgumentException e){
 							logger.fine(e.toString());
-							publish("No region in (min, max) = (" + min + ", " + max + ") in " + filter);
+							publish("No region in (min, max) = (" + min + ", " + max + ") in " + filter + "\n");
 							logger.fine("No region in (min, max) = (" + min + ", " + max + ") in " + filter);
 						} catch (ArrayIndexOutOfBoundsException e){
-							publish("No region in (min, max) = (" + min + ", " + max + ") in " + filter);
+							publish("No region in (min, max) = (" + min + ", " + max + ") in " + filter + "\n");
 							logger.fine("No region in (min, max) = (" + min + ", " + max + ") in " + filter);
 							logger.fine(e.toString());
 							ip.setValue(0.0);
@@ -2029,7 +2029,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						ip.setLut(lut);
 					} catch (IOException ex) {
 						Logger.getLogger(ApplicationController.class.getName()).log(Level.SEVERE, null, ex);
-						publish("BUG: Fail to open LUT file");
+						publish("BUG: Fail to open LUT file\n");
 					}
 					rel_imp.setDisplayRange(range_min, range_max);
 
@@ -2056,7 +2056,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 							ip.setRoi(r_roi);
 						}
 					} catch (ArrayIndexOutOfBoundsException e){
-						publish("No zero region");
+						publish("No zero region\n");
 						logger.fine("No zero region");
 						logger.fine(e.toString());
 					}
@@ -2117,6 +2117,31 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					String dstbase = dstdir + File.separator + fname;
 					if(addparam){
 						dstbase = dstbase + this.getParamString(_first_image);
+					}
+
+					// crop and resize.
+					// 個々だけでしか使わない新しくmethodをつくるのはよくなさそうなので、ベタ打ち
+					//rel_imp = this.imageCropAndResize(rel_imp);
+					ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
+					int crop_height = imgPanel.getRoiHeight();
+					int crop_width = imgPanel.getRoiWidth();
+					int crop_x = imgPanel.getLeftTopX();
+					int crop_y = imgPanel.getLeftTopY();
+					int resize_x = getResizeX();
+					if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
+						rel_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
+						IJ.run(rel_imp, "Crop", "");
+					}
+					int width  = rel_imp.getWidth();
+					int height = rel_imp.getHeight();
+					int resize_y = 0;
+					if(width != resize_x && resize_x != 0 ){
+						resize_y = height * resize_x / width;
+					}
+					
+					// resize
+					if (resize_x > 0 && resize_y > 0) {
+						IJ.run(rel_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
 					}
 
 					ImagePlus flat_image;
@@ -2287,6 +2312,31 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				return param_str.toString();
 			}
 
+			private ExImagePlus imageCropAndResize(ExImagePlus _imp){
+				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
+				int crop_height = imgPanel.getRoiHeight();
+				int crop_width = imgPanel.getRoiWidth();
+				int crop_x = imgPanel.getLeftTopX();
+				int crop_y = imgPanel.getLeftTopY();
+				int resize_x = getResizeX();
+				if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
+					_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
+					IJ.run(_imp, "Crop", "");
+				}
+				int width  = _imp.getWidth();
+				int height = _imp.getHeight();
+				int resize_y = 0;
+				if(width != resize_x && resize_x != 0 ){
+					resize_y = height * resize_x / width;
+				}
+
+				// resize
+				if (resize_x > 0 && resize_y > 0) {
+					IJ.run(_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
+				}
+				return _imp;
+			}
+
 			private ExImagePlus imageProcessing(ExImagePlus _imp){
 				String _path = _imp.getFile().getAbsolutePath();
 				String filter = _imp.getFilter();
@@ -2327,6 +2377,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				// 色設定.
 				IJ.run(_imp, color, "");
 
+				/*
 				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
 				int crop_height = imgPanel.getRoiHeight();
 				int crop_width = imgPanel.getRoiWidth();
@@ -2348,6 +2399,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				if (resize_x > 0 && resize_y > 0) {
 					IJ.run(_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
 				}
+				*/
+				_imp = this.imageCropAndResize(_imp);
 				return _imp;
 			}
 
