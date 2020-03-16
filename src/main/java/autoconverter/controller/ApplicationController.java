@@ -52,8 +52,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -174,7 +176,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	private static boolean loading = false;
 	// 値が update されたかどうか
 	private static boolean ischanged = true;
-	private static int loading_stack = 1;
+	private static int loading_stack = 0;
 	// updateImage() 実行中かどうか
 	private static boolean updating = false;
 	// 初期化中かどうか. 基本的に画像設定の画面を表示するとき
@@ -189,6 +191,78 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	private int current_image_mode = BaseFrame.IMAGE_MODE_SINGLE;
 	private static String[] COLOR_INDEX = {"Red", "Green", "Blue", "Grays", "Cyan", "Magenta", "Yellow"};
 	public static double RELATIVE_MULTIPLICITY = 1000.0;
+
+	private void printSavedParams(String _filter){
+		int stack = 1;
+		String[] current_stack = AutoConverterUtils.stackTraceString(stack, false);
+		TreeSet <String> filters = new TreeSet(this.storedMin.keySet());
+		if(_filter != null){
+			filters.clear();
+			filters.add(_filter);
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append("\nMode: " + this.getImageModeString());
+		for(String filter: filters){
+			logger.fine("\n======== Paramters: Call from " + current_stack[stack-1] + " ==========");
+			sb.append("\n=-=-=-= [" + filter + "] =-=-=-=\n");
+			Integer min = this.minHash.get(filter);
+			Integer max = this.maxHash.get(filter);
+			String  sat = this.typeHash.get(filter);
+			String color = this.colorHash.get(filter);
+			Integer ball = this.ballHash.get(filter);
+			Boolean auto = this.autoHash.get(filter);
+			sb.append("==== Current\n");
+			sb.append("min=" + min);
+			sb.append(", max=" + max);
+			sb.append(", color=" + color);
+			sb.append(", ball=" + ball);
+			sb.append(", auto=" + auto);
+			sb.append(", sat=" + sat + "\n");
+
+			min = this.storedMin.get(filter);
+			max = this.storedMax.get(filter);
+			sat = this.storedAutoType.get(filter);
+			color = this.storedColor.get(filter);
+			ball = this.storedBall.get(filter);
+			auto = this.storedAuto.get(filter);
+			sb.append("==== Single\n");
+			sb.append("min=" + min);
+			sb.append(", max=" + max);
+			sb.append(", color=" + color);
+			sb.append(", ball=" + ball);
+			sb.append(", auto=" + auto);
+			sb.append(", sat=" + sat + "\n");
+			
+			min = this.storedTMin.get(filter);
+			max = this.storedTMax.get(filter);
+			sat = this.storedTAutoType.get(filter);
+			color = this.storedTColor.get(filter);
+			ball = this.storedTBall.get(filter);
+			auto = this.storedTAuto.get(filter);
+			sb.append("==== Threshold\n");
+			sb.append("min=" + min);
+			sb.append(", max=" + max);
+			sb.append(", color=" + color);
+			sb.append(", ball=" + ball);
+			sb.append(", auto=" + auto);
+			sb.append(", sat=" + sat + "\n");
+			
+			min = this.storedRMin.get(filter);
+			max = this.storedRMax.get(filter);
+			sat = this.storedRAutoType.get(filter);
+			color = this.storedRColor.get(filter);
+			ball = this.storedRBall.get(filter);
+			auto = this.storedRAuto.get(filter);
+			sb.append("==== Relative\n");
+			sb.append("min=" + min);
+			sb.append(", max=" + max);
+			sb.append(", color=" + color);
+			sb.append(", ball=" + ball);
+			sb.append(", auto=" + auto);
+			sb.append(", sat=" + sat + "\n");
+		}
+		logger.fine(sb.toString());
+	}
 
 	public ApplicationController(BaseFrame _base) {
 		cardIndex = 0;
@@ -270,22 +344,25 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	}
 
 	public synchronized void collectParams(Object obj){
-		logger.fine("================== IN collectParams() ==================");
+		logger.fine("\n\n================== IN collectParams() ==================");
+		AutoConverterUtils.printStackTrace(15);
 		String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
 		if(filter.equals("<FILTER>")){
 			return;
 		}
 		logger.fine("filter=" + filter);
 		logger.fine("mode=" + this.getImageModeString());
+		this.printSavedParams(filter);
 		int mode = this.getImageMode();
 		if       (obj == this.baseFrame.getMinSpinner()){
 			int min = this.getMinSpinnerValue();
 			logger.fine("get min="+min);
-			if(min != minHash.get(filter)){
+			if(min != minHash.get(filter) || mode == BaseFrame.IMAGE_MODE_RELATIVE){
 				minHash.put(filter, min);
 				ischanged = true;
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRMin.keySet()){ // relative モードはフィルタによらず同一
+						logger.fine("Rlative mode: filter:" + _filter + " -> min: " + min);
 						storedRMin.put(_filter, min);
 					}
 					AutoConverterConfig.setConfig(filter, min, AutoConverterConfig.PREFIX_R_MIN);
@@ -299,14 +376,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		if(obj == this.baseFrame.getMaxSpinner()){
 			int max = this.getMaxSpinnerValue();
 			logger.fine("get max="+max);
-			logger.fine("maxHash="+maxHash.get(filter)+", storedMaxValues=" + this.storedMax.get(filter) + ", storedTMaxValue=" + this.storedTMax.get(filter));
-			if(max != maxHash.get(filter)){
+			if(max != maxHash.get(filter) || mode == BaseFrame.IMAGE_MODE_RELATIVE){
 				logger.fine("updating from " + maxHash.get(filter) + " to " + max);
 				maxHash.put(filter, max);
-				logger.fine("maxHash="+maxHash.get(filter)+", storedMaxValues=" + this.storedMax.get(filter) + ", storedTMaxValue=" + this.storedTMax.get(filter));
 				ischanged = true;
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRMax.keySet()){ // relative モードはフィルタによらず同一
+						logger.fine("Rlative mode: filter:" + _filter + " -> max: " + max);
 						storedRMax.put(_filter, max);
 					}
 					AutoConverterConfig.setConfig(filter, max, AutoConverterConfig.PREFIX_R_MAX);
@@ -315,6 +391,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, max, AutoConverterConfig.PREFIX_MAX);
 				}
+				this.printSavedParams(filter);
 			}
 		}
 		if(obj == this.baseFrame.getScaleRangeSlider() || obj == null){
@@ -322,15 +399,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			int max = this.baseFrame.getScaleRangeSlider().getUpperValue();
 			int c_min = minHash.get(filter);
 			int c_max = maxHash.get(filter);
-			logger.fine("get min,max=("+c_min+","+c_max+") => ("+min+","+max+") [Filter:" + filter + "]");
-			logger.fine("maxHash="+maxHash.get(filter)+", storedMaxValues=" + this.storedMax.get(filter) + ", storedTMaxValue=" + this.storedTMax.get(filter));
-			logger.fine("minHash="+minHash.get(filter)+", storedMinValues=" + this.storedMin.get(filter) + ", storedTMinValue=" + this.storedTMin.get(filter));
-			if(min != minHash.get(filter)){
+			if(min != minHash.get(filter) || mode == BaseFrame.IMAGE_MODE_RELATIVE){
 				logger.fine("min update! " + c_min + " => " + min);
 				minHash.put(filter, min);
 				ischanged = true;
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRMin.keySet()){ // relative モードはフィルタによらず同一
+						logger.fine("Rlative mode: filter:" + _filter + " -> min: " + min);
 						storedRMin.put(_filter, min);
 					}
 					AutoConverterConfig.setConfig(filter, min, AutoConverterConfig.PREFIX_R_MIN);
@@ -339,13 +414,15 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, min, AutoConverterConfig.PREFIX_MIN);
 				}
+				this.printSavedParams(filter);
 			}
-			if(max != maxHash.get(filter)){
+			if(max != maxHash.get(filter) || mode == BaseFrame.IMAGE_MODE_RELATIVE){
 				logger.fine("max update! " + c_max + " => " + max);
 				maxHash.put(filter, max);
 				ischanged = true;
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRMax.keySet()){ // relative モードはフィルタによらず同一
+						logger.fine("Rlative mode: filter:" + _filter + " -> max: " + max);
 						storedRMax.put(_filter, max);
 					}
 					AutoConverterConfig.setConfig(filter, max, AutoConverterConfig.PREFIX_R_MAX);
@@ -354,14 +431,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, max, AutoConverterConfig.PREFIX_MAX);
 				}
+				this.printSavedParams(filter);
 			}
-			logger.fine("maxHash="+maxHash.get(filter)+", storedMaxValues=" + this.storedMax.get(filter) + ", storedTMaxValue=" + this.storedTMax.get(filter));
-			logger.fine("minHash="+minHash.get(filter)+", storedMinValues=" + this.storedMin.get(filter) + ", storedTMinValue=" + this.storedTMin.get(filter));
 		}
 		if(obj == this.baseFrame.getAutoRadioButton() || obj == this.baseFrame.getManualRadioButton() || obj == null){
 			boolean isAuto = this.baseFrame.getAutoRadioButton().isSelected();
 			logger.fine("get isAuto="+isAuto);
-			if(isAuto != autoHash.get(filter)){
+			if(isAuto != autoHash.get(filter) || mode == BaseFrame.IMAGE_MODE_RELATIVE){
 			        autoHash.put(filter, isAuto);
 				ischanged = true;
 				String tfstr = "false";
@@ -372,6 +448,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				}
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRAuto.keySet()){ // relative モードはフィルタによらず同一
+						logger.fine("Rlative mode: filter:" + _filter + " -> auto: " + isAuto);
 						storedRAuto.put(_filter, isAuto);
 					}
 					AutoConverterConfig.setConfig(filter, tfstr, AutoConverterConfig.PREFIX_R_AUTO);
@@ -380,12 +457,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, tfstr, AutoConverterConfig.PREFIX_AUTO);
 				}
+				this.printSavedParams(filter);
 			}
 		}
 		if(obj == this.baseFrame.getAutoTypeComboBox() || obj == null){
 			String saturation_value = (String) baseFrame.getAutoTypeComboBox().getModel().getSelectedItem();
 			logger.fine("get saturation_value="+saturation_value);
-			if( ! saturation_value.equals(typeHash.get(filter))  ){
+			if( ! saturation_value.equals(typeHash.get(filter))  || mode == BaseFrame.IMAGE_MODE_RELATIVE ){
 				typeHash.put(filter, saturation_value);
 				ischanged = true;
 				if(this.getImageMode() == BaseFrame.IMAGE_MODE_SINGLE || this.getImageMode() == BaseFrame.IMAGE_MODE_MERGE){
@@ -393,6 +471,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				}
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRAutoType.keySet()){
+						logger.fine("Rlative mode: filter:" + _filter + " -> saturation: " + saturation_value);
 						storedRAutoType.put(_filter, saturation_value);
 					}
 					AutoConverterConfig.setConfig(filter, saturation_value, AutoConverterConfig.PREFIX_R_AUTO_TYPE);
@@ -401,16 +480,18 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, saturation_value, AutoConverterConfig.PREFIX_AUTO_TYPE);
 				}
+				this.printSavedParams(filter);
 			}
 		}
 		if(obj == this.baseFrame.getColorChannelSelector() || obj == null){
 			String color = (String) this.baseFrame.getColorChannelSelector().getSelectedItem();
 			logger.fine("get color="+color + "  (filter: " + filter +")");
-			if( ! color.equals(colorHash.get(filter))  ){
+			if( ! color.equals(colorHash.get(filter))  || mode == BaseFrame.IMAGE_MODE_RELATIVE ){
 				colorHash.put(filter, color);
 				ischanged = true;
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRColor.keySet()){
+						logger.fine("Rlative mode: filter:" + _filter + " -> color: " + color);
 						storedRColor.put(_filter, color);
 					}
 					AutoConverterConfig.setConfig(filter, color, AutoConverterConfig.PREFIX_R_COLOR);
@@ -419,16 +500,18 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, color, AutoConverterConfig.PREFIX_COLOR);
 				}
+				this.printSavedParams(filter);
 			}
 		}
 		if(obj == this.baseFrame.getBallSizeSpinner() || obj == null){
 			int ballsize = this.getBallSize();
 			logger.fine("get ballsize="+ballsize);
-			if( ballsize != ballHash.get(filter)  ){
+			if( ballsize != ballHash.get(filter)  || mode == BaseFrame.IMAGE_MODE_RELATIVE ){
 				ballHash.put(filter, ballsize);
 				ischanged = true;
 				if(mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					for(String _filter : this.storedRBall.keySet()){
+						logger.fine("Rlative mode: filter:" + _filter + " -> ball: " + ballsize);
 						storedRBall.put(_filter, ballsize);
 					}
 					AutoConverterConfig.setConfig(filter, ballsize, AutoConverterConfig.PREFIX_R_BALL);
@@ -437,6 +520,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				} else {
 					AutoConverterConfig.setConfig(filter, ballsize, AutoConverterConfig.PREFIX_BALL);
 				}
+				this.printSavedParams(filter);
 			}
 		}
 		if(ischanged){
@@ -454,62 +538,79 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		this.applyParams(obj, false);
 	}
 	public synchronized void applyParams(Object obj, boolean is_force_update){
-		logger.fine("applyParam 内");
-		if(ischanged == false && !is_force_update){
-			logger.fine("変更がないのでスキップ (applyParam)");
-			return;
-		}
 		try{
-			this.baseFrame.enableListener(false);
-			String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
-			logger.fine("filter=" + filter);
-			logger.fine("mode=" + this.getImageModeString());
-			if(filter.equals("<FILTER>")){
+			logger.fine("\n\n========================= applyParam() ====================");
+			AutoConverterUtils.printStackTrace(15);
+			/*
+			if(ischanged == false && !is_force_update){
+				logger.fine("変更がないのでスキップ (applyParam)");
 				return;
 			}
-			if(obj == this.baseFrame.getMinSpinner() || obj == this.baseFrame.getMaxSpinner() || obj == null){
-				int min = minHash.get(filter);
-				int max = maxHash.get(filter);
-				logger.fine("maxHash="+maxHash.get(filter)+", storedMaxValues=" + this.storedMax.get(filter) + ", storedTMaxValue=" + this.storedTMax.get(filter));
-				logger.fine("apply min, max=("+min+","+max+") [filter:" + filter + "]");
-				//this.baseFrame.getMinSpinner().setValue(min);
-				this.setScaleValues(min, max, false);
-			} 
-			if(obj == this.baseFrame.getAutoRadioButton() || obj == this.baseFrame.getManualRadioButton() || obj == null){
-				boolean isAuto = autoHash.get(filter);
-				logger.fine("apply isAuto=" + isAuto);
-				this.setAutoSelected(isAuto);
-				//this.baseFrame.getAutoRadioButton().setSelected(isAuto);
+			*/
+			logger.fine("applyParams() loading_stack=" + loading_stack);
+			if(loading){
+				logger.fine("applyParams() locked.");
+				return;
 			}
-			if(obj == this.baseFrame.getAutoTypeComboBox() || obj == null){
-				String saturation_value = typeHash.get(filter);
-				logger.fine("apply saturation_value=" + saturation_value);
-				if(saturation_value != null){
-					this.baseFrame.getAutoTypeComboBox().getModel().setSelectedItem(saturation_value);
+			this.lockApplyParameter(true);
+			try{
+				if(obj == null){
+					logger.fine("obj==null, apply to all component");
 				}
-			}
-			if(obj == this.baseFrame.getColorChannelSelector() || obj == null){
-				String color = colorHash.get(filter);
-				logger.fine("apply color=" + color);
-				if(color != null){
-					this.baseFrame.getColorChannelSelector().setSelectedItem(color);
+				this.baseFrame.enableListener(false);
+				String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
+				logger.fine("filter=" + filter);
+				logger.fine("mode=" + this.getImageModeString());
+				if(filter.equals("<FILTER>")){
+					return;
 				}
-			}
-			if(obj == this.baseFrame.getBallSizeSpinner() || obj == null){
-				int ballsize = ballHash.get(filter);
-				logger.fine("apply ballsize=" + ballsize);
-				this.baseFrame.getBallSizeSpinner().setValue(ballsize);
+				this.printSavedParams(filter);
+				if(obj == this.baseFrame.getMinSpinner() || obj == this.baseFrame.getMaxSpinner() || obj == null){
+					int min = minHash.get(filter);
+					int max = maxHash.get(filter);
+					logger.fine("apply min, max=("+min+","+max+") [filter:" + filter + "]");
+					//this.baseFrame.getMinSpinner().setValue(min);
+					this.setScaleValues(min, max);
+				}
+				if(obj == this.baseFrame.getAutoRadioButton() || obj == this.baseFrame.getManualRadioButton() || obj == null){
+					boolean isAuto = autoHash.get(filter);
+					logger.fine("apply isAuto=" + isAuto);
+					this.setAutoSelected(isAuto);
+					//this.baseFrame.getAutoRadioButton().setSelected(isAuto);
+				}
+				if(obj == this.baseFrame.getAutoTypeComboBox() || obj == null){
+					String saturation_value = typeHash.get(filter);
+					logger.fine("apply saturation_value=" + saturation_value);
+					if(saturation_value != null){
+						this.baseFrame.getAutoTypeComboBox().getModel().setSelectedItem(saturation_value);
+					}
+				}
+				if(obj == this.baseFrame.getColorChannelSelector() || obj == null){
+					String color = colorHash.get(filter);
+					logger.fine("apply color=" + color);
+					if(color != null){
+						this.baseFrame.getColorChannelSelector().setSelectedItem(color);
+					}
+				}
+				if(obj == this.baseFrame.getBallSizeSpinner() || obj == null){
+					int ballsize = ballHash.get(filter);
+					logger.fine("apply ballsize=" + ballsize);
+					this.baseFrame.getBallSizeSpinner().setValue(ballsize);
+				}
+				this.printSavedParams(filter);
+			} finally {
+				this.baseFrame.enableListener(true);
+				if(obj == null){ // 全コンポーネント対象にアプライした時
+					ischanged = false;
+				}
+				this.lockApplyParameter(false);
 			}
 		} finally {
-			this.baseFrame.enableListener(true);
-			if(obj == null){ // 全コンポーネント対象にアプライした時
-				ischanged = false;
-			}
 			logger.fine("\n-------------END applyParam()-------------");
 		}
 	}
 
-	public void enableSaveCurrentFilterSettings(boolean flg){
+	public void lockApplyParameter(boolean flg){
 		if(flg){
 			loading_stack++;
 		} else {
@@ -1263,17 +1364,82 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		area.append("Total file: " + getImageSet().size() + "\n");
 
 		area.append("\n");
+		this.printSavedParams(null);
+		if( this.getImageMode() == BaseFrame.IMAGE_MODE_RELATIVE){
+			String tgt = this.getTargetFilter();
+			String ref = this.getReferenceFilter();
+			area.append("Relative image (" + tgt + "/" + ref + ")\n");
+			ArrayList<String> _gated_filters = this.getSelectedFilters();
+			if(_gated_filters.size() > 0){
+				area.append("Region: " + _gated_filters.stream().collect(Collectors.joining(" & ")) + "\n");
+			} else {
+				area.append("Region: Whole Area\n");
+			}
+			Collection<String> luts = this.colorHash.values();
+			luts.removeAll(Collections.singleton(null));
+			area.append("LUT: " + luts.iterator().next() + "\n");
+			Collection<Boolean> methods = this.autoHash.values();
+			methods.remove(Collections.singleton(null));
+			Boolean method = methods.iterator().next();
+			if(method == null){
+				method = false;
+			}
+			if (method) {
+				Collection<String> types = this.typeHash.values();
+				types.removeAll(Collections.singleton(null));
+				String type = types.iterator().next();
+				area.append("Method: auto (saturated=" + type + "%)");
+				area.append("\n");
+				area.append("Range: variable\n");
+			} else {
+				area.append("Method: manual\n");
+				Collection<Integer> mins = this.minHash.values();
+				Collection<Integer> maxs = this.maxHash.values();
+				Integer min = mins.iterator().next();
+				Integer max = maxs.iterator().next();
+				area.append("Range: " + min + "-" + max + "\n");
+			}
+			Collection<Integer> balls = this.ballHash.values();
+			balls.removeAll(Collections.singleton(null));
+			Integer bs = balls.iterator().next();
+			//Integer bs = this.ballHash.get(0);
+			String ball_str = "None";
+			if (bs == null || bs == 0) {
+				ball_str = "None";
+			} else {
+				ball_str = bs.toString();
+			}
+			area.append("Background subtraction: " + ball_str + "\n");
+			area.append("\n");
+
+			this.colorHash = this.storedTColor;
+			this.autoHash  = this.storedTAuto;
+			this.ballHash  = this.storedTBall;
+			this.minHash   = this.storedTMin;
+			this.maxHash   = this.storedTMax;
+			this.typeHash  = this.storedTAutoType;
+		}
+			
 		for (String s : this.getImageSet().getFilters()) {
 			area.append("Filter name: " + s + "\n");
 			area.append("Color: " + this.colorHash.get(s) + "\n");
 			Boolean method = this.autoHash.get(s);
+			if(method == null){
+				method = false;
+			}
 			if (method) {
 				area.append("Method: auto (saturated=" + this.typeHash.get(s) + "%)");
 				area.append("\n");
 				area.append("Range: variable\n");
 			} else {
 				area.append("Method: manual\n");
-				area.append("Range: " + this.minHash.get(s) + "-" + this.maxHash.get(s) + "\n");
+				if(this.getImageMode() == BaseFrame.IMAGE_MODE_THRESHOLD || this.getImageMode() == BaseFrame.IMAGE_MODE_RELATIVE){
+					// relative mode と threshold mode では max 側は最大値-1 でthreshold をとる
+					int _max = this.getMaxDisplayRangeValue() - 1;
+					area.append("Range: " + this.minHash.get(s) + "-" + _max + "\n");
+				} else {
+					area.append("Range: " + this.minHash.get(s) + "-" + this.maxHash.get(s) + "\n");
+				}
 			}
 			Integer bs = this.ballHash.get(s);
 			String ball_str = "None";
@@ -1284,6 +1450,14 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			}
 			area.append("Background subtraction: " + ball_str + "\n");
 			area.append("\n");
+		}
+		if( this.getImageMode() == BaseFrame.IMAGE_MODE_RELATIVE){
+			this.colorHash = this.storedRColor;
+			this.autoHash  = this.storedRAuto;
+			this.ballHash  = this.storedRBall;
+			this.minHash   = this.storedRMin;
+			this.maxHash   = this.storedRMax;
+			this.typeHash  = this.storedRAutoType;
 		}
 
 	}
@@ -1465,7 +1639,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	 * @param max
 	 * @param saving  変更情報をHashに保存しておくかどうか. Sliderからのように連続して呼ばれる場合にfalseにしておくと無駄がなくてよい.
 	 */
-	public void setScaleValues(int min, int max, boolean saving) {
+	public void setScaleValues(int min, int max) {
 		JSpinner minSpinner = baseFrame.getMinSpinner();
 		JSpinner maxSpinner = baseFrame.getMaxSpinner();
 		this.baseFrame.enableListener(false);
@@ -1475,23 +1649,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		minSpinner.setValue(min);
 		baseFrame.getScaleRangeSlider().setMinAndMax(min, max);
 		this.baseFrame.enableListener(true);
-		// 毎回ファイルに保存するのはちょっと大変なので、
-		// config に保存するだけにしてみる.
-		//if( saving ){
-			this.collectParams(baseFrame.getScaleRangeSlider());
-			//this.storeCurrentFilterSettings(false);
-		//}
+		//this.collectParams(baseFrame.getScaleRangeSlider());
 	}
-	/**
-	 * スケールの最大値と最小値のspinnerの値をセットする.
-	 *
-	 * @param min
-	 * @param max
-	 */
-	public void setScaleValues(int min, int max) {
-		this.setScaleValues(min, max, true);
-	}
-
 
 	// ここがバグの温床だとおもう。merge モードでも最後にsingleで指定したものを撮ってきてる?
 	// __TODO__ __BUG__
@@ -1793,7 +1952,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		this.configAutoRelatedComponents(auto);
 		this.autoHash.put(filter, auto);
 
-		this.updateImage();
+		//this.updateImage();
 	}
 
 	/**
@@ -1879,6 +2038,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						return (22);
 					}
 					ExImagePlus imp = _cm.getImagePlus();
+					ImagePlus flatten = null;
 					String _path = _cm.getFile().getAbsolutePath();
 					String fname = _cm.getFile().getName();
 					String abssrc = _cm.getFile().getAbsolutePath();
@@ -1907,6 +2067,92 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						dstbase = dstbase + this.getParamString(imp);
 					}
 					imp = this.imageProcessing(imp);
+					imp = this.imageCropAndResize(imp);
+					/*
+					if(getImageMode() == BaseFrame.IMAGE_MODE_THRESHOLD){
+						int selected_max = getMaxDisplayRangeValue() - 1;
+						//logger.fine("Setting threshold (" + min + ", " + _imp.getProcessor().getMax() + ")");
+						logger.fine("Setting threshold (" + min + ", " + selected_max + ")");
+						//IJ.setThreshold(_imp, (int) min, _imp.getProcessor().getMax());
+						ImageProcessor ip = imp.getProcessor();
+						IJ.setMinAndMax(imp, (int) min, (int) max);
+						ip.setThreshold(min, selected_max, ImageProcessor.NO_LUT_UPDATE);
+						ImageProcessor ip = imp.getProcessor();
+						try{
+							Roi roi = tts.convert(ip);
+							if(roi == null){
+								throw new ArrayIndexOutOfBoundsException("Roi==null");
+							}
+							//ip.setColor(Color.YELLOW);
+							ip.draw(roi);
+						} catch (ArrayIndexOutOfBoundsException e){
+							logger.fine("Roi==null, " + e.toString());
+						} finally {
+							ip.resetThreshold();
+							ip.resetRoi();
+						}
+					}
+					*/
+					flatten = imp.flatten();
+
+					String fpath = "";
+					if (type.equals("jpg")) {
+						fpath = dstbase + ".jpg";
+						IJ.saveAs(flatten, "jpg", fpath);
+					} else if (type.equals("png") || type.equals("ping")) {
+						fpath = dstbase + ".png";
+						IJ.saveAs(flatten, "png", fpath);
+					} else if (type.equals("tif") || type.equals("8bit tiff")) {
+						fpath = dstbase + ".tif";
+						IJ.run(flatten, "RGB Color", null);
+						IJ.saveAsTiff(flatten, fpath);
+					}
+
+					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");
+					imp.close();
+					count++;
+				}
+				return 0;
+			}
+
+			private int convertTHresholdImage(){
+				int number = getImageSet().size();
+				int count = 1;
+
+				for (CaptureImage _cm : getImageSet().getFiles()) {
+					if (isCancelled()) {
+						return (22);
+					}
+					ExImagePlus imp = _cm.getImagePlus();
+					String _path = _cm.getFile().getAbsolutePath();
+					String fname = _cm.getFile().getName();
+					String abssrc = _cm.getFile().getAbsolutePath();
+					// src     => /src
+					// dst     => /dst
+					// rpath   => /path/target/
+					// dstpath => /dst/path/target
+					// rtop    => /dst/path
+					String rpath = _path.replaceFirst(Pattern.quote(src), "");
+					String dstpath = dst + rpath;
+					File dstdir = new File(dstpath).getParentFile();
+					if (!dstdir.exists()) { //ディレクトリが無い!
+						dstdir.mkdirs();
+					} else if (!dstdir.isDirectory()) {
+						// ディレクトリ以外!
+						IJ.showMessage(dstdir + " is not directory. stop.");
+						return 1;
+					}
+					if (remove_char) { // special character 削除
+						fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
+
+					}
+
+					String dstbase = removeExtension(dstdir + File.separator + fname);
+					if(addparam){
+						dstbase = dstbase + this.getParamString(imp);
+					}
+					imp = this.imageProcessing(imp);
+					imp = this.imageCropAndResize(imp);
 
 					String fpath = "";
 					if (type.equals("jpg")) {
@@ -2194,6 +2440,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 							continue;
 						}
 						_imp = this.imageProcessing(_imp);
+						_imp = this.imageCropAndResize(_imp);
 						String color_name = colorHash.get(filter);
 						merged_filters.add(filter);
 						//logger.fine("color_name=" + color_name);
@@ -2361,46 +2608,32 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				}
 				logger.fine("getImageMode()=" + getImageMode());
 				//logger.fine("BaseFrame.IMAGE_MODE_THRESHOLD=" + BaseFrame.IMAGE_MODE_THRESHOLD);
-				if(getImageMode() == BaseFrame.IMAGE_MODE_THRESHOLD){
-					int selected_max = getMaxDisplayRangeValue() - 1;
-					//logger.fine("Setting threshold (" + min + ", " + _imp.getProcessor().getMax() + ")");
-					logger.fine("Setting threshold (" + min + ", " + selected_max + ")");
-					//IJ.setThreshold(_imp, (int) min, _imp.getProcessor().getMax());
-					IJ.setThreshold(_imp, (int) min, selected_max);
-				} else {
-					IJ.setMinAndMax(_imp, (int) min, (int) max);
-				}
+				IJ.setMinAndMax(_imp, (int) min, (int) max);
 
 				if(_imp.getType() == ImagePlus.GRAY8 || _imp.getType() == ImagePlus.COLOR_256 || _imp.getType() == ImagePlus.COLOR_RGB){
 				  IJ.run(_imp, "Apply LUT", "");
 				}
 				// 色設定.
 				IJ.run(_imp, color, "");
-
 				/*
-				ImagePanel imgPanel = baseFrame.getImageDisplayPanel();
-				int crop_height = imgPanel.getRoiHeight();
-				int crop_width = imgPanel.getRoiWidth();
-				int crop_x = imgPanel.getLeftTopX();
-				int crop_y = imgPanel.getLeftTopY();
-				int resize_x = getResizeX();
-				if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
-					_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
-					IJ.run(_imp, "Crop", "");
-				}
-				int width  = _imp.getWidth();
-				int height = _imp.getHeight();
-				int resize_y = 0;
-				if(width != resize_x && resize_x != 0 ){
-					resize_y = height * resize_x / width;
-				}
-
-				// resize
-				if (resize_x > 0 && resize_y > 0) {
-					IJ.run(_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
+				if(getImageMode() == BaseFrame.IMAGE_MODE_THRESHOLD){
+					// Threshold のときは枠線を入れる
+					ImageProcessor ip = _imp.getProcessor();
+					ip.setThreshold(min, max, ImageProcessor.NO_LUT_UPDATE);
+					try{
+						Roi roi = tts.convert(ip);
+						if(roi == null){
+							throw new ArrayIndexOutOfBoundsException("Roi==null");
+						}
+						ip.draw(roi);
+					} catch (ArrayIndexOutOfBoundsException e){
+					} finally {
+						ip.resetThreshold();
+						ip.resetRoi();
+					}
 				}
 				*/
-				_imp = this.imageCropAndResize(_imp);
+
 				return _imp;
 			}
 
@@ -2412,6 +2645,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					this.convertMergeImage();
 				} else if(current_image_mode == BaseFrame.IMAGE_MODE_RELATIVE){
 					this.convertRelativeImage();
+				} else if(current_image_mode == BaseFrame.IMAGE_MODE_THRESHOLD){
+					this.convertSingleImage();
+				} else {
+					logger.fine("BUG: モードが選択されていない @ doInBackground(), conversion");
 				}
 				return 0;
 			}

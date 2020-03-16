@@ -1746,6 +1746,9 @@ private void modeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
 	if (!active) {
 		return;
 	}
+	if(evt.getStateChange() == ItemEvent.DESELECTED){
+		return;
+	}
 	String mode = evt.getItem().toString();
 	this.enableListener(false);
 	if(mode.equals("Single")){
@@ -1759,7 +1762,7 @@ private void modeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
 	} else {
 		getLogger().warning("不明なモード:" + mode);
 	}
-	appController.applyParams(true);
+	//appController.applyParams(true);
 	this.enableListener(true);
 	//appController.collectParams();
 	appController.updateImage();
@@ -1769,6 +1772,9 @@ private void modeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
 
 private void colorChannelSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_colorChannelSelectorItemStateChanged
 	if (!active) {
+		return;
+	}
+	if(evt.getStateChange() == ItemEvent.DESELECTED){
 		return;
 	}
 	this.appController.collectParams(evt.getSource());
@@ -1824,8 +1830,7 @@ private void scaleRangeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//
 	if (evt.getSource() == this.getScaleRangeSlider()) {
 		logger.fine("Slider Changed");
 		this.getAppController().collectParams(evt.getSource());
-		this.getAppController().applyParams();
-		//this.getAppController().updateImage();
+		this.getAppController().updateImage();
 	}
 }//GEN-LAST:event_scaleRangeSliderStateChanged
 
@@ -1887,7 +1892,7 @@ private void autoRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 		this.appController.configAutoRelatedComponents(true);
 		this.getAppController().collectParams();
 		this.appController.adjustValues();
-		this.getAppController().applyParams(evt.getSource());
+		//this.getAppController().applyParams(evt.getSource());
 		this.appController.updateImage();
 		//this.appController.storeCurrentFilterSettings(false);
 	}
@@ -1900,7 +1905,7 @@ private void manualRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {/
 	if (evt.getSource() == this.getManualRadioButton() && this.getManualRadioButton().isSelected()) {
 		this.appController.configAutoRelatedComponents(false);
 		this.getAppController().collectParams(evt.getSource());
-		this.getAppController().applyParams(evt.getSource());
+		//this.getAppController().applyParams(evt.getSource());
 		//this.appController.storeCurrentFilterSettings(false);
 		this.appController.updateImage();
 	}
@@ -2090,6 +2095,7 @@ private void scaleRangeSliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN
 	 */
 	//appController.storeCurrentFilterSettings(false);
 	appController.collectParams(evt.getSource());
+	appController.updateImage();
 }//GEN-LAST:event_scaleRangeSliderMouseReleased
 
 private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
