@@ -1317,6 +1317,11 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		JTextArea area = this.baseFrame.getSummaryDisplayArea();
 		area.setText("");
 		area.append("================ summary ==============\n");
+		area.append("ImageJ: " + IJ.getVersion() + "\n");
+		if(IJ.versionLessThan("1.51t")){
+			area.append("*Warning: Quantification of relative image may require version 1.51t or later.");
+		}
+
 		area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
 		area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n\n");
 		area.append("Image format: " + this.baseFrame.getImageFormatComboBox().getSelectedItem() + "\n\n");
@@ -2176,7 +2181,6 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			}
 
 			private int convertRelativeImage(){
-				Thread.setDefaultUncaughtExceptionHandler(new ThreadExceptionHandler());
 				int number = getImageSet().getShotSize();
 				int count = 1;
 				logger.fine("number="+number);
@@ -2275,9 +2279,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					// ToDo
 					// lut を当てる
 					// displayRange を当てる
-					logger.fine("Loading lut...");
+					//logger.fine("Loading lut...");
 					String lut_name = (String) baseFrame.getColorChannelSelector().getSelectedItem();
-					logger.fine("Loaded LUT path.");
+					//logger.fine("Loaded LUT path.");
 					try {
 						InputStream is = getClass().getResourceAsStream(lut_name);
 						IndexColorModel icm = LutLoader.open(is);
@@ -2292,10 +2296,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					} catch (Exception e){
 						logger.fine("Exception:" + e.toString());
 					}
-					logger.fine("Loaded LUT file.");
+					//logger.fine("Loaded LUT file.");
 
 					rel_imp.setDisplayRange(range_min, range_max);
-					logger.fine("Set display range. Done.");
+					//logger.fine("Set display range. Done.");
 
 					// ip.value == 0 の領域を選択=>選択領域を逆にして non-zero 領域をROIする
 					// ip.setRoi(roi)
@@ -2303,10 +2307,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					// これで non-zero 領域についてデータを解析する
 					ip.resetRoi();
 					ip.resetThreshold();
-					logger.fine("Reset threshold. Done.");
-					//ip.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
+					//logger.fine("Reset threshold. Done.");
 					mask_ip.setThreshold(255, 255, ImageProcessor.NO_LUT_UPDATE);
-					logger.fine("Set threshold. Done.");
+					//logger.fine("Set threshold. Done.");
 					Roi roi = null;
 					ImageStatistics stat = null;
 					try{
@@ -2317,19 +2320,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						}
 						//ip.resetThreshold();
 						mask_ip.resetThreshold();
-						logger.fine("Reset threshold.");
+						//logger.fine("Reset threshold.");
 						if(roi.isArea()){
-							logger.fine("roi==AREA.");
-							logger.fine("Set ROI. DONE");
-							//Roi r_roi = roi.getInverse(rel_imp);
-							Roi r_roi = roi;
-							logger.fine("Inverse ROI. DONE");
-							if(r_roi==null){
-								logger.fine("r_roi==null");
-								throw new ArrayIndexOutOfBoundsException("r_roi==null, roi.getInverse() failed.");
-							}
-							ip.setRoi(r_roi);
-							logger.fine("Select > 0 region. Done.");
+							//logger.fine("roi==AREA.");
+							ip.setRoi(roi);
 							stat = ip.getStatistics();
 							logger.fine("Calculate statistics. Done.");
 						}
@@ -2338,11 +2332,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						logger.fine("** No zero region");
 						logger.fine(e.toString());
 					} catch (Exception ex){
-						logger.fine("EE ");
+						logger.fine("BUG?: Unexpected Error.");
 						logger.fine(ex.toString());
 					}
 					ip.resetRoi();
-					logger.fine("Reset ROI. Done.");
 
 					// 統計データ等を回収
 					double total_area = ip.getStatistics().area;
@@ -2405,7 +2398,6 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						record.add(Double.toString(s_median));
 					}
 					stat_data.add(record);
-					logger.fine("Save statistics. Done.");
 
 					String dstbase = dstdir + File.separator + fname;
 					if(addparam){
@@ -2441,6 +2433,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 
 					ImagePlus flat_image;
 					flat_image = rel_imp.flatten();
+					rel_imp.close();
+					mask.close();
 
 					String fpath = "";
 					if (type.equals("jpg")) {
