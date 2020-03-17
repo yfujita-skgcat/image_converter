@@ -1788,7 +1788,7 @@ private void colorChannelSelectorItemStateChanged(java.awt.event.ItemEvent evt) 
 }//GEN-LAST:event_colorChannelSelectorItemStateChanged
 
 	/**
-	 * 選択された画像を再描画する. 主に、画像洗濯用のComboBoxが変更された時に呼ばれる.
+	 * 選択された画像を再描画する. 主に、画像選択用のComboBoxが変更された時に呼ばれる.
 	 *
 	 * @param evt
 	 */
