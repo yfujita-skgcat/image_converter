@@ -305,46 +305,50 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
     if(imp == null){
       return;
     }
-    this.imp = imp;
-    if (imp.getType() != ImagePlus.GRAY16 && imp.getType() != ImagePlus.GRAY8 && imp.getType() != ImagePlus.GRAY32) {
-      throw new IllegalArgumentException("imp.getType() != ImagePlus.GRAY16");
-    }
-    this.ip = imp.getProcessor();
-    this.stat = this.ip.getHistogram();
-    //logger.fine("original_max="+original_max);
-    //logger.fine("stat="+stat);
-    if(stat == null){
-	    logger.fine("stat=null");
-	    FloatProcessor fp = this.ip.convertToFloatProcessor();
-	    this.stat = fp.getHistogram();
-	    if(this.stat== null){
-		    logger.fine("fp.getHistgram() == null");
-		    logger.fine("fp.getHistgramMin()=" + fp.getHistogramMin());
-		    logger.fine("fp.getHistgramMax()="+ fp.getHistogramMax());
-		    logger.fine("fp.getHistgramSize()=" + fp.getHistogramSize());
-		    return;
-	    }
-	    return;
-    }
-    if(original_max > stat.length){
-	    int[] tmp = this.stat;
-	    this.stat = new int[original_max];
-	    for(int j=0; j < original_max; j++){
-		    if(j < tmp.length){
-			    this.stat[j] = tmp[j];
-		    } else {
-			    this.stat[j] = 0;
-		    }
-	    }
-	    original_max = stat.length;
-    }
-    scaled_stat = new int[scaled_max];
-
-    // remap
-    for (int i = 0; i < scaled_max; i++) {
-      //scaled_stat[i] = original_max[i*mag] + original_max[i*mag+1] + original_max[i*mag+2] + original_max[i*mag+3];
-      scaled_stat[i] = stat[i * mag] + stat[i * mag + 1] + stat[i * mag + 2] + stat[i * mag + 3];
-    }
+	try {
+		this.imp = imp;
+		if (imp.getType() != ImagePlus.GRAY16 && imp.getType() != ImagePlus.GRAY8 && imp.getType() != ImagePlus.GRAY32) {
+			throw new IllegalArgumentException("imp.getType() != ImagePlus.GRAY16");
+		}
+		this.ip = imp.getProcessor();
+		this.stat = this.ip.getHistogram();
+		//logger.fine("original_max="+original_max);
+		//logger.fine("stat="+stat);
+		if(stat == null){
+			logger.fine("stat=null");
+			FloatProcessor fp = this.ip.convertToFloatProcessor();
+			this.stat = fp.getHistogram();
+			if(this.stat== null){
+				logger.fine("fp.getHistgram() == null");
+				logger.fine("fp.getHistgramMin()=" + fp.getHistogramMin());
+				logger.fine("fp.getHistgramMax()="+ fp.getHistogramMax());
+				logger.fine("fp.getHistgramSize()=" + fp.getHistogramSize());
+				return;
+			}
+			return;
+		}
+		if(original_max > stat.length){
+			int[] tmp = this.stat;
+			this.stat = new int[original_max];
+			for(int j=0; j < original_max; j++){
+				if(j < tmp.length){
+					this.stat[j] = tmp[j];
+				} else {
+					this.stat[j] = 0;
+				}
+			}
+			original_max = stat.length;
+		}
+		scaled_stat = new int[scaled_max];
+		
+		// remap
+		for (int i = 0; i < scaled_max; i++) {
+			//scaled_stat[i] = original_max[i*mag] + original_max[i*mag+1] + original_max[i*mag+2] + original_max[i*mag+3];
+			scaled_stat[i] = stat[i * mag] + stat[i * mag + 1] + stat[i * mag + 2] + stat[i * mag + 3];
+		}
+	} finally {
+		imp.close();
+	}
   }
 
   /**

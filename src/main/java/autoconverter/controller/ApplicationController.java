@@ -2328,8 +2328,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 							logger.fine("Calculate statistics. Done.");
 						}
 					} catch (ArrayIndexOutOfBoundsException e){
-						publish("** No zero region\n");
-						logger.fine("** No zero region");
+						publish("** No region found\n");
+						logger.fine("** No region found");
 						logger.fine(e.toString());
 					} catch (Exception ex){
 						logger.fine("BUG?: Unexpected Error.");
@@ -2452,7 +2452,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");
 					flat_image.close();
 					for(ExImagePlus _imp : imps){
-						_imp.clone();
+						_imp.close();
 					}
 					count++;
 				}
@@ -2516,13 +2516,14 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					}
 					ImagePlus flat_image = cur_imp;
 					if(total_imps > 1){
-						//logger.fine("Merging..");
+						logger.fine("Merging..");
 						flat_image = RGBStackMerge.mergeChannels(imps, false);
-						//logger.fine("flatten()");
+						logger.fine("flatten()");
 						flat_image = flat_image.flatten();
 					}
-					//logger.fine("Creating destination path...");
+					logger.fine("Creating destination path...");
 					ExImagePlus _first_image = image_set.get(0).getImagePlus();
+					logger.fine("milestone0");
 					String _path = _first_image.getFile().getAbsolutePath();
 					String fname = _first_image.getFile().getName();
 					String abssrc = _first_image.getFile().getAbsolutePath();
@@ -2537,15 +2538,18 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						return 1;
 					}
 					fname = removeExtension(fname).replaceFirst(_first_image.getFilter(), "") + merged_filters.stream().collect(Collectors.joining("-"));
+					logger.fine("milestone1");
 					if (remove_char) { // special character 削除
 						fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
 
 					}
+					logger.fine("milestone2");
 					String dstbase = dstdir + File.separator + fname;
 					if(addparam){
 						dstbase = dstbase + this.getParamString(_first_image);
 					}
 
+					logger.fine("milestone3");
 					String fpath = "";
 					if (type.equals("jpg")) {
 						fpath = dstbase + ".jpg";
@@ -2558,14 +2562,18 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						IJ.run(flat_image, "RGB Color", null);
 						IJ.saveAsTiff(flat_image, fpath);
 					}
+					logger.fine("milestone4");
 
 					publish("(" + count + "/" + number + ") " + abssrc + "  ==>   " + fpath + "\n");
+					logger.fine("milestone5");
 					flat_image.close();
+					logger.fine("milestone6");
 					for( int k = 0; k < imps.length; k++){
-						if(imps[i] != null){
-							imps[i].close();
+						if(imps[k] != null){
+							imps[k].close();
 						}
 					}
+					logger.fine("count=" + count);
 					count++;
 
 				}

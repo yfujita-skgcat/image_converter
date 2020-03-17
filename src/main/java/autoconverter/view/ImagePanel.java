@@ -125,6 +125,7 @@ public class ImagePanel extends javax.swing.JPanel {
 			//}
 			//imp.draw();
 			g.drawImage(imp.getImage(), 0, 0, this);
+			imp.close();
 			/*
 			Roi roi = imp.getRoi();
 			if(roi != null){
