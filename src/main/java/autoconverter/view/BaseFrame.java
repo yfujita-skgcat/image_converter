@@ -2090,7 +2090,7 @@ private void resizeRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {/
 
 private void scaleRangeSliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scaleRangeSliderMouseReleased
 	/*
-* rangeSlider をドラッグ中に毎回Hashに保存しているとちょっと付加が高い & どうなるかわからないので
+* rangeSlider をドラッグ中に毎回Hashに保存しているとちょっと負荷が高い & どうなるかわからないので
 * マウスを離した時にだけ保存するようにしてみた.
 	 */
 	//appController.storeCurrentFilterSettings(false);
