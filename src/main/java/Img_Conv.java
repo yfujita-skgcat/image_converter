@@ -22,7 +22,7 @@ public class Img_Conv implements PlugIn {
 
 	@Override
 	public void run(String string) {
-                //java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle"); // NOI18N
+    //java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle"); // NOI18N
 		//IJ.showMessage("This is a test imagej plugin.");
 		//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		Locale.setDefault(Locale.ENGLISH);

@@ -325,7 +325,7 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.hTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, "0", null));
 		this.wTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, "0", null));
 
-// crop are text panel 無効化
+// crop area text panel 無効化
 		this.cropAreaPanel.setVisible(false);
 
 		String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
