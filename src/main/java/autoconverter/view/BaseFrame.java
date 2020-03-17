@@ -2194,14 +2194,6 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.enableListener(true);
 	}// GEN-LAST:event_jCheckBoxFilter7ActionPerformed
 
-	private void jCheckBoxRef1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jCheckBoxRef1ActionPerformed
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
-		// TODO add your handling code here:
-	}// GEN-LAST:event_jCheckBoxRef1ActionPerformed
-
 	private void jCheckBoxTarget1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jCheckBoxTarget1ActionPerformed
 		// TODO add your handling code here:
 		this.enableListener(false);
@@ -2257,6 +2249,14 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.appController.updateImage();
 		this.enableListener(true);
 	}// GEN-LAST:event_jCheckBoxTarget7ActionPerformed
+
+	private void jCheckBoxRef1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jCheckBoxRef1ActionPerformed
+		this.enableListener(false);
+		this.appController.updateNextButton();
+		this.appController.updateImage();
+		this.enableListener(true);
+		// TODO add your handling code here:
+	}// GEN-LAST:event_jCheckBoxRef1ActionPerformed
 
 	private void jCheckBoxRef2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jCheckBoxRef2ActionPerformed
 		// TODO add your handling code here:
