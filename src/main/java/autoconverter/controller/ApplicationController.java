@@ -1317,10 +1317,12 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		JTextArea area = this.baseFrame.getSummaryDisplayArea();
 		area.setText("");
 		area.append("================ summary ==============\n");
+		area.append("Java: " + System.getProperty("java.version") + "\n");
 		area.append("ImageJ: " + IJ.getVersion() + "\n");
 		if(IJ.versionLessThan("1.51t")){
-			area.append("*Warning: Quantification of relative image may require version 1.51t or later.");
+			area.append("*Warning: Quantification of relative image may require version 1.51t or later.\n");
 		}
+		area.append("Image Converter Plugin: " + AutoConverterUtils.getVersion() + "\n\n");
 
 		area.append("From: " + this.baseFrame.getSourceText().getText() + "\n");
 		area.append("To: " + this.baseFrame.getDestinationText().getText() + "\n\n");
@@ -1424,6 +1426,11 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			this.minHash   = this.storedTMin;
 			this.maxHash   = this.storedTMax;
 			this.typeHash  = this.storedTAutoType;
+		} else if( this.getImageMode() == BaseFrame.IMAGE_MODE_MERGE){
+			ArrayList<String> selected_filters = this.getSelectedFilters();
+			if(selected_filters.size() > 0){
+				area.append("Merged filters: " + selected_filters.stream().collect(Collectors.joining(" & ")) + "\n\n");
+			}
 		}
 			
 		for (String s : this.getImageSet().getFilters()) {
