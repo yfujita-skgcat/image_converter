@@ -37,6 +37,7 @@ import ij.plugin.frame.ThresholdAdjuster;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import ij.process.LUT;
+import java.awt.Rectangle;
 import java.awt.image.IndexColorModel;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -2175,6 +2176,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			}
 
 			private int convertRelativeImage(){
+				Thread.setDefaultUncaughtExceptionHandler(new ThreadExceptionHandler());
 				int number = getImageSet().getShotSize();
 				int count = 1;
 				logger.fine("number="+number);
@@ -2218,7 +2220,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					logger.fine("dividing...");
 					ImagePlus rel_imp = ic.run("divide create 32-bit", tgt_imp, ref_imp);
 					ImageProcessor ip = rel_imp.getProcessor();
-					ImageStatistics stat = ip.getStatistics();
+
+					ImagePlus mask = tgt_imp.duplicate();
+					ImageProcessor mask_ip = mask.getProcessor();
 
 					for(ExImagePlus imp: imps){
 						String filter = imp.getFilter();
@@ -2247,6 +2251,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 								logger.fine("background=" + ip.getBackgroundValue());
 								ip.setValue(0.0);
 								ip.fillOutside(roi); // 選択領域外を埋める
+								mask_ip.setValue(255);
+								mask_ip.fill(roi);
+								mask_ip.setValue(0.0);
+								mask_ip.fillOutside(roi);
 								logger.fine("filled outside of ROI");
 							} else {
 								throw new ArrayIndexOutOfBoundsException("roi.isArea==false");
@@ -2267,17 +2275,27 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					// ToDo
 					// lut を当てる
 					// displayRange を当てる
+					logger.fine("Loading lut...");
 					String lut_name = (String) baseFrame.getColorChannelSelector().getSelectedItem();
+					logger.fine("Loaded LUT path.");
 					try {
 						InputStream is = getClass().getResourceAsStream(lut_name);
 						IndexColorModel icm = LutLoader.open(is);
 						LUT lut = new LUT(icm, 0,ip.getMax());
 						ip.setLut(lut);
 					} catch (IOException ex) {
-						Logger.getLogger(ApplicationController.class.getName()).log(Level.SEVERE, null, ex);
+						logger.fine(ex.toString());
+						logger.fine("BUG: Fail to open LUT file\n");
 						publish("BUG: Fail to open LUT file\n");
+					} catch (RuntimeException e){
+						logger.fine("RuntimeException: " + e.toString());
+					} catch (Exception e){
+						logger.fine("Exception:" + e.toString());
 					}
+					logger.fine("Loaded LUT file.");
+
 					rel_imp.setDisplayRange(range_min, range_max);
+					logger.fine("Set display range. Done.");
 
 					// ip.value == 0 の領域を選択=>選択領域を逆にして non-zero 領域をROIする
 					// ip.setRoi(roi)
@@ -2285,29 +2303,64 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					// これで non-zero 領域についてデータを解析する
 					ip.resetRoi();
 					ip.resetThreshold();
-					ip.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
+					logger.fine("Reset threshold. Done.");
+					//ip.setThreshold(0, 0, ImageProcessor.NO_LUT_UPDATE);
+					mask_ip.setThreshold(255, 255, ImageProcessor.NO_LUT_UPDATE);
+					logger.fine("Set threshold. Done.");
 					Roi roi = null;
+					ImageStatistics stat = null;
 					try{
-						roi = tts.convert(ip);
+						roi = tts.convert(mask_ip);
 						if(roi == null){
+							logger.fine("roi==null");
 							throw new ArrayIndexOutOfBoundsException("roi==null, tts.convert failed.");
 						}
-						ip.resetThreshold();
+						//ip.resetThreshold();
+						mask_ip.resetThreshold();
+						logger.fine("Reset threshold.");
 						if(roi.isArea()){
-							ip.setRoi(roi);
-							Roi r_roi = roi.getInverse(rel_imp);
+							logger.fine("roi==AREA.");
+							logger.fine("Set ROI. DONE");
+							//Roi r_roi = roi.getInverse(rel_imp);
+							Roi r_roi = roi;
+							logger.fine("Inverse ROI. DONE");
 							if(r_roi==null){
+								logger.fine("r_roi==null");
 								throw new ArrayIndexOutOfBoundsException("r_roi==null, roi.getInverse() failed.");
 							}
 							ip.setRoi(r_roi);
+							logger.fine("Select > 0 region. Done.");
+							stat = ip.getStatistics();
+							logger.fine("Calculate statistics. Done.");
 						}
 					} catch (ArrayIndexOutOfBoundsException e){
-						publish("No zero region\n");
-						logger.fine("No zero region");
+						publish("** No zero region\n");
+						logger.fine("** No zero region");
 						logger.fine(e.toString());
+					} catch (Exception ex){
+						logger.fine("EE ");
+						logger.fine(ex.toString());
 					}
-					stat = ip.getStatistics();
 					ip.resetRoi();
+					logger.fine("Reset ROI. Done.");
+
+					// 統計データ等を回収
+					double total_area = ip.getStatistics().area;
+					double s_area = 0;
+					double s_min = 0;
+					double s_max = 0;
+					double s_mean = 0;
+					double s_sd = 0;
+					double s_median = 0;
+					if(stat != null){
+						s_area = stat.area;
+						s_min = stat.min;
+						s_max = stat.max;
+						s_mean = stat.mean;
+						s_sd = stat.stdDev;
+						s_median = stat.median;
+						logger.fine("are="+s_area+", min="+s_min+", max="+s_max+", mean="+s_mean+", sd="+s_sd+", median="+s_median);
+					}
 
 					// 画像の出力先の決定を出力
 					ExImagePlus _first_image = image_set.get(0).getImagePlus();
@@ -2330,15 +2383,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
 
 					}
+					logger.fine("Create fiel path. Done.");
 
-					// 統計データ等を回収
-					double total_area = ip.getStatistics().area;
-					double s_area = stat.area;
-					double s_min = stat.min;
-					double s_max = stat.max;
-					double s_mean = stat.mean;
-					double s_sd = stat.stdDev;
-					double s_median = stat.median;
 					ArrayList<String> record = new ArrayList<String>();
 					record.add(fname);
 					record.add(tgt_imp.getFile().getName());
@@ -2359,6 +2405,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						record.add(Double.toString(s_median));
 					}
 					stat_data.add(record);
+					logger.fine("Save statistics. Done.");
 
 					String dstbase = dstdir + File.separator + fname;
 					if(addparam){
@@ -2378,6 +2425,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 						rel_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
 						IJ.run(rel_imp, "Crop", "");
 					}
+					logger.fine("Crop. Done.");
 					int width  = rel_imp.getWidth();
 					int height = rel_imp.getHeight();
 					int resize_y = 0;
@@ -2389,6 +2437,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					if (resize_x > 0 && resize_y > 0) {
 						IJ.run(rel_imp, "Size...", "width=" + resize_x + " height=" + resize_y + "512 constrain average interpolation=Bilinear");
 					}
+					logger.fine("Resize. Done.");
 
 					ImagePlus flat_image;
 					flat_image = rel_imp.flatten();
@@ -2638,7 +2687,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			}
 
 			@Override
-			protected Integer doInBackground() throws Exception {
+			protected Integer doInBackground() {
 				if(current_image_mode == BaseFrame.IMAGE_MODE_SINGLE){
 					this.convertSingleImage();
 				} else if(current_image_mode == BaseFrame.IMAGE_MODE_MERGE ){
