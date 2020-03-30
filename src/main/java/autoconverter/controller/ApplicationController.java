@@ -40,6 +40,7 @@ import ij.process.LUT;
 import java.awt.Rectangle;
 import java.awt.image.IndexColorModel;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,6 +193,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	private int current_image_mode = BaseFrame.IMAGE_MODE_SINGLE;
 	private static String[] COLOR_INDEX = {"Red", "Green", "Blue", "Grays", "Cyan", "Magenta", "Yellow"};
 	public static double RELATIVE_MULTIPLICITY = 1000.0;
+	private static int COLOR_DEPTH = 256;
 
 	private void printSavedParams(String _filter){
 		int stack = 1;
@@ -960,8 +962,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 
 		//logger.fine("ip.max()=" + rel_imp.getProcessor().getMax());
 		//logger.fine("ip.min()=" + rel_imp.getProcessor().getMin());
-		logger.fine("ip.max()=" + ip.getMax());
-		logger.fine("ip.min()=" + ip.getMin());
+		ImageStatistics stat = ip.getStatistics();
+		logger.fine("stat.max=" + stat.max);
+		logger.fine("stat.min=" + stat.min);
 		//Integer min = this.minHash.get(tgt_filter);
 		//Integer max = this.maxHash.get(tgt_filter);
 		int upper_limit = (int) (calc_max * ApplicationController.RELATIVE_MULTIPLICITY);
@@ -980,12 +983,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		String lut_name = (String) this.baseFrame.getColorChannelSelector().getSelectedItem();
 		logger.fine("lut_name=" + lut_name);
 		try {
-			InputStream is = getClass().getResourceAsStream(lut_name);
-			IndexColorModel icm = LutLoader.open(is);
-			//LUT lut = new LUT(icm, min, max);
-			LUT lut = new LUT(icm, 0,calc_max * ApplicationController.RELATIVE_MULTIPLICITY *2 );
-			//URL url = getClass().getResource(lut_name);
-			//LUT lut = LutLoader.openLut(url.toString());
+			//LUT lut = new LUT(icm, 0, stat.max);
+			LUT lut = loadLut(lut_name, 0, stat.max);
 			ip.setLut(lut);
 		} catch (IOException ex) {
 			Logger.getLogger(ApplicationController.class.getName()).log(Level.SEVERE, null, ex);
@@ -2011,6 +2010,37 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		return src;
 	}
 
+	public LUT loadLut(String lut_name, double min, double max) throws IOException{
+		InputStream is = getClass().getResourceAsStream(lut_name);
+		DataInputStream dis = new DataInputStream(is);
+		byte[] lut_byte_data = dis.readAllBytes();
+		int read_index = lut_byte_data.length - ApplicationController.COLOR_DEPTH * 3;
+		logger.fine("lut_byte_data.length=" + lut_byte_data.length);
+		logger.fine("read_index=" + read_index);
+		
+		byte[] reds   = new byte[ApplicationController.COLOR_DEPTH];
+		byte[] blues  = new byte[ApplicationController.COLOR_DEPTH];
+		byte[] greens = new byte[ApplicationController.COLOR_DEPTH];
+		System.arraycopy(lut_byte_data, read_index + ApplicationController.COLOR_DEPTH * 0, reds,   0, ApplicationController.COLOR_DEPTH);
+		System.arraycopy(lut_byte_data, read_index + ApplicationController.COLOR_DEPTH * 1, blues,  0, ApplicationController.COLOR_DEPTH);
+		System.arraycopy(lut_byte_data, read_index + ApplicationController.COLOR_DEPTH * 2, greens, 0, ApplicationController.COLOR_DEPTH);
+		IndexColorModel icm = new IndexColorModel(8, ApplicationController.COLOR_DEPTH, reds, blues, greens);
+		// 以下はdebug用
+		/*
+		int map_size = icm.getMapSize();
+		for(int j=0; j < map_size; j++){
+			int red   = icm.getRed(j);
+			int green = icm.getGreen(j);
+			int blue  = icm.getBlue(j);
+			int alpha = icm.getAlpha(j);
+			logger.fine("index=" + j + ": red=" + red + ", green=" + green + ", blue=" + blue + ", alpha=" + alpha);
+			logger.fine("index=" + j + ": red=" + reds[j] + ", green=" + greens[j] + ", blue=" + blues[j]);
+		}
+		*/
+		LUT lut = new LUT(icm, min, max);
+		return lut;
+	}
+
 	/**
 	 * イメージ全部をコンバートする.
 	 */
@@ -2290,9 +2320,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					String lut_name = (String) baseFrame.getColorChannelSelector().getSelectedItem();
 					//logger.fine("Loaded LUT path.");
 					try {
-						InputStream is = getClass().getResourceAsStream(lut_name);
-						IndexColorModel icm = LutLoader.open(is);
-						LUT lut = new LUT(icm, 0,ip.getMax());
+						//InputStream is = getClass().getResourceAsStream(lut_name);
+						//IndexColorModel icm = LutLoader.open(is);
+						//LUT lut = new LUT(icm, 0,ip.getStatistics().max);
+						LUT lut = loadLut(lut_name, 0, ip.getStatistics().max);
 						ip.setLut(lut);
 					} catch (IOException ex) {
 						logger.fine(ex.toString());
