@@ -1549,7 +1549,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		String srcPath;
 		srcPath = baseFrame.getSourceText().getText(); // can't click next button if sourceText is blank.
 		if (this.oldSearchPath == null || !srcPath.equals(oldSearchPath)) {
-			FileSearchWorker fsw = new FileSearchWorker(baseFrame.getSourceText().getText(), baseFrame.getRecursiveRadioButton().isSelected());
+			FileSearchWorker fsw = new FileSearchWorker(baseFrame.getSourceText().getText(), baseFrame.getRecursiveRadioButton().isSelected(), baseFrame.getSymlinkRadioButton().isSelected());
 			fsw.execute();
 		}
 		return true;
@@ -1890,6 +1890,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		}
 	}
 
+	public void storeIgnoreSymlink(boolean save){
+		boolean selected = baseFrame.getSymlinkRadioButton().isSelected();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_IGNORE_SYMLINK, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{selected}));
+		if (save) {
+			AutoConverterConfig.save(baseFrame, true);
+		}
+	}
 	/**
 	 * ファイル名に変換設定を加えて保存する.
 	 *

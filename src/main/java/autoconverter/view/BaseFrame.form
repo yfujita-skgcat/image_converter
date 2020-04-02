@@ -260,6 +260,13 @@
                         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="addParamRadioButtonStateChanged"/>
                       </Events>
                     </Component>
+                    <Component class="javax.swing.JRadioButton" name="symlinkRadioButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="autoconverter/controller/Bundle.properties" key="BaseFrame.symlinkRadioButton.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="regexPanel">

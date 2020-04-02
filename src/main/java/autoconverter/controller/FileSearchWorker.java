@@ -9,6 +9,7 @@ import autoconverter.model.ImageSet;
 import autoconverter.view.BaseFrame;
 import ij.IJ;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,21 +29,23 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 
 	private static Logger logger = AutoConverterUtils.getLogger();
 	private final boolean recursive;
+	private final boolean ignore_symlink;
 	private final ImageSet imageSet;
         private ArrayList<File> imageList;
 	private final File srcPath;
 	private final ApplicationController appCtrl;
 
-	public FileSearchWorker(File _srcPath, boolean _recursive){
+	public FileSearchWorker(File _srcPath, boolean _recursive, boolean _ignore_symlink){
 		super();
 		recursive = _recursive;
+		ignore_symlink = _ignore_symlink;
 		imageSet = new ImageSet();
 		srcPath = _srcPath;
 		appCtrl = ApplicationController.getInstance();
 	}
 
-	public FileSearchWorker(String _srcPath, boolean _recursive){
-		this(new File(_srcPath), _recursive);
+	public FileSearchWorker(String _srcPath, boolean _recursive, boolean _ignore_symlink){
+		this(new File(_srcPath), _recursive, _ignore_symlink);
 	}
 
 
@@ -132,8 +135,12 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 			// ここを正規表現で最初からマッチさせる
 			if (filePattern.matcher(sdir.getName()).matches() ) {
 				if (!sdir.getName().matches("_thumb_")) {
-					publish("FOUND: " + sdir.getAbsolutePath());
-					list.add(sdir);
+					if(Files.isSymbolicLink(sdir.toPath())){
+						publish("SKIP(symlink): " + sdir.getAbsolutePath());
+					} else {
+						publish("FOUND: " + sdir.getAbsolutePath());
+						list.add(sdir);
+					}
 				}
 			} else {
 				publish("SKIP: " + sdir.getAbsolutePath());

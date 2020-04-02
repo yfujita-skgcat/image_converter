@@ -62,6 +62,7 @@ public class AutoConverterConfig {
 	public static final String KEY_SELECTED_DISPLAY_RANGE = "SELECTED_DISPLAY_RANGE";
 	public static final String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
 	public static final String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
+	public static final String KEY_IGNORE_SYMLINK = "IGNORE_SYMLINK";
 	public static final String KEY_IMAGE_MODE = "IMAGE_MODE";
 
 	public static final String PREFIX_BALL = "BALL";
