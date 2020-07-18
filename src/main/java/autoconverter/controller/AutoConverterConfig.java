@@ -64,6 +64,8 @@ public class AutoConverterConfig {
 	public static final String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
 	public static final String KEY_IGNORE_SYMLINK = "IGNORE_SYMLINK";
 	public static final String KEY_IMAGE_MODE = "IMAGE_MODE";
+	public static final String KEY_RESIZE_CHECK = "RESIZE_CHECK";
+	public static final String KEY_RESIZE_WIDTH = "RESIZE_WIDTH";
 
 	public static final String PREFIX_BALL = "BALL";
 	public static final String PREFIX_MIN = "MIN";
@@ -213,6 +215,8 @@ public class AutoConverterConfig {
 	public static synchronized void save(String path) throws FileNotFoundException {
 		File dir = new File((new File(path)).getParent());
 		dir.mkdirs();
+		logger.fine(config.get(AutoConverterConfig.KEY_IGNORE_SYMLINK));
+		logger.fine(config.get(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME));
 		logger.log(Level.INFO, "Writing config to {0}...", path);
 		try (XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)))) {
 			encoder.writeObject(config);

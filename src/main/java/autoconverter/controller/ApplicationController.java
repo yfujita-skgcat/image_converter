@@ -1864,6 +1864,22 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		}
 	}
 
+	public void storeResizeWidthSetting(boolean save){
+		Integer width = (Integer) this.baseFrame.getResizeSpinner().getValue();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_RESIZE_WIDTH, width);
+		if (save) {
+			AutoConverterConfig.save(baseFrame, true);
+		}
+	}
+
+	public void storeResizeCheckSetting(boolean save){
+		boolean _select = this.baseFrame.getResizeRadioButton().isSelected();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_RESIZE_CHECK, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{_select}));
+		if (save) {
+			AutoConverterConfig.save(baseFrame, true);
+		}
+	}
+
 	/**
 	 * 変換先フォーマット保存
 	 *

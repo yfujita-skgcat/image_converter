@@ -31,6 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -38,396 +39,408 @@ import javax.swing.JSpinner;
  */
 public class BaseFrame extends javax.swing.JFrame {
 
-	/**
-	 * @return the jCheckBoxFilter1
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter1() {
-		return jCheckBoxFilter1;
-	}
+  /**
+   * @return the jCheckBoxFilter1
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter1() {
+    return jCheckBoxFilter1;
+  }
 
-	/**
-	 * @param jCheckBoxFilter1 the jCheckBoxFilter1 to set
-	 */
-	public void setjCheckBoxFilter1(javax.swing.JCheckBox jCheckBoxFilter1) {
-		this.jCheckBoxFilter1 = jCheckBoxFilter1;
-	}
+  /**
+   * @param jCheckBoxFilter1 the jCheckBoxFilter1 to set
+   */
+  public void setjCheckBoxFilter1(javax.swing.JCheckBox jCheckBoxFilter1) {
+    this.jCheckBoxFilter1 = jCheckBoxFilter1;
+  }
 
-	/**
-	 * @return the jCheckBoxFilter2
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter2() {
-		return jCheckBoxFilter2;
-	}
+  /**
+   * @return the jCheckBoxFilter2
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter2() {
+    return jCheckBoxFilter2;
+  }
 
-	/**
-	 * @param jCheckBoxFilter2 the jCheckBoxFilter2 to set
-	 */
-	public void setjCheckBoxFilter2(javax.swing.JCheckBox jCheckBoxFilter2) {
-		this.jCheckBoxFilter2 = jCheckBoxFilter2;
-	}
+  /**
+   * @param jCheckBoxFilter2 the jCheckBoxFilter2 to set
+   */
+  public void setjCheckBoxFilter2(javax.swing.JCheckBox jCheckBoxFilter2) {
+    this.jCheckBoxFilter2 = jCheckBoxFilter2;
+  }
 
-	/**
-	 * @return the jCheckBoxFilter3
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter3() {
-		return jCheckBoxFilter3;
-	}
+  /**
+   * @return the jCheckBoxFilter3
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter3() {
+    return jCheckBoxFilter3;
+  }
 
-	/**
-	 * @param jCheckBoxFilter3 the jCheckBoxFilter3 to set
-	 */
-	public void setjCheckBoxFilter3(javax.swing.JCheckBox jCheckBoxFilter3) {
-		this.jCheckBoxFilter3 = jCheckBoxFilter3;
-	}
+  /**
+   * @param jCheckBoxFilter3 the jCheckBoxFilter3 to set
+   */
+  public void setjCheckBoxFilter3(javax.swing.JCheckBox jCheckBoxFilter3) {
+    this.jCheckBoxFilter3 = jCheckBoxFilter3;
+  }
 
-	/**
-	 * @return the jCheckBoxFilter4
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter4() {
-		return jCheckBoxFilter4;
-	}
+  /**
+   * @return the jCheckBoxFilter4
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter4() {
+    return jCheckBoxFilter4;
+  }
 
-	/**
-	 * @param jCheckBoxFilter4 the jCheckBoxFilter4 to set
-	 */
-	public void setjCheckBoxFilter4(javax.swing.JCheckBox jCheckBoxFilter4) {
-		this.jCheckBoxFilter4 = jCheckBoxFilter4;
-	}
+  /**
+   * @param jCheckBoxFilter4 the jCheckBoxFilter4 to set
+   */
+  public void setjCheckBoxFilter4(javax.swing.JCheckBox jCheckBoxFilter4) {
+    this.jCheckBoxFilter4 = jCheckBoxFilter4;
+  }
 
-	/**
-	 * @return the jCheckBoxFilter5
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter5() {
-		return jCheckBoxFilter5;
-	}
+  /**
+   * @return the jCheckBoxFilter5
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter5() {
+    return jCheckBoxFilter5;
+  }
 
-	/**
-	 * @param jCheckBoxFilter5 the jCheckBoxFilter5 to set
-	 */
-	public void setjCheckBoxFilter5(javax.swing.JCheckBox jCheckBoxFilter5) {
-		this.jCheckBoxFilter5 = jCheckBoxFilter5;
-	}
+  /**
+   * @param jCheckBoxFilter5 the jCheckBoxFilter5 to set
+   */
+  public void setjCheckBoxFilter5(javax.swing.JCheckBox jCheckBoxFilter5) {
+    this.jCheckBoxFilter5 = jCheckBoxFilter5;
+  }
 
-	/**
-	 * @return the jCheckBoxFilter6
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter6() {
-		return jCheckBoxFilter6;
-	}
+  /**
+   * @return the jCheckBoxFilter6
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter6() {
+    return jCheckBoxFilter6;
+  }
 
-	/**
-	 * @param jCheckBoxFilter6 the jCheckBoxFilter6 to set
-	 */
-	public void setjCheckBoxFilter6(javax.swing.JCheckBox jCheckBoxFilter6) {
-		this.jCheckBoxFilter6 = jCheckBoxFilter6;
-	}
+  /**
+   * @param jCheckBoxFilter6 the jCheckBoxFilter6 to set
+   */
+  public void setjCheckBoxFilter6(javax.swing.JCheckBox jCheckBoxFilter6) {
+    this.jCheckBoxFilter6 = jCheckBoxFilter6;
+  }
 
-	/**
-	 * @return the jCheckBoxFilter7
-	 */
-	public javax.swing.JCheckBox getjCheckBoxFilter7() {
-		return jCheckBoxFilter7;
-	}
+  /**
+   * @return the jCheckBoxFilter7
+   */
+  public javax.swing.JCheckBox getjCheckBoxFilter7() {
+    return jCheckBoxFilter7;
+  }
 
-	/**
-	 * @param jCheckBoxFilter7 the jCheckBoxFilter7 to set
-	 */
-	public void setjCheckBoxFilter7(javax.swing.JCheckBox jCheckBoxFilter7) {
-		this.jCheckBoxFilter7 = jCheckBoxFilter7;
-	}
+  /**
+   * @param jCheckBoxFilter7 the jCheckBoxFilter7 to set
+   */
+  public void setjCheckBoxFilter7(javax.swing.JCheckBox jCheckBoxFilter7) {
+    this.jCheckBoxFilter7 = jCheckBoxFilter7;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible1
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible1() {
-		return jCheckBoxTarget1;
-	}
+  /**
+   * @return the jCheckBoxVisible1
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible1() {
+    return jCheckBoxTarget1;
+  }
 
-	/**
-	 * @param jCheckBoxVisible1 the jCheckBoxVisible1 to set
-	 */
-	public void setjCheckBoxVisible1(javax.swing.JCheckBox jCheckBoxVisible1) {
-		this.jCheckBoxTarget1 = jCheckBoxVisible1;
-	}
+  /**
+   * @param jCheckBoxVisible1 the jCheckBoxVisible1 to set
+   */
+  public void setjCheckBoxVisible1(javax.swing.JCheckBox jCheckBoxVisible1) {
+    this.jCheckBoxTarget1 = jCheckBoxVisible1;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible2
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible2() {
-		return jCheckBoxTarget2;
-	}
+  /**
+   * @return the jCheckBoxVisible2
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible2() {
+    return jCheckBoxTarget2;
+  }
 
-	/**
-	 * @param jCheckBoxVisible2 the jCheckBoxVisible2 to set
-	 */
-	public void setjCheckBoxVisible2(javax.swing.JCheckBox jCheckBoxVisible2) {
-		this.jCheckBoxTarget2 = jCheckBoxVisible2;
-	}
+  /**
+   * @param jCheckBoxVisible2 the jCheckBoxVisible2 to set
+   */
+  public void setjCheckBoxVisible2(javax.swing.JCheckBox jCheckBoxVisible2) {
+    this.jCheckBoxTarget2 = jCheckBoxVisible2;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible3
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible3() {
-		return jCheckBoxTarget3;
-	}
+  /**
+   * @return the jCheckBoxVisible3
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible3() {
+    return jCheckBoxTarget3;
+  }
 
-	/**
-	 * @param jCheckBoxVisible3 the jCheckBoxVisible3 to set
-	 */
-	public void setjCheckBoxVisible3(javax.swing.JCheckBox jCheckBoxVisible3) {
-		this.jCheckBoxTarget3 = jCheckBoxVisible3;
-	}
+  /**
+   * @param jCheckBoxVisible3 the jCheckBoxVisible3 to set
+   */
+  public void setjCheckBoxVisible3(javax.swing.JCheckBox jCheckBoxVisible3) {
+    this.jCheckBoxTarget3 = jCheckBoxVisible3;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible4
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible4() {
-		return jCheckBoxTarget4;
-	}
+  /**
+   * @return the jCheckBoxVisible4
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible4() {
+    return jCheckBoxTarget4;
+  }
 
-	/**
-	 * @param jCheckBoxVisible4 the jCheckBoxVisible4 to set
-	 */
-	public void setjCheckBoxVisible4(javax.swing.JCheckBox jCheckBoxVisible4) {
-		this.jCheckBoxTarget4 = jCheckBoxVisible4;
-	}
+  /**
+   * @param jCheckBoxVisible4 the jCheckBoxVisible4 to set
+   */
+  public void setjCheckBoxVisible4(javax.swing.JCheckBox jCheckBoxVisible4) {
+    this.jCheckBoxTarget4 = jCheckBoxVisible4;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible5
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible5() {
-		return jCheckBoxTarget5;
-	}
+  /**
+   * @return the jCheckBoxVisible5
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible5() {
+    return jCheckBoxTarget5;
+  }
 
-	/**
-	 * @param jCheckBoxVisible5 the jCheckBoxVisible5 to set
-	 */
-	public void setjCheckBoxVisible5(javax.swing.JCheckBox jCheckBoxVisible5) {
-		this.jCheckBoxTarget5 = jCheckBoxVisible5;
-	}
+  /**
+   * @param jCheckBoxVisible5 the jCheckBoxVisible5 to set
+   */
+  public void setjCheckBoxVisible5(javax.swing.JCheckBox jCheckBoxVisible5) {
+    this.jCheckBoxTarget5 = jCheckBoxVisible5;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible6
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible6() {
-		return jCheckBoxTarget6;
-	}
+  /**
+   * @return the jCheckBoxVisible6
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible6() {
+    return jCheckBoxTarget6;
+  }
 
-	/**
-	 * @param jCheckBoxVisible6 the jCheckBoxVisible6 to set
-	 */
-	public void setjCheckBoxVisible6(javax.swing.JCheckBox jCheckBoxVisible6) {
-		this.jCheckBoxTarget6 = jCheckBoxVisible6;
-	}
+  /**
+   * @param jCheckBoxVisible6 the jCheckBoxVisible6 to set
+   */
+  public void setjCheckBoxVisible6(javax.swing.JCheckBox jCheckBoxVisible6) {
+    this.jCheckBoxTarget6 = jCheckBoxVisible6;
+  }
 
-	/**
-	 * @return the jCheckBoxVisible7
-	 */
-	public javax.swing.JCheckBox getjCheckBoxVisible7() {
-		return jCheckBoxTarget7;
-	}
+  /**
+   * @return the jCheckBoxVisible7
+   */
+  public javax.swing.JCheckBox getjCheckBoxVisible7() {
+    return jCheckBoxTarget7;
+  }
 
-	/**
-	 * @param jCheckBoxVisible7 the jCheckBoxVisible7 to set
-	 */
-	public void setjCheckBoxVisible7(javax.swing.JCheckBox jCheckBoxVisible7) {
-		this.jCheckBoxTarget7 = jCheckBoxVisible7;
-	}
+  /**
+   * @param jCheckBoxVisible7 the jCheckBoxVisible7 to set
+   */
+  public void setjCheckBoxVisible7(javax.swing.JCheckBox jCheckBoxVisible7) {
+    this.jCheckBoxTarget7 = jCheckBoxVisible7;
+  }
 
-	private static Logger logger = AutoConverterUtils.getLogger();
-	public static final int MAX_CARD_SIZE = 3;
-	private boolean active = true;
-	private int active_stack = 1;
-	private final IntegerVerifier inputverifier;
-	private final ApplicationController appController;
-	public static final int IMAGE_MODE_SINGLE = 1;
-	public static final int IMAGE_MODE_MERGE  = 2;
-	public static final int IMAGE_MODE_THRESHOLD = 3;
-	public static final int IMAGE_MODE_RELATIVE = 4;
-	private ArrayList<JCheckBox> filterCheckBoxList;
-	private ArrayList<JCheckBox> targetCheckBoxList;
-	private ArrayList<JCheckBox> referenceCheckBoxList;
-	private Object lastObj = null; // 最後にイベントから呼ばれたオブジェクト
-	//private Instant timer; // 最後にイベントから呼ばれた時間
-	private long timer = 0; // 最後にイベントから呼ばれた時間
-	private static final long inactive_time = 500; // 連続で同じイベントが来たときに無視する時間
+  private static Logger logger = AutoConverterUtils.getLogger();
+  public static final int MAX_CARD_SIZE = 3;
+  private boolean active = true;
+  private int active_stack = 1;
+  private final IntegerVerifier inputverifier;
+  private final ApplicationController appController;
+  public static final int IMAGE_MODE_SINGLE = 1;
+  public static final int IMAGE_MODE_MERGE = 2;
+  public static final int IMAGE_MODE_THRESHOLD = 3;
+  public static final int IMAGE_MODE_RELATIVE = 4;
+  private ArrayList<JCheckBox> filterCheckBoxList;
+  private ArrayList<JCheckBox> targetCheckBoxList;
+  private ArrayList<JCheckBox> referenceCheckBoxList;
+  private Object lastObj = null; // 最後にイベントから呼ばれたオブジェクト
+  //private Instant timer; // 最後にイベントから呼ばれた時間
+  private long timer = 0; // 最後にイベントから呼ばれた時間
+  private static final long inactive_time = 500; // 連続で同じイベントが来たときに無視する時間
 
-	public void enableListener(boolean flag) {
-	// enable するとactive状態になる. < 1 の時はListenerが動かない
-		if (flag) {
-			active_stack++;
-		} else {
-			active_stack--;
-		}
-		if (active_stack > 0) {
-			active = true;
-		} else {
-			active = false;
-		}
-	//logger.fine("active_stack = " + active_stack);
-	}
+  public void enableListener(boolean flag) {
+    // enable するとactive状態になる. < 1 の時はListenerが動かない
+    if (flag) {
+      active_stack++;
+    } else {
+      active_stack--;
+    }
+    if (active_stack > 0) {
+      active = true;
+    } else {
+      active = false;
+    }
+    //logger.fine("active_stack = " + active_stack);
+  }
 
-	/**
-	 * @return the logger
-	 */
-	public static Logger getLogger() {
-		return logger;
-	}
+  /**
+   * @return the logger
+   */
+  public static Logger getLogger() {
+    return logger;
+  }
 
-	/**
-	 * Creates new form baseFrame
-	 */
-	public BaseFrame() {
-		try {
-			AutoConverterConfig.load();
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		Integer _width = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, "400", null));
-		Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, "300", null));
+  /**
+   * Creates new form baseFrame
+   */
+  public BaseFrame() {
+    try {
+      AutoConverterConfig.load();
+    } catch (FileNotFoundException ex) {
+      Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    Integer _width = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, "400", null));
+    Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, "300", null));
 
-		this.appController = new ApplicationController(this);
+    this.appController = new ApplicationController(this);
 // input verifier
-		inputverifier = new IntegerVerifier();
+    inputverifier = new IntegerVerifier();
 
-		initComponents();
+    initComponents();
 
-		// checkbox をまとめておく
-		this.filterCheckBoxList = new ArrayList();
-		this.targetCheckBoxList = new ArrayList();
-		this.referenceCheckBoxList = new ArrayList();
-		this.filterCheckBoxList.add(jCheckBoxFilter1);
-		this.filterCheckBoxList.add(jCheckBoxFilter2);
-		this.filterCheckBoxList.add(jCheckBoxFilter3);
-		this.filterCheckBoxList.add(jCheckBoxFilter4);
-		this.filterCheckBoxList.add(jCheckBoxFilter5);
-		this.filterCheckBoxList.add(jCheckBoxFilter6);
-		this.filterCheckBoxList.add(jCheckBoxFilter7);
-		this.targetCheckBoxList.add(jCheckBoxTarget1);
-		this.targetCheckBoxList.add(jCheckBoxTarget2);
-		this.targetCheckBoxList.add(jCheckBoxTarget3);
-		this.targetCheckBoxList.add(jCheckBoxTarget4);
-		this.targetCheckBoxList.add(jCheckBoxTarget5);
-		this.targetCheckBoxList.add(jCheckBoxTarget6);
-		this.targetCheckBoxList.add(jCheckBoxTarget7);
-		this.referenceCheckBoxList.add(jCheckBoxRef1);
-		this.referenceCheckBoxList.add(jCheckBoxRef2);
-		this.referenceCheckBoxList.add(jCheckBoxRef3);
-		this.referenceCheckBoxList.add(jCheckBoxRef4);
-		this.referenceCheckBoxList.add(jCheckBoxRef5);
-		this.referenceCheckBoxList.add(jCheckBoxRef6);
-		this.referenceCheckBoxList.add(jCheckBoxRef7);
-
+    // checkbox をまとめておく
+    this.filterCheckBoxList = new ArrayList();
+    this.targetCheckBoxList = new ArrayList();
+    this.referenceCheckBoxList = new ArrayList();
+    this.filterCheckBoxList.add(jCheckBoxFilter1);
+    this.filterCheckBoxList.add(jCheckBoxFilter2);
+    this.filterCheckBoxList.add(jCheckBoxFilter3);
+    this.filterCheckBoxList.add(jCheckBoxFilter4);
+    this.filterCheckBoxList.add(jCheckBoxFilter5);
+    this.filterCheckBoxList.add(jCheckBoxFilter6);
+    this.filterCheckBoxList.add(jCheckBoxFilter7);
+    this.targetCheckBoxList.add(jCheckBoxTarget1);
+    this.targetCheckBoxList.add(jCheckBoxTarget2);
+    this.targetCheckBoxList.add(jCheckBoxTarget3);
+    this.targetCheckBoxList.add(jCheckBoxTarget4);
+    this.targetCheckBoxList.add(jCheckBoxTarget5);
+    this.targetCheckBoxList.add(jCheckBoxTarget6);
+    this.targetCheckBoxList.add(jCheckBoxTarget7);
+    this.referenceCheckBoxList.add(jCheckBoxRef1);
+    this.referenceCheckBoxList.add(jCheckBoxRef2);
+    this.referenceCheckBoxList.add(jCheckBoxRef3);
+    this.referenceCheckBoxList.add(jCheckBoxRef4);
+    this.referenceCheckBoxList.add(jCheckBoxRef5);
+    this.referenceCheckBoxList.add(jCheckBoxRef6);
+    this.referenceCheckBoxList.add(jCheckBoxRef7);
 
 // crop 位置のロード
-		this.xTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, "0", null));
-		this.yTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_Y, "0", null));
-		this.hTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, "0", null));
-		this.wTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, "0", null));
+    this.xTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, "0", null));
+    this.yTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_Y, "0", null));
+    this.hTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, "0", null));
+    this.wTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, "0", null));
 
 // crop are text panel 無効化
-		this.cropAreaPanel.setVisible(false);
+    this.cropAreaPanel.setVisible(false);
 
-		String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
-		this.initFilePatternComboBox(selected_item);
+    String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
+    this.initFilePatternComboBox(selected_item);
 
-		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
-		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
-		this.sourceText.setText(_srcDir);
-		this.destinationText.setText(_dstDir);
+    String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
+    String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
+    this.sourceText.setText(_srcDir);
+    this.destinationText.setText(_dstDir);
 
-		String _recursive = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RECURSIVE_ON, "true", null);
-		if (_recursive.equals("true")) {
-			this.recursiveRadioButton.setSelected(true);
-		} else {
-			this.recursiveRadioButton.setSelected(false);
-		}
+    String _recursive = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RECURSIVE_ON, "true", null);
+    if (_recursive.equals("true")) {
+      this.recursiveRadioButton.setSelected(true);
+    } else {
+      this.recursiveRadioButton.setSelected(false);
+    }
 
 // special char load
-		String _remove_spec_char = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, "true", null);
-		if (_remove_spec_char.equals("true")) {
-			this.removeSpecialCharRadioButton.setSelected(true);
-		} else {
-			this.removeSpecialCharRadioButton.setSelected(false);
-		}
+    String _remove_spec_char = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, "true", null);
+    if (_remove_spec_char.equals("true")) {
+      this.removeSpecialCharRadioButton.setSelected(true);
+    } else {
+      this.removeSpecialCharRadioButton.setSelected(false);
+    }
 
 // add param load
-		String _add_param = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, "true", null);
-		if (_add_param.equals("true")) {
-			this.addParamRadioButton.setSelected(true);
-		} else {
-			this.addParamRadioButton.setSelected(false);
-		}
-		String _ignore_symlink = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_IGNORE_SYMLINK, "true", null);
-		if (_ignore_symlink.equals("true")) {
-			this.addParamRadioButton.setSelected(true);
-		} else {
-			this.addParamRadioButton.setSelected(false);
-		}
+    String _add_param = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, "true", null);
+    if (_add_param.equals("true")) {
+      this.addParamRadioButton.setSelected(true);
+    } else {
+      this.addParamRadioButton.setSelected(false);
+    }
+    String _ignore_symlink = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_IGNORE_SYMLINK, "true", null);
+    if (_ignore_symlink.equals("true")) {
+	  this.symlinkRadioButton.setSelected(true);
+    } else {
+	  this.symlinkRadioButton.setSelected(false);
+    }
 
-		String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
-		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
+    String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
+    this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
 
-		this.appController.updateWizerdButton();
+	// resize
+	String resize_width = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RESIZE_WIDTH, "0", null);
+	logger.fine(resize_width);
+	this.resizeSpinner.setValue(Integer.parseInt(resize_width));
+	//SpinnerNumberModel _model = (SpinnerNumberModel) this.resizeSpinner.getModel();
 
-		this.setSize(new Dimension(_width, _height));
+	String resize_check = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RESIZE_CHECK, "false", null);
+	if( resize_check.equals("true")){
+		this.resizeRadioButton.setSelected(true);
+	} else {
+		this.resizeRadioButton.setSelected(false);
 	}
 
-	/**
-	 * ファイルパターンを表示するcomboBox 設定.
-	 *
-	 * @param selected_item 選択するitemを指定する. null の場合は指定しない
-	 */
-	public void initFilePatternComboBox(String selected_item) {
-		ArrayList<String> filePatterns = AutoConverterConfig.getFilePatternNames();
-		if (filePatterns.size() > 0) {
-			DefaultComboBoxModel itemList = new DefaultComboBoxModel(filePatterns.toArray());
-			if (selected_item != null) {
-				itemList.setSelectedItem(selected_item);
-			}
-			String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
-			if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)) {
-				regexString = AutoConverterConfig.celaviewRegexpString;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)) {
-				regexString = AutoConverterConfig.inCell6000RegexpString;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81)) {
-				regexString = AutoConverterConfig.IX81RegexpString;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81A)) {
-				regexString = AutoConverterConfig.IX81RegexString_A;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81B)) {
-				regexString = AutoConverterConfig.IX81RegexString_B;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81C)) {
-				regexString = AutoConverterConfig.IX81RegexString_C;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81D)) {
-				regexString = AutoConverterConfig.IX81RegexString_D;
-				this.getFilePatternTextField().setEditable(false);
-				this.filePatternComboBox.setEditable(false);
-			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CUSTOM)) {
-				regexString = "";
-			}
-			this.filePatternComboBox.setModel(itemList);
-			this.getFilePatternTextField().setText(regexString);
-		}
-	}
+    this.appController.updateWizerdButton();
 
-	/**
-	 * This method is called from within the constructor to initialize the
-	 * form. WARNING: Do NOT modify this code. The content of this method is
-	 * always regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
+    this.setSize(new Dimension(_width, _height));
+  }
+
+  /**
+   * ファイルパターンを表示するcomboBox 設定.
+   *
+   * @param selected_item 選択するitemを指定する. null の場合は指定しない
+   */
+  public void initFilePatternComboBox(String selected_item) {
+    ArrayList<String> filePatterns = AutoConverterConfig.getFilePatternNames();
+    if (filePatterns.size() > 0) {
+      DefaultComboBoxModel itemList = new DefaultComboBoxModel(filePatterns.toArray());
+      if (selected_item != null) {
+        itemList.setSelectedItem(selected_item);
+      }
+      String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
+      if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)) {
+        regexString = AutoConverterConfig.celaviewRegexpString;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)) {
+        regexString = AutoConverterConfig.inCell6000RegexpString;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81)) {
+        regexString = AutoConverterConfig.IX81RegexpString;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81A)) {
+        regexString = AutoConverterConfig.IX81RegexString_A;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81B)) {
+        regexString = AutoConverterConfig.IX81RegexString_B;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81C)) {
+        regexString = AutoConverterConfig.IX81RegexString_C;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_IX81D)) {
+        regexString = AutoConverterConfig.IX81RegexString_D;
+        this.getFilePatternTextField().setEditable(false);
+        this.filePatternComboBox.setEditable(false);
+      } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CUSTOM)) {
+        regexString = "";
+      }
+      this.filePatternComboBox.setModel(itemList);
+      this.getFilePatternTextField().setText(regexString);
+    }
+  }
+
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -629,6 +642,11 @@ public class BaseFrame extends javax.swing.JFrame {
         checkBoxPanel.add(addParamRadioButton);
 
         symlinkRadioButton.setText(bundle.getString("BaseFrame.symlinkRadioButton.text")); // NOI18N
+        symlinkRadioButton.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                symlinkRadioButtonStateChanged(evt);
+            }
+        });
         checkBoxPanel.add(symlinkRadioButton);
 
         regexPanel.setLayout(new java.awt.BorderLayout());
@@ -675,6 +693,11 @@ public class BaseFrame extends javax.swing.JFrame {
         resizeSpinner.setEnabled(false);
         resizeSpinner.setMinimumSize(new java.awt.Dimension(88, 25));
         resizeSpinner.setPreferredSize(new java.awt.Dimension(88, 25));
+        resizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                resizeSpinnerStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout paramPanelLayout = new javax.swing.GroupLayout(paramPanel);
         paramPanel.setLayout(paramPanelLayout);
@@ -1670,633 +1693,652 @@ public class BaseFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
-	if (!active) {
-		return;
-	}
+  if (!active) {
+    return;
+  }
 
-	this.appController.nextCard();
+  this.appController.nextCard();
 }//GEN-LAST:event_nextButtonActionPerformed
 
 private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	this.appController.previousCard();
+  if (!active) {
+    return;
+  }
+  this.appController.previousCard();
 }//GEN-LAST:event_backButtonActionPerformed
 
 private void sourceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourceButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	File _srcDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null));
-	if (_srcDir == null) {
-		return;
-	}
-	this.getSourceText().setText(_srcDir.getAbsolutePath());
-	appController.storeDirectorySetting(false);
-	this.appController.updateWizerdButton();
+  if (!active) {
+    return;
+  }
+  File _srcDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null));
+  if (_srcDir == null) {
+    return;
+  }
+  this.getSourceText().setText(_srcDir.getAbsolutePath());
+  appController.storeDirectorySetting(false);
+  this.appController.updateWizerdButton();
 }//GEN-LAST:event_sourceButtonActionPerformed
 
 private void destinationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	File _dstDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null));
-	if (_dstDir == null) {
-		return;
-	}
-	this.getDestinationText().setText(_dstDir.getAbsolutePath());
-	appController.storeDirectorySetting(false);
-	this.appController.updateWizerdButton();
+  if (!active) {
+    return;
+  }
+  File _dstDir = AutoConverterUtils.getDirectory(this, AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null));
+  if (_dstDir == null) {
+    return;
+  }
+  this.getDestinationText().setText(_dstDir.getAbsolutePath());
+  appController.storeDirectorySetting(false);
+  this.appController.updateWizerdButton();
 }//GEN-LAST:event_destinationButtonActionPerformed
 
-	/**
-	 * Store main window size to property file everytime the window size is
-	 * changed.
-	 *
-	 * @param evt
-	 */
+  /**
+   * Store main window size to property file everytime the window size is
+   * changed.
+   *
+   * @param evt
+   */
 private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-	if (!active) {
-		return;
-	}
-	Component _c = evt.getComponent();
-	Dimension _d = _c.getSize();
-	AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, _d.width);
-	AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, _d.height);
+  if (!active) {
+    return;
+  }
+  Component _c = evt.getComponent();
+  Dimension _d = _c.getSize();
+  AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, _d.width);
+  AutoConverterConfig.setConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, _d.height);
 //AutoConverterConfig.save(this, true);
 }//GEN-LAST:event_formComponentResized
 
-	/**
-	 * Close window if cancel button is clicked.
-	 *
-	 * @param evt
-	 */
+  /**
+   * Close window if cancel button is clicked.
+   *
+   * @param evt
+   */
 private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	if (this.cancelButton == evt.getSource()) {
-		this.dispose();
-	}
+  if (!active) {
+    return;
+  }
+  if (this.cancelButton == evt.getSource()) {
+    this.dispose();
+  }
 //System.exit(0);
 }//GEN-LAST:event_cancelButtonActionPerformed
 
 private void recursiveRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recursiveRadioButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() != this.getRecursiveRadioButton()) {
-		return;
-	}
-	appController.storeRecursiveSetting(false);
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() != this.getRecursiveRadioButton()) {
+    return;
+  }
+  appController.storeRecursiveSetting(false);
 }//GEN-LAST:event_recursiveRadioButtonActionPerformed
 
 private void modeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeSelectorItemStateChanged
-	if (!active) {
-		return;
-	}
-	if(evt.getStateChange() == ItemEvent.DESELECTED){
-		return;
-	}
-	String mode = evt.getItem().toString();
-	this.enableListener(false);
-	if(mode.equals("Single")){
-		appController.setImageMode(BaseFrame.IMAGE_MODE_SINGLE);
-	} else if(mode.equals("Merge")){
-		appController.setImageMode(BaseFrame.IMAGE_MODE_MERGE);
-	} else if(mode.equals("Threshold")){
-		appController.setImageMode(BaseFrame.IMAGE_MODE_THRESHOLD);
-	} else if(mode.equals("Relative")){
-		appController.setImageMode(BaseFrame.IMAGE_MODE_RELATIVE);
-	} else {
-		getLogger().warning("不明なモード:" + mode);
-	}
-	//appController.applyParams(true);
-	this.enableListener(true);
-	//appController.collectParams();
-	appController.updateImage();
-	//getLogger().fine(evt.getItem().toString());
-	logger.fine("\n------------------ state changed: change mode to " + mode + " -----------------");
+  if (!active) {
+    return;
+  }
+  if (evt.getStateChange() == ItemEvent.DESELECTED) {
+    return;
+  }
+  String mode = evt.getItem().toString();
+  this.enableListener(false);
+  if (mode.equals("Single")) {
+    appController.setImageMode(BaseFrame.IMAGE_MODE_SINGLE);
+  } else if (mode.equals("Merge")) {
+    appController.setImageMode(BaseFrame.IMAGE_MODE_MERGE);
+  } else if (mode.equals("Threshold")) {
+    appController.setImageMode(BaseFrame.IMAGE_MODE_THRESHOLD);
+  } else if (mode.equals("Relative")) {
+    appController.setImageMode(BaseFrame.IMAGE_MODE_RELATIVE);
+  } else {
+    getLogger().warning("不明なモード:" + mode);
+  }
+  //appController.applyParams(true);
+  this.enableListener(true);
+  //appController.collectParams();
+  appController.updateImage();
+  //getLogger().fine(evt.getItem().toString());
+  logger.fine("\n------------------ state changed: change mode to " + mode + " -----------------");
 }//GEN-LAST:event_modeSelectorItemStateChanged
 
 private void colorChannelSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_colorChannelSelectorItemStateChanged
-	if (!active) {
-		return;
-	}
-	if(evt.getStateChange() == ItemEvent.DESELECTED){
-		return;
-	}
-	this.appController.collectParams(evt.getSource());
-	logger.fine("colorChannelSelector changed to " + evt.getItem().toString());
-	//this.appController.setColor(evt.getItem().toString());
-	this.appController.collectParams(evt.getSource());
-	this.enableListener(false);
-	appController.updateImage();
-	//this.appController.setColor();
-	this.enableListener(true);
+  if (!active) {
+    return;
+  }
+  if (evt.getStateChange() == ItemEvent.DESELECTED) {
+    return;
+  }
+  this.appController.collectParams(evt.getSource());
+  logger.fine("colorChannelSelector changed to " + evt.getItem().toString());
+  //this.appController.setColor(evt.getItem().toString());
+  this.appController.collectParams(evt.getSource());
+  this.enableListener(false);
+  appController.updateImage();
+  //this.appController.setColor();
+  this.enableListener(true);
 }//GEN-LAST:event_colorChannelSelectorItemStateChanged
 
-	/**
-	 * 選択された画像を再描画する. 主に、画像洗濯用のComboBoxが変更された時に呼ばれる.
-	 *
-	 * @param evt
-	 */
+  /**
+   * 選択された画像を再描画する. 主に、画像洗濯用のComboBoxが変更された時に呼ばれる.
+   *
+   * @param evt
+   */
 private void imageSelectorChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_imageSelectorChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getStateChange() != ItemEvent.SELECTED) {
-		return;
-	}
-	String dir = this.getSourceText().getText() + (String) this.getDirSelectCBox().getSelectedItem();
-	String wellname = (String) this.getWellSelectCBox().getSelectedItem();
-	String position = (String) this.getPositionSelectCBox().getSelectedItem();
-	String slice = (String) this.getzSelectCBox().getSelectedItem();
-	String time = (String) this.getTimeSelectCBox().getSelectedItem();
-	String filter = (String) this.getFilterSelectCBox().getSelectedItem();
-	// filter が変更されたときは、現行のComponentのパラメータではなく、stored... 保存のパラメータにComponentの状態を復帰する
-	if(evt.getSource() == this.filterSelectCBox){
-		logger.fine("================ filter => " + filter + " ===================");
-		// フィルタが変更された場合はパラメータを設定し直さなければならないので、強制的にcomponentの状態をupdateする
-		// ただし、merge モードだったらmin, max
-		if(this.appController.getImageMode() != BaseFrame.IMAGE_MODE_RELATIVE){
-			this.getAppController().applyParams(true);
-		}
-	}
-	//this.getAppController().collectParams();
-	String imageID = ApplicationController.createImageID(dir, wellname, position, slice, time, filter);
-	this.getAppController().updateImage(imageID);
-	//this.getAppController().updateDensityPlot();
+  if (!active) {
+    return;
+  }
+  if (evt.getStateChange() != ItemEvent.SELECTED) {
+    return;
+  }
+  String dir = this.getSourceText().getText() + (String) this.getDirSelectCBox().getSelectedItem();
+  String wellname = (String) this.getWellSelectCBox().getSelectedItem();
+  String position = (String) this.getPositionSelectCBox().getSelectedItem();
+  String slice = (String) this.getzSelectCBox().getSelectedItem();
+  String time = (String) this.getTimeSelectCBox().getSelectedItem();
+  String filter = (String) this.getFilterSelectCBox().getSelectedItem();
+  // filter が変更されたときは、現行のComponentのパラメータではなく、stored... 保存のパラメータにComponentの状態を復帰する
+  if (evt.getSource() == this.filterSelectCBox) {
+    logger.fine("================ filter => " + filter + " ===================");
+    // フィルタが変更された場合はパラメータを設定し直さなければならないので、強制的にcomponentの状態をupdateする
+    // ただし、merge モードだったらmin, max
+    if (this.appController.getImageMode() != BaseFrame.IMAGE_MODE_RELATIVE) {
+      this.getAppController().applyParams(true);
+    }
+  }
+  //this.getAppController().collectParams();
+  String imageID = ApplicationController.createImageID(dir, wellname, position, slice, time, filter);
+  this.getAppController().updateImage(imageID);
+  //this.getAppController().updateDensityPlot();
 
 }//GEN-LAST:event_imageSelectorChanged
 
 
 private void scaleRangeSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_scaleRangeSliderStateChanged
-	if (!active) {
-		return;
-	}
+  if (!active) {
+    return;
+  }
 // TODO add your handling code here:
-	if (evt.getSource() == this.getScaleRangeSlider()) {
-		logger.fine("Slider Changed");
-		this.getAppController().collectParams(evt.getSource());
-		this.getAppController().updateImage();
-	}
+  if (evt.getSource() == this.getScaleRangeSlider()) {
+    logger.fine("Slider Changed");
+    this.getAppController().collectParams(evt.getSource());
+    this.getAppController().updateImage();
+  }
 }//GEN-LAST:event_scaleRangeSliderStateChanged
 
-	/**
-	 * minSpinner の最大値をmaxSpinnerの値-1に設定する.
-	 *
-	 * @param evt
-	 */
+  /**
+   * minSpinner の最大値をmaxSpinnerの値-1に設定する.
+   *
+   * @param evt
+   */
 private void maxSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxSpinnerStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() == this.maxSpinner) {
-		Integer max = (Integer) this.maxSpinner.getValue();
-		Integer min = (Integer) this.minSpinner.getValue();
-		this.enableListener(false);
-		if (max < min) {
-			max = min + 1;
-			this.maxSpinner.setValue(max);
-		}
-		this.getAppController().setMinSpinnerMax(max - 1);
-		this.getScaleRangeSlider().setUpperValue(max);
-		this.appController.collectParams(evt.getSource());
-		this.getAppController().updateImage();
-		this.enableListener(true);
-	}
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() == this.maxSpinner) {
+    Integer max = (Integer) this.maxSpinner.getValue();
+    Integer min = (Integer) this.minSpinner.getValue();
+    this.enableListener(false);
+    if (max < min) {
+      max = min + 1;
+      this.maxSpinner.setValue(max);
+    }
+    this.getAppController().setMinSpinnerMax(max - 1);
+    this.getScaleRangeSlider().setUpperValue(max);
+    this.appController.collectParams(evt.getSource());
+    this.getAppController().updateImage();
+    this.enableListener(true);
+  }
 }//GEN-LAST:event_maxSpinnerStateChanged
 
-	/**
-	 * maxSpinner の最小値をminSpinnerの値+1に設定する.
-	 *
-	 * @param evt
-	 */
+  /**
+   * maxSpinner の最小値をminSpinnerの値+1に設定する.
+   *
+   * @param evt
+   */
 private void minSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_minSpinnerStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() == this.minSpinner) {
-		Integer max = (Integer) this.maxSpinner.getValue();
-		Integer min = (Integer) this.minSpinner.getValue();
-		this.enableListener(false);
-		if (max < min) {
-			min = max - 1;
-			this.minSpinner.setValue(min);
-		}
-		this.getAppController().setMaxSpinnerMin(min + 1);
-		this.getScaleRangeSlider().setLowerValue(min);
-		this.appController.collectParams(evt.getSource());
-		this.getAppController().updateImage();
-		this.enableListener(true);
-	}
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() == this.minSpinner) {
+    Integer max = (Integer) this.maxSpinner.getValue();
+    Integer min = (Integer) this.minSpinner.getValue();
+    this.enableListener(false);
+    if (max < min) {
+      min = max - 1;
+      this.minSpinner.setValue(min);
+    }
+    this.getAppController().setMaxSpinnerMin(min + 1);
+    this.getScaleRangeSlider().setLowerValue(min);
+    this.appController.collectParams(evt.getSource());
+    this.getAppController().updateImage();
+    this.enableListener(true);
+  }
 }//GEN-LAST:event_minSpinnerStateChanged
 
 private void autoRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRadioButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() == this.getAutoRadioButton() && this.getAutoRadioButton().isSelected()) {
-		this.appController.configAutoRelatedComponents(true);
-		this.getAppController().collectParams();
-		this.appController.adjustValues();
-		//this.getAppController().applyParams(evt.getSource());
-		this.appController.updateImage();
-		//this.appController.storeCurrentFilterSettings(false);
-	}
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() == this.getAutoRadioButton() && this.getAutoRadioButton().isSelected()) {
+    this.appController.configAutoRelatedComponents(true);
+    this.getAppController().collectParams();
+    this.appController.adjustValues();
+    //this.getAppController().applyParams(evt.getSource());
+    this.appController.updateImage();
+    //this.appController.storeCurrentFilterSettings(false);
+  }
 }//GEN-LAST:event_autoRadioButtonActionPerformed
 
 private void manualRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manualRadioButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() == this.getManualRadioButton() && this.getManualRadioButton().isSelected()) {
-		this.appController.configAutoRelatedComponents(false);
-		this.getAppController().collectParams(evt.getSource());
-		//this.getAppController().applyParams(evt.getSource());
-		//this.appController.storeCurrentFilterSettings(false);
-		this.appController.updateImage();
-	}
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() == this.getManualRadioButton() && this.getManualRadioButton().isSelected()) {
+    this.appController.configAutoRelatedComponents(false);
+    this.getAppController().collectParams(evt.getSource());
+    //this.getAppController().applyParams(evt.getSource());
+    //this.appController.storeCurrentFilterSettings(false);
+    this.appController.updateImage();
+  }
 }//GEN-LAST:event_manualRadioButtonActionPerformed
 
-	/**
-	 * adjust button が押されたら画像の輝度値を自動調整.
-	 *
-	 * @param evt
-	 */
+  /**
+   * adjust button が押されたら画像の輝度値を自動調整.
+   *
+   * @param evt
+   */
 private void adjustButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adjustButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	this.appController.adjustValues();
-	//this.appController.storeCurrentFilterSettings(false);
-	this.appController.updateImage();
+  if (!active) {
+    return;
+  }
+  this.appController.adjustValues();
+  //this.appController.storeCurrentFilterSettings(false);
+  this.appController.updateImage();
 }//GEN-LAST:event_adjustButtonActionPerformed
 
 private void convertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertButtonActionPerformed
-	if (!active) {
-		return;
-	}
-	this.appController.convertImages();
+  if (!active) {
+    return;
+  }
+  this.appController.convertImages();
 }//GEN-LAST:event_convertButtonActionPerformed
 
 private void ballSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ballSizeSpinnerStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() == this.getBallSizeSpinner()) {
-		JSpinner spinner = (JSpinner) evt.getSource();
-		//this.appController.storeCurrentFilterSettings(false);
-		this.appController.collectParams(evt.getSource());
-		this.appController.updateImage();
-	}
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() == this.getBallSizeSpinner()) {
+    JSpinner spinner = (JSpinner) evt.getSource();
+    //this.appController.storeCurrentFilterSettings(false);
+    this.appController.collectParams(evt.getSource());
+    this.appController.updateImage();
+  }
 }//GEN-LAST:event_ballSizeSpinnerStateChanged
 
 private void filePatternComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filePatternComboBoxItemStateChanged
-	if (!active) {
-		return;
-	}
-	if (this.getFilePatternComboBox() != evt.getSource()) {
-		return;
-	}
-	String selectedPatternName = (String) evt.getItem();
-	if (evt.getStateChange() == ItemEvent.SELECTED) {
-		if (selectedPatternName.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)
-			|| selectedPatternName.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)) {
-			this.getFilePatternTextField().setEditable(false);
-			this.filePatternComboBox.setEditable(false);
-		} else {
-			this.getFilePatternTextField().setEditable(true);
-			this.filePatternComboBox.setEditable(true);
-		}
-		String regexPattern = AutoConverterConfig.getRegexp(selectedPatternName);
-		this.getFilePatternTextField().setText(regexPattern);
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, selectedPatternName);
+  if (!active) {
+    return;
+  }
+  if (this.getFilePatternComboBox() != evt.getSource()) {
+    return;
+  }
+  String selectedPatternName = (String) evt.getItem();
+  if (evt.getStateChange() == ItemEvent.SELECTED) {
+    if (selectedPatternName.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)
+            || selectedPatternName.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)) {
+      this.getFilePatternTextField().setEditable(false);
+      this.filePatternComboBox.setEditable(false);
+    } else {
+      this.getFilePatternTextField().setEditable(true);
+      this.filePatternComboBox.setEditable(true);
+    }
+    String regexPattern = AutoConverterConfig.getRegexp(selectedPatternName);
+    this.getFilePatternTextField().setText(regexPattern);
+    AutoConverterConfig.setConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, selectedPatternName);
 
 // 1つ前の選択のpatternの名前(selectedPatternName)が新しい場合に、comboBoxに登録したい
-		this.initFilePatternComboBox(selectedPatternName);
-	} else if (evt.getStateChange() == ItemEvent.DESELECTED) {
+    this.initFilePatternComboBox(selectedPatternName);
+  } else if (evt.getStateChange() == ItemEvent.DESELECTED) {
 // 1つ前の選択のpatternを取ってきてconfigに保存
-		String regexPattern = this.getFilePatternTextField().getText();
-		if (regexPattern.equals("")) {
-			AutoConverterConfig.removeConfig(selectedPatternName, AutoConverterConfig.PREFIX_REGEXP);
-		} else {
-			AutoConverterConfig.setConfig(selectedPatternName, regexPattern, AutoConverterConfig.PREFIX_REGEXP);
-		}
-	}
+    String regexPattern = this.getFilePatternTextField().getText();
+    if (regexPattern.equals("")) {
+      AutoConverterConfig.removeConfig(selectedPatternName, AutoConverterConfig.PREFIX_REGEXP);
+    } else {
+      AutoConverterConfig.setConfig(selectedPatternName, regexPattern, AutoConverterConfig.PREFIX_REGEXP);
+    }
+  }
 }//GEN-LAST:event_filePatternComboBoxItemStateChanged
 
 private void displayRangeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_displayRangeComboBoxItemStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() != this.displayRangeComboBox) {
-		return;
-	}
-	if (evt.getStateChange() == ItemEvent.SELECTED) {
-		appController.storeDisplayRangeMaxSetting(false);
-	}
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() != this.displayRangeComboBox) {
+    return;
+  }
+  if (evt.getStateChange() == ItemEvent.SELECTED) {
+    appController.storeDisplayRangeMaxSetting(false);
+  }
 }//GEN-LAST:event_displayRangeComboBoxItemStateChanged
 
 private void removeSpecialCharRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_removeSpecialCharRadioButtonStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() != this.getRemoveSpecialCharRadioButton()) {
-		return;
-	}
-	appController.storeRemoveSpecialCharSetting(false);
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() != this.getRemoveSpecialCharRadioButton()) {
+    return;
+  }
+  appController.storeRemoveSpecialCharSetting(false);
 }//GEN-LAST:event_removeSpecialCharRadioButtonStateChanged
 
 private void autoTypeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoTypeComboBoxItemStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() != this.autoTypeComboBox) {
-		return;
-	}
-	if (evt.getStateChange() != ItemEvent.SELECTED) {
-		return;
-	}
-	appController.collectParams(evt.getSource());
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() != this.autoTypeComboBox) {
+    return;
+  }
+  if (evt.getStateChange() != ItemEvent.SELECTED) {
+    return;
+  }
+  appController.collectParams(evt.getSource());
 
-	if (this.autoRadioButton.isSelected()) {
-		appController.adjustValues();
-	}
-	//appController.storeCurrentFilterSettings(false);
+  if (this.autoRadioButton.isSelected()) {
+    appController.adjustValues();
+  }
+  //appController.storeCurrentFilterSettings(false);
 }//GEN-LAST:event_autoTypeComboBoxItemStateChanged
 
 private void addParamRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_addParamRadioButtonStateChanged
-	if (!active) {
-		return;
-	}
-	if (evt.getSource() != this.getAddParamRadioButton()) {
-		return;
-	}
-	appController.storeAddParamSetting(false);
+  if (!active) {
+    return;
+  }
+  if (evt.getSource() != this.getAddParamRadioButton()) {
+    return;
+  }
+  appController.storeAddParamSetting(false);
 
 }//GEN-LAST:event_addParamRadioButtonStateChanged
 
 private void imagePanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMousePressed
-	if (!active) {
-		return;
-	}
-	this.imagePanel.setStart(evt.getX(), evt.getY());
+  if (!active) {
+    return;
+  }
+  this.imagePanel.setStart(evt.getX(), evt.getY());
 }//GEN-LAST:event_imagePanelMousePressed
 
 private void imagePanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseReleased
-	if (!active) {
-		return;
-	}
-	this.imagePanel.setEnd(evt.getX(), evt.getY());
+  if (!active) {
+    return;
+  }
+  this.imagePanel.setEnd(evt.getX(), evt.getY());
 }//GEN-LAST:event_imagePanelMouseReleased
 
 private void imagePanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseDragged
-	if (!active) {
-		return;
-	}
-	this.imagePanel.setNow(evt.getX(), evt.getY());
+  if (!active) {
+    return;
+  }
+  this.imagePanel.setNow(evt.getX(), evt.getY());
 }//GEN-LAST:event_imagePanelMouseDragged
 
 private void textFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldActionPerformed
-	JFormattedTextField tf = (javax.swing.JFormattedTextField) evt.getSource();
-	tf.getInputVerifier().verify(tf);
-	int val = Integer.parseInt(tf.getText());
-	if (evt.getSource() == this.xTextField) {
-		this.imagePanel.setLeftTopX(val);
-	} else if (evt.getSource() == this.yTextField) {
-		this.imagePanel.setLeftTopY(val);
-	} else if (evt.getSource() == this.hTextField) {
-		this.imagePanel.setRoiHeight(val);
-	} else if (evt.getSource() == this.wTextField) {
-		this.imagePanel.setRoiWidth(val);
-	}
-	this.imagePanel.repaint();
+  JFormattedTextField tf = (javax.swing.JFormattedTextField) evt.getSource();
+  tf.getInputVerifier().verify(tf);
+  int val = Integer.parseInt(tf.getText());
+  if (evt.getSource() == this.xTextField) {
+    this.imagePanel.setLeftTopX(val);
+  } else if (evt.getSource() == this.yTextField) {
+    this.imagePanel.setLeftTopY(val);
+  } else if (evt.getSource() == this.hTextField) {
+    this.imagePanel.setRoiHeight(val);
+  } else if (evt.getSource() == this.wTextField) {
+    this.imagePanel.setRoiWidth(val);
+  }
+  this.imagePanel.repaint();
 }//GEN-LAST:event_textFieldActionPerformed
 
 private void textFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFocusLost
-	JFormattedTextField tf = (javax.swing.JFormattedTextField) evt.getSource();
-	tf.getInputVerifier().verify(tf);
-	int val = Integer.parseInt(tf.getText());
-	if (evt.getSource() == this.xTextField) {
-		this.imagePanel.setLeftTopX(val);
-	} else if (evt.getSource() == this.yTextField) {
-		this.imagePanel.setLeftTopY(val);
-	} else if (evt.getSource() == this.hTextField) {
-		this.imagePanel.setRoiHeight(val);
-	} else if (evt.getSource() == this.wTextField) {
-		this.imagePanel.setRoiWidth(val);
-	}
-	this.imagePanel.repaint();
+  JFormattedTextField tf = (javax.swing.JFormattedTextField) evt.getSource();
+  tf.getInputVerifier().verify(tf);
+  int val = Integer.parseInt(tf.getText());
+  if (evt.getSource() == this.xTextField) {
+    this.imagePanel.setLeftTopX(val);
+  } else if (evt.getSource() == this.yTextField) {
+    this.imagePanel.setLeftTopY(val);
+  } else if (evt.getSource() == this.hTextField) {
+    this.imagePanel.setRoiHeight(val);
+  } else if (evt.getSource() == this.wTextField) {
+    this.imagePanel.setRoiWidth(val);
+  }
+  this.imagePanel.repaint();
 }//GEN-LAST:event_textFieldFocusLost
 
 private void resizeRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_resizeRadioButtonStateChanged
-	if (evt.getSource() == this.resizeRadioButton) {
-		this.resizeSpinner.setEnabled(this.resizeRadioButton.isSelected());
-	}
+  if (evt.getSource() == this.resizeRadioButton) {
+    this.resizeSpinner.setEnabled(this.resizeRadioButton.isSelected());
+  }
+  appController.storeResizeCheckSetting(false);
 }//GEN-LAST:event_resizeRadioButtonStateChanged
 
 private void scaleRangeSliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scaleRangeSliderMouseReleased
-	/*
+  /*
 * rangeSlider をドラッグ中に毎回Hashに保存しているとちょっと付加が高い & どうなるかわからないので
 * マウスを離した時にだけ保存するようにしてみた.
-	 */
-	//appController.storeCurrentFilterSettings(false);
-	appController.collectParams(evt.getSource());
-	appController.updateImage();
+   */
+  //appController.storeCurrentFilterSettings(false);
+  appController.collectParams(evt.getSource());
+  appController.updateImage();
 }//GEN-LAST:event_scaleRangeSliderMouseReleased
 
 private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-	this.dispose();
+  this.dispose();
 }//GEN-LAST:event_formWindowClosing
 
 private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-	try {
-		AutoConverterConfig.save();
-	} catch (FileNotFoundException ex) {
-		logger.warning(AutoConverterUtils.stacktrace(ex));
-	}
+  try {
+    AutoConverterConfig.save();
+  } catch (FileNotFoundException ex) {
+    logger.warning(AutoConverterUtils.stacktrace(ex));
+  }
 }//GEN-LAST:event_formWindowClosed
 
 private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
-	try {
-		AutoConverterConfig.save();
-	} catch (FileNotFoundException ex) {
-		logger.warning(AutoConverterUtils.stacktrace(ex));
-	}
-	System.exit(0);
+  try {
+    AutoConverterConfig.save();
+  } catch (FileNotFoundException ex) {
+    logger.warning(AutoConverterUtils.stacktrace(ex));
+  }
+  System.exit(0);
 }//GEN-LAST:event_exitButtonActionPerformed
 
 
         private void jCheckBoxFilter1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter1ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter1ActionPerformed
 
         private void jCheckBoxFilter2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter2ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter2ActionPerformed
 
         private void jCheckBoxFilter3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter3ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter3ActionPerformed
 
         private void jCheckBoxFilter4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter4ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter4ActionPerformed
 
         private void jCheckBoxFilter5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter5ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter5ActionPerformed
 
         private void jCheckBoxFilter6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter6ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter6ActionPerformed
 
         private void jCheckBoxFilter7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFilter7ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxFilter7ActionPerformed
 
         private void jCheckBoxRef1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef1ActionPerformed
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
-                // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
+          // TODO add your handling code here:
         }//GEN-LAST:event_jCheckBoxRef1ActionPerformed
 
         private void jCheckBoxTarget1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget1ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget1ActionPerformed
 
         private void jCheckBoxTarget2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget2ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget2ActionPerformed
 
         private void jCheckBoxTarget3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget3ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget3ActionPerformed
 
         private void jCheckBoxTarget4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget4ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget4ActionPerformed
 
         private void jCheckBoxTarget5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget5ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget5ActionPerformed
 
         private void jCheckBoxTarget6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget6ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget6ActionPerformed
 
         private void jCheckBoxTarget7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTarget7ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxTarget7ActionPerformed
 
         private void jCheckBoxRef2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef2ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef2ActionPerformed
 
         private void jCheckBoxRef3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef3ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef3ActionPerformed
 
         private void jCheckBoxRef4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef4ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef4ActionPerformed
 
         private void jCheckBoxRef5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef5ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef5ActionPerformed
 
         private void jCheckBoxRef6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef6ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef6ActionPerformed
 
         private void jCheckBoxRef7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef7ActionPerformed
-                // TODO add your handling code here:
-		this.enableListener(false);
-		this.appController.updateNextButton();
-		this.appController.updateImage();
-		this.enableListener(true);
+          // TODO add your handling code here:
+          this.enableListener(false);
+          this.appController.updateNextButton();
+          this.appController.updateImage();
+          this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef7ActionPerformed
+
+    private void symlinkRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_symlinkRadioButtonStateChanged
+      // TODO add your handling code here:
+      if (!active) {
+        return;
+      }
+      if (evt.getSource() != this.getSymlinkRadioButton()) {
+        return;
+      }
+      appController.storeIgnoreSymlink(false);
+    }//GEN-LAST:event_symlinkRadioButtonStateChanged
+
+    private void resizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_resizeSpinnerStateChanged
+        // TODO add your handling code here:
+	  if (evt.getSource() == this.resizeSpinner) {
+		  appController.storeResizeWidthSetting(false);
+	  }
+    }//GEN-LAST:event_resizeSpinnerStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton addParamRadioButton;
@@ -2412,651 +2454,647 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JComboBox zSelectCBox;
     // End of variables declaration//GEN-END:variables
 
-	/**
-	 * @return the appController
-	 */
-	public ApplicationController getAppController() {
-		return this.appController;
-	}
-
-	public JComboBox getDirSelectCBox() {
-		return dirSelectCBox;
-	}
-
-	public void setDirSelectCBox(JComboBox dirSelectCBox) {
-		this.dirSelectCBox = dirSelectCBox;
-	}
-
-	public JComboBox getFilterSelectCBox() {
-		return filterSelectCBox;
-	}
-
-	public void setFilterSelectCBox(JComboBox filterSelectCBox) {
-		this.filterSelectCBox = filterSelectCBox;
-	}
-
-	public JComboBox getPositionSelectCBox() {
-		return positionSelectCBox;
-	}
-
-	public void setPositionSelectCBox(JComboBox positionSelectCBox) {
-		this.positionSelectCBox = positionSelectCBox;
-	}
-
-	public JComboBox getTimeSelectCBox() {
-		return timeSelectCBox;
-	}
-
-	public void setTimeSelectCBox(JComboBox timeSelectCBox) {
-		this.timeSelectCBox = timeSelectCBox;
-	}
-
-	public JComboBox getWellSelectCBox() {
-		return wellSelectCBox;
-	}
-
-	public void setWellSelectCBox(JComboBox wellSelectCBox) {
-		this.wellSelectCBox = wellSelectCBox;
-	}
-
-	public JComboBox getzSelectCBox() {
-		return zSelectCBox;
-	}
-
-	public void setzSelectCBox(JComboBox zSelectCBox) {
-		this.zSelectCBox = zSelectCBox;
-	}
-
-	/**
-	 * イメージを選択するComboBoxのリスト
-	 *
-	 * @return
-	 */
-	public ArrayList<JComboBox> getSelectCBoxes() {
-		ArrayList<JComboBox> list;
-		list = new ArrayList();
-		list.add(this.dirSelectCBox);
-		list.add(this.filterSelectCBox);
-		list.add(this.positionSelectCBox);
-		list.add(this.wellSelectCBox);
-		list.add(this.zSelectCBox);
-		list.add(this.timeSelectCBox);
-		return list;
-	}
-
-	/**
-	 * @return the backButton
-	 */
-	public javax.swing.JButton getBackButton() {
-		return backButton;
-	}
-
-	/**
-	 * @return the brightnessPanel
-	 */
-	public javax.swing.JPanel getBrightnessPanel() {
-		return brightnessPanel;
-	}
-
-	/**
-	 * @return the cancelButton
-	 */
-	public javax.swing.JButton getCancelButton() {
-		return cancelButton;
-	}
-
-	/**
-	 * @return the centerPanel
-	 */
-	public javax.swing.JPanel getCenterPanel() {
-		return centerPanel;
-	}
-
-
-	/**
-	 * @return the colorSelectPanel
-	 */
-	public javax.swing.JPanel getColorSelectPanel() {
-		return colorSelectPanel;
-	}
-
-	/**
-	 * @return the colorSelectScrollPane
-	 */
-	public javax.swing.JScrollPane getColorSelectScrollPane() {
-		return colorSelectScrollPane;
-	}
-
-	/**
-	 * @return the convertLabel
-	 */
-	public javax.swing.JLabel getConvertLabel() {
-		return convertLabel;
-	}
-
-	/**
-	 * @return the destinationButton
-	 */
-	public javax.swing.JButton getDestinationButton() {
-		return destinationButton;
-	}
-
-	/**
-	 * @return the destinationText
-	 */
-	public javax.swing.JTextField getDestinationText() {
-		return destinationText;
-	}
-
-	/**
-	 * @return the imageChangePanel
-	 */
-	public javax.swing.JPanel getImageChangePanel() {
-		return imageChangePanel;
-	}
-
-	/**
-	 * @return the imageFormatComboBox
-	 */
-	public javax.swing.JComboBox getImageFormatComboBox() {
-		return imageFormatComboBox;
-	}
-
-	/**
-	 * @return the imagePropertyPanel
-	 */
-	public javax.swing.JPanel getImagePropertyPanel() {
-		return imagePropertyPanel;
-	}
-
-	/**
-	 * @return the imageScrollPane
-	 */
-	public javax.swing.JScrollPane getImageScrollPane() {
-		return imageScrollPane;
-	}
-
-
-	/**
-	 * @return the jComboBox1
-	 */
-	public javax.swing.JComboBox getjComboBox1() {
-		return getModeSelector();
-	}
-
-	/**
-	 * @return the jComboBox2
-	 */
-	public javax.swing.JComboBox getColorChannelSelector() {
-		return colorChannelSelector;
-	}
-
-	/**
-	 * @return the jMenu1
-	 */
-	public javax.swing.JMenu getjMenu1() {
-		return fileMenu;
-	}
-
-	/**
-	 * @return the jMenuBar1
-	 */
-	public javax.swing.JMenuBar getjMenuBar1() {
-		return jMenuBar1;
-	}
-
-	/**
-	 * @return the maxSpinner
-	 */
-	public javax.swing.JSpinner getMaxSpinner() {
-		return maxSpinner;
-	}
-
-	/**
-	 * @return the messageLabel
-	 */
-	public javax.swing.JLabel getMessageLabel() {
-		return messageLabel;
-	}
-
-	/**
-	 * @return the minSpinner
-	 */
-	public javax.swing.JSpinner getMinSpinner() {
-		return minSpinner;
-	}
-
-	/**
-	 * @return the nextButton
-	 */
-	public javax.swing.JButton getNextButton() {
-		return nextButton;
-	}
-
-	/**
-	 * @return the proceedPanel
-	 */
-	public javax.swing.JPanel getProceedPanel() {
-		return proceedPanel;
-	}
-
-	/**
-	 * @return the recursiveRadioButton
-	 */
-	public javax.swing.JRadioButton getRecursiveRadioButton() {
-		return recursiveRadioButton;
-	}
-
-	/**
-	 * @return the slide1
-	 */
-	public javax.swing.JPanel getSlide1() {
-		return slide1;
-	}
-
-	/**
-	 * @return the slide2
-	 */
-	public javax.swing.JPanel getSlide2() {
-		return slide2;
-	}
-
-	/**
-	 * @return the slide3
-	 */
-	public javax.swing.JPanel getSlide3() {
-		return slide3;
-	}
-
-	/**
-	 * @return the slideScrollPane1
-	 */
-	public javax.swing.JScrollPane getSlideScrollPane1() {
-		return slideScrollPane1;
-	}
-
-	/**
-	 * @return the slideScrollPane2
-	 */
-	public javax.swing.JScrollPane getSlideScrollPane2() {
-		return slideScrollPane2;
-	}
-
-	/**
-	 * @return the slideScrollPane3
-	 */
-	public javax.swing.JScrollPane getSlideScrollPane3() {
-		return slideScrollPane3;
-	}
-
-	/**
-	 * @return the sourceButton
-	 */
-	public javax.swing.JButton getSourceButton() {
-		return sourceButton;
-	}
-
-	/**
-	 * @return the sourceText
-	 */
-	public javax.swing.JTextField getSourceText() {
-		return sourceText;
-	}
-
-	/**
-	 * @return the southPanel
-	 */
-	public javax.swing.JPanel getSouthPanel() {
-		return southPanel;
-	}
-
-
-	/**
-	 * @return the brightnessAutoGroup
-	 */
-	public javax.swing.ButtonGroup getBrightnessAutoGroup() {
-		return brightnessAutoGroup;
-	}
-
-	/**
-	 * @return the autoRadioButton
-	 */
-	public javax.swing.JRadioButton getAutoRadioButton() {
-		return autoRadioButton;
-	}
-
-	/**
-	 * @return the manualRadioButton
-	 */
-	public javax.swing.JRadioButton getManualRadioButton() {
-		return manualRadioButton;
-	}
-
-	/**
-	 * @return the adjustButton
-	 */
-	public javax.swing.JButton getAdjustButton() {
-		return adjustButton;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public javax.swing.JTextArea getSummaryDisplayArea() {
-		return summaryDisplayArea;
-	}
-
-	public javax.swing.JButton getConvertButton() {
-		return convertButton;
-	}
-
-	public ImagePanel getImageDisplayPanel() {
-		return imagePanel;
-	}
-
-	public PlotPanel getPlotPanel() {
-		return plotPanel;
-	}
-
-	public RangeSlider getScaleRangeSlider() {
-		return scaleRangeSlider;
-	}
-
-	/**
-	 * @return the resizeRadioButton
-	 */
-	public javax.swing.JCheckBox getResizeRadioButton() {
-		return resizeRadioButton;
-	}
-
-	/**
-	 * @param resizeRadioButton the resizeRadioButton to set
-	 */
-	public void setResizeRadioButton(javax.swing.JCheckBox resizeRadioButton) {
-		this.resizeRadioButton = resizeRadioButton;
-	}
-
-	/**
-	 * @return the resizeSpinner
-	 */
-	public javax.swing.JSpinner getResizeSpinner() {
-		return resizeSpinner;
-	}
-
-	/**
-	 * @param resizeSpinner the resizeSpinner to set
-	 */
-	public void setResizeSpinner(javax.swing.JSpinner resizeSpinner) {
-		this.resizeSpinner = resizeSpinner;
-	}
-
-	/**
-	 * @return the fileSearchLogTextArea
-	 */
-	public javax.swing.JTextArea getFileSearchLogTextArea() {
-		return fileSearchLogTextArea;
-	}
-
-	/**
-	 * @param fileSearchLogTextArea the fileSearchLogTextArea to set
-	 */
-	public void setFileSearchLogTextArea(javax.swing.JTextArea fileSearchLogTextArea) {
-		this.fileSearchLogTextArea = fileSearchLogTextArea;
-	}
-
-	/**
-	 * @return the regexpTextField
-	 */
-	public javax.swing.JTextField getRegexpTextField() {
-		return getFilePatternTextField();
-	}
-
-	/**
-	 * @param regexpTextField the regexpTextField to set
-	 */
-	public void setRegexpTextField(javax.swing.JTextField regexpTextField) {
-		this.setFilePatternTextField(regexpTextField);
-	}
-
-	/**
-	 * @return the filePatternComboBox
-	 */
-	public javax.swing.JComboBox<String> getFilePatternComboBox() {
-		return filePatternComboBox;
-	}
-
-	/**
-	 * @param filePatternComboBox the filePatternComboBox to set
-	 */
-	public void setFilePatternComboBox(javax.swing.JComboBox<String> filePatternComboBox) {
-		this.filePatternComboBox = filePatternComboBox;
-	}
-
-	/**
-	 * @return the filePatternTextField
-	 */
-	public javax.swing.JTextField getFilePatternTextField() {
-		return filePatternTextField;
-	}
-
-	/**
-	 * @param filePatternTextField the filePatternTextField to set
-	 */
-	public void setFilePatternTextField(javax.swing.JTextField filePatternTextField) {
-		this.filePatternTextField = filePatternTextField;
-	}
-
-	/**
-	 * @return the displayRangeComboBox
-	 */
-	public javax.swing.JComboBox<String> getDisplayRangeComboBox() {
-		return displayRangeComboBox;
-	}
-
-	/**
-	 * @param displayRangeComboBox the displayRangeComboBox to set
-	 */
-	public void setDisplayRangeComboBox(javax.swing.JComboBox<String> displayRangeComboBox) {
-		this.displayRangeComboBox = displayRangeComboBox;
-	}
-
-	/**
-	 * @return the removeSpecialCharRadioButton
-	 */
-	public javax.swing.JRadioButton getRemoveSpecialCharRadioButton() {
-		return removeSpecialCharRadioButton;
-	}
-
-	/**
-	 * @param removeSpecialCharRadioButton the removeSpecialCharRadioButton
-	 * to set
-	 */
-	public void setRemoveSpecialCharRadioButton(javax.swing.JRadioButton removeSpecialCharRadioButton) {
-		this.removeSpecialCharRadioButton = removeSpecialCharRadioButton;
-	}
-
-	/**
-	 * @return the autoTypeComboBox
-	 */
-	public javax.swing.JComboBox<String> getAutoTypeComboBox() {
-		return autoTypeComboBox;
-	}
-
-	/**
-	 * @param autoTypeComboBox the autoTypeComboBox to set
-	 */
-	public void setAutoTypeComboBox(javax.swing.JComboBox<String> autoTypeComboBox) {
-		this.autoTypeComboBox = autoTypeComboBox;
-	}
-
-	/**
-	 * @return the addParamRadioButton
-	 */
-	public javax.swing.JRadioButton getAddParamRadioButton() {
-		return addParamRadioButton;
-	}
-
-	/**
-	 * @param addParamRadioButton the addParamRadioButton to set
-	 */
-	public void setAddParamRadioButton(javax.swing.JRadioButton addParamRadioButton) {
-		this.addParamRadioButton = addParamRadioButton;
-	}
-
-	/**
-	 * @return the ballSizeSpinner
-	 */
-	public javax.swing.JSpinner getBallSizeSpinner() {
-		return ballSizeSpinner;
-	}
-
-	/**
-	 * @param ballSizeSpinner the ballSizeSpinner to set
-	 */
-	public void setBallSizeSpinner(javax.swing.JSpinner ballSizeSpinner) {
-		this.ballSizeSpinner = ballSizeSpinner;
-	}
-
-	/**
-	 * @return the cropAreaPanel
-	 */
-	public javax.swing.JPanel getCropAreaPanel() {
-		return cropAreaPanel;
-	}
-
-	/**
-	 * @param cropAreaPanel the cropAreaPanel to set
-	 */
-	public void setCropAreaPanel(javax.swing.JPanel cropAreaPanel) {
-		this.cropAreaPanel = cropAreaPanel;
-	}
-
-	/**
-	 * @return the xTextField
-	 */
-	public javax.swing.JTextField getxTextField() {
-		return xTextField;
-	}
-
-	/**
-	 * @param xTextField the xTextField to set
-	 */
-	public void setxTextField(javax.swing.JFormattedTextField xTextField) {
-		this.xTextField = xTextField;
-	}
-
-	/**
-	 * @return the yTextField
-	 */
-	public javax.swing.JFormattedTextField getyTextField() {
-		return yTextField;
-	}
-
-	/**
-	 * @param yTextField the yTextField to set
-	 */
-	public void setyTextField(javax.swing.JFormattedTextField yTextField) {
-		this.yTextField = yTextField;
-	}
-
-	/**
-	 * @return the wTextField
-	 */
-	public javax.swing.JTextField getwTextField() {
-		return wTextField;
-	}
-
-	/**
-	 * @param wTextField the wTextField to set
-	 */
-	public void setwTextField(javax.swing.JFormattedTextField wTextField) {
-		this.wTextField = wTextField;
-	}
-
-	/**
-	 * @return the hTextField
-	 */
-	public javax.swing.JTextField gethTextField() {
-		return hTextField;
-	}
-
-	/**
-	 * @param hTextField the hTextField to set
-	 */
-	public void sethTextField(javax.swing.JFormattedTextField hTextField) {
-		this.hTextField = hTextField;
-	}
-
-	/**
-	 * @return the filterCheckBoxList
-	 */
-	public ArrayList<JCheckBox> getFilterCheckBoxList() {
-		return filterCheckBoxList;
-	}
-
-	/**
-	 * @return the targetCheckBoxList
-	 */
-	public ArrayList<JCheckBox> getTargetCheckBoxList() {
-		return targetCheckBoxList;
-	}
-	public ArrayList<JCheckBox> getReferenceCheckBoxList() {
-		return referenceCheckBoxList;
-	}
-
-	/**
-	 * @return the modeSelector
-	 */
-	public javax.swing.JComboBox getModeSelector() {
-		return modeSelector;
-	}
-
-	/**
-	 * @param modeSelector the modeSelector to set
-	 */
-	public void setModeSelector(javax.swing.JComboBox modeSelector) {
-		this.modeSelector = modeSelector;
-	}
-
-	/**
-	 * @param filterCheckBoxList the filterCheckBoxList to set
-	 */
-	public void setFilterCheckBoxList(ArrayList<JCheckBox> filterCheckBoxList) {
-		this.filterCheckBoxList = filterCheckBoxList;
-	}
-
-	/**
-	 * @param targetCheckBoxList the targetCheckBoxList to set
-	 */
-	public void setTargetCheckBoxList(ArrayList<JCheckBox> targetCheckBoxList) {
-		this.targetCheckBoxList = targetCheckBoxList;
-	}
-
-	/**
-	 * @param referenceCheckBoxList the referenceCheckBoxList to set
-	 */
-	public void setReferenceCheckBoxList(ArrayList<JCheckBox> referenceCheckBoxList) {
-		this.referenceCheckBoxList = referenceCheckBoxList;
-	}
-
-	public JLabel getLabelFilter(){
-		return this.jLabelFilter;
-	}
-
-	/**
-	 * @return the symlinkRadioButton
-	 */
-	public javax.swing.JRadioButton getSymlinkRadioButton() {
-		return symlinkRadioButton;
-	}
-
-	/**
-	 * @param symlinkRadioButton the symlinkRadioButton to set
-	 */
-	public void setSymlinkRadioButton(javax.swing.JRadioButton symlinkRadioButton) {
-		this.symlinkRadioButton = symlinkRadioButton;
-	}
-
+  /**
+   * @return the appController
+   */
+  public ApplicationController getAppController() {
+    return this.appController;
+  }
+
+  public JComboBox getDirSelectCBox() {
+    return dirSelectCBox;
+  }
+
+  public void setDirSelectCBox(JComboBox dirSelectCBox) {
+    this.dirSelectCBox = dirSelectCBox;
+  }
+
+  public JComboBox getFilterSelectCBox() {
+    return filterSelectCBox;
+  }
+
+  public void setFilterSelectCBox(JComboBox filterSelectCBox) {
+    this.filterSelectCBox = filterSelectCBox;
+  }
+
+  public JComboBox getPositionSelectCBox() {
+    return positionSelectCBox;
+  }
+
+  public void setPositionSelectCBox(JComboBox positionSelectCBox) {
+    this.positionSelectCBox = positionSelectCBox;
+  }
+
+  public JComboBox getTimeSelectCBox() {
+    return timeSelectCBox;
+  }
+
+  public void setTimeSelectCBox(JComboBox timeSelectCBox) {
+    this.timeSelectCBox = timeSelectCBox;
+  }
+
+  public JComboBox getWellSelectCBox() {
+    return wellSelectCBox;
+  }
+
+  public void setWellSelectCBox(JComboBox wellSelectCBox) {
+    this.wellSelectCBox = wellSelectCBox;
+  }
+
+  public JComboBox getzSelectCBox() {
+    return zSelectCBox;
+  }
+
+  public void setzSelectCBox(JComboBox zSelectCBox) {
+    this.zSelectCBox = zSelectCBox;
+  }
+
+  /**
+   * イメージを選択するComboBoxのリスト
+   *
+   * @return
+   */
+  public ArrayList<JComboBox> getSelectCBoxes() {
+    ArrayList<JComboBox> list;
+    list = new ArrayList();
+    list.add(this.dirSelectCBox);
+    list.add(this.filterSelectCBox);
+    list.add(this.positionSelectCBox);
+    list.add(this.wellSelectCBox);
+    list.add(this.zSelectCBox);
+    list.add(this.timeSelectCBox);
+    return list;
+  }
+
+  /**
+   * @return the backButton
+   */
+  public javax.swing.JButton getBackButton() {
+    return backButton;
+  }
+
+  /**
+   * @return the brightnessPanel
+   */
+  public javax.swing.JPanel getBrightnessPanel() {
+    return brightnessPanel;
+  }
+
+  /**
+   * @return the cancelButton
+   */
+  public javax.swing.JButton getCancelButton() {
+    return cancelButton;
+  }
+
+  /**
+   * @return the centerPanel
+   */
+  public javax.swing.JPanel getCenterPanel() {
+    return centerPanel;
+  }
+
+  /**
+   * @return the colorSelectPanel
+   */
+  public javax.swing.JPanel getColorSelectPanel() {
+    return colorSelectPanel;
+  }
+
+  /**
+   * @return the colorSelectScrollPane
+   */
+  public javax.swing.JScrollPane getColorSelectScrollPane() {
+    return colorSelectScrollPane;
+  }
+
+  /**
+   * @return the convertLabel
+   */
+  public javax.swing.JLabel getConvertLabel() {
+    return convertLabel;
+  }
+
+  /**
+   * @return the destinationButton
+   */
+  public javax.swing.JButton getDestinationButton() {
+    return destinationButton;
+  }
+
+  /**
+   * @return the destinationText
+   */
+  public javax.swing.JTextField getDestinationText() {
+    return destinationText;
+  }
+
+  /**
+   * @return the imageChangePanel
+   */
+  public javax.swing.JPanel getImageChangePanel() {
+    return imageChangePanel;
+  }
+
+  /**
+   * @return the imageFormatComboBox
+   */
+  public javax.swing.JComboBox getImageFormatComboBox() {
+    return imageFormatComboBox;
+  }
+
+  /**
+   * @return the imagePropertyPanel
+   */
+  public javax.swing.JPanel getImagePropertyPanel() {
+    return imagePropertyPanel;
+  }
+
+  /**
+   * @return the imageScrollPane
+   */
+  public javax.swing.JScrollPane getImageScrollPane() {
+    return imageScrollPane;
+  }
+
+  /**
+   * @return the jComboBox1
+   */
+  public javax.swing.JComboBox getjComboBox1() {
+    return getModeSelector();
+  }
+
+  /**
+   * @return the jComboBox2
+   */
+  public javax.swing.JComboBox getColorChannelSelector() {
+    return colorChannelSelector;
+  }
+
+  /**
+   * @return the jMenu1
+   */
+  public javax.swing.JMenu getjMenu1() {
+    return fileMenu;
+  }
+
+  /**
+   * @return the jMenuBar1
+   */
+  public javax.swing.JMenuBar getjMenuBar1() {
+    return jMenuBar1;
+  }
+
+  /**
+   * @return the maxSpinner
+   */
+  public javax.swing.JSpinner getMaxSpinner() {
+    return maxSpinner;
+  }
+
+  /**
+   * @return the messageLabel
+   */
+  public javax.swing.JLabel getMessageLabel() {
+    return messageLabel;
+  }
+
+  /**
+   * @return the minSpinner
+   */
+  public javax.swing.JSpinner getMinSpinner() {
+    return minSpinner;
+  }
+
+  /**
+   * @return the nextButton
+   */
+  public javax.swing.JButton getNextButton() {
+    return nextButton;
+  }
+
+  /**
+   * @return the proceedPanel
+   */
+  public javax.swing.JPanel getProceedPanel() {
+    return proceedPanel;
+  }
+
+  /**
+   * @return the recursiveRadioButton
+   */
+  public javax.swing.JRadioButton getRecursiveRadioButton() {
+    return recursiveRadioButton;
+  }
+
+  /**
+   * @return the slide1
+   */
+  public javax.swing.JPanel getSlide1() {
+    return slide1;
+  }
+
+  /**
+   * @return the slide2
+   */
+  public javax.swing.JPanel getSlide2() {
+    return slide2;
+  }
+
+  /**
+   * @return the slide3
+   */
+  public javax.swing.JPanel getSlide3() {
+    return slide3;
+  }
+
+  /**
+   * @return the slideScrollPane1
+   */
+  public javax.swing.JScrollPane getSlideScrollPane1() {
+    return slideScrollPane1;
+  }
+
+  /**
+   * @return the slideScrollPane2
+   */
+  public javax.swing.JScrollPane getSlideScrollPane2() {
+    return slideScrollPane2;
+  }
+
+  /**
+   * @return the slideScrollPane3
+   */
+  public javax.swing.JScrollPane getSlideScrollPane3() {
+    return slideScrollPane3;
+  }
+
+  /**
+   * @return the sourceButton
+   */
+  public javax.swing.JButton getSourceButton() {
+    return sourceButton;
+  }
+
+  /**
+   * @return the sourceText
+   */
+  public javax.swing.JTextField getSourceText() {
+    return sourceText;
+  }
+
+  /**
+   * @return the southPanel
+   */
+  public javax.swing.JPanel getSouthPanel() {
+    return southPanel;
+  }
+
+  /**
+   * @return the brightnessAutoGroup
+   */
+  public javax.swing.ButtonGroup getBrightnessAutoGroup() {
+    return brightnessAutoGroup;
+  }
+
+  /**
+   * @return the autoRadioButton
+   */
+  public javax.swing.JRadioButton getAutoRadioButton() {
+    return autoRadioButton;
+  }
+
+  /**
+   * @return the manualRadioButton
+   */
+  public javax.swing.JRadioButton getManualRadioButton() {
+    return manualRadioButton;
+  }
+
+  /**
+   * @return the adjustButton
+   */
+  public javax.swing.JButton getAdjustButton() {
+    return adjustButton;
+  }
+
+  /**
+   *
+   * @return
+   */
+  public javax.swing.JTextArea getSummaryDisplayArea() {
+    return summaryDisplayArea;
+  }
+
+  public javax.swing.JButton getConvertButton() {
+    return convertButton;
+  }
+
+  public ImagePanel getImageDisplayPanel() {
+    return imagePanel;
+  }
+
+  public PlotPanel getPlotPanel() {
+    return plotPanel;
+  }
+
+  public RangeSlider getScaleRangeSlider() {
+    return scaleRangeSlider;
+  }
+
+  /**
+   * @return the resizeRadioButton
+   */
+  public javax.swing.JCheckBox getResizeRadioButton() {
+    return resizeRadioButton;
+  }
+
+  /**
+   * @param resizeRadioButton the resizeRadioButton to set
+   */
+  public void setResizeRadioButton(javax.swing.JCheckBox resizeRadioButton) {
+    this.resizeRadioButton = resizeRadioButton;
+  }
+
+  /**
+   * @return the resizeSpinner
+   */
+  public javax.swing.JSpinner getResizeSpinner() {
+    return resizeSpinner;
+  }
+
+  /**
+   * @param resizeSpinner the resizeSpinner to set
+   */
+  public void setResizeSpinner(javax.swing.JSpinner resizeSpinner) {
+    this.resizeSpinner = resizeSpinner;
+  }
+
+  /**
+   * @return the fileSearchLogTextArea
+   */
+  public javax.swing.JTextArea getFileSearchLogTextArea() {
+    return fileSearchLogTextArea;
+  }
+
+  /**
+   * @param fileSearchLogTextArea the fileSearchLogTextArea to set
+   */
+  public void setFileSearchLogTextArea(javax.swing.JTextArea fileSearchLogTextArea) {
+    this.fileSearchLogTextArea = fileSearchLogTextArea;
+  }
+
+  /**
+   * @return the regexpTextField
+   */
+  public javax.swing.JTextField getRegexpTextField() {
+    return getFilePatternTextField();
+  }
+
+  /**
+   * @param regexpTextField the regexpTextField to set
+   */
+  public void setRegexpTextField(javax.swing.JTextField regexpTextField) {
+    this.setFilePatternTextField(regexpTextField);
+  }
+
+  /**
+   * @return the filePatternComboBox
+   */
+  public javax.swing.JComboBox<String> getFilePatternComboBox() {
+    return filePatternComboBox;
+  }
+
+  /**
+   * @param filePatternComboBox the filePatternComboBox to set
+   */
+  public void setFilePatternComboBox(javax.swing.JComboBox<String> filePatternComboBox) {
+    this.filePatternComboBox = filePatternComboBox;
+  }
+
+  /**
+   * @return the filePatternTextField
+   */
+  public javax.swing.JTextField getFilePatternTextField() {
+    return filePatternTextField;
+  }
+
+  /**
+   * @param filePatternTextField the filePatternTextField to set
+   */
+  public void setFilePatternTextField(javax.swing.JTextField filePatternTextField) {
+    this.filePatternTextField = filePatternTextField;
+  }
+
+  /**
+   * @return the displayRangeComboBox
+   */
+  public javax.swing.JComboBox<String> getDisplayRangeComboBox() {
+    return displayRangeComboBox;
+  }
+
+  /**
+   * @param displayRangeComboBox the displayRangeComboBox to set
+   */
+  public void setDisplayRangeComboBox(javax.swing.JComboBox<String> displayRangeComboBox) {
+    this.displayRangeComboBox = displayRangeComboBox;
+  }
+
+  /**
+   * @return the removeSpecialCharRadioButton
+   */
+  public javax.swing.JRadioButton getRemoveSpecialCharRadioButton() {
+    return removeSpecialCharRadioButton;
+  }
+
+  /**
+   * @param removeSpecialCharRadioButton the removeSpecialCharRadioButton to set
+   */
+  public void setRemoveSpecialCharRadioButton(javax.swing.JRadioButton removeSpecialCharRadioButton) {
+    this.removeSpecialCharRadioButton = removeSpecialCharRadioButton;
+  }
+
+  /**
+   * @return the autoTypeComboBox
+   */
+  public javax.swing.JComboBox<String> getAutoTypeComboBox() {
+    return autoTypeComboBox;
+  }
+
+  /**
+   * @param autoTypeComboBox the autoTypeComboBox to set
+   */
+  public void setAutoTypeComboBox(javax.swing.JComboBox<String> autoTypeComboBox) {
+    this.autoTypeComboBox = autoTypeComboBox;
+  }
+
+  /**
+   * @return the addParamRadioButton
+   */
+  public javax.swing.JRadioButton getAddParamRadioButton() {
+    return addParamRadioButton;
+  }
+
+  /**
+   * @param addParamRadioButton the addParamRadioButton to set
+   */
+  public void setAddParamRadioButton(javax.swing.JRadioButton addParamRadioButton) {
+    this.addParamRadioButton = addParamRadioButton;
+  }
+
+  /**
+   * @return the ballSizeSpinner
+   */
+  public javax.swing.JSpinner getBallSizeSpinner() {
+    return ballSizeSpinner;
+  }
+
+  /**
+   * @param ballSizeSpinner the ballSizeSpinner to set
+   */
+  public void setBallSizeSpinner(javax.swing.JSpinner ballSizeSpinner) {
+    this.ballSizeSpinner = ballSizeSpinner;
+  }
+
+  /**
+   * @return the cropAreaPanel
+   */
+  public javax.swing.JPanel getCropAreaPanel() {
+    return cropAreaPanel;
+  }
+
+  /**
+   * @param cropAreaPanel the cropAreaPanel to set
+   */
+  public void setCropAreaPanel(javax.swing.JPanel cropAreaPanel) {
+    this.cropAreaPanel = cropAreaPanel;
+  }
+
+  /**
+   * @return the xTextField
+   */
+  public javax.swing.JTextField getxTextField() {
+    return xTextField;
+  }
+
+  /**
+   * @param xTextField the xTextField to set
+   */
+  public void setxTextField(javax.swing.JFormattedTextField xTextField) {
+    this.xTextField = xTextField;
+  }
+
+  /**
+   * @return the yTextField
+   */
+  public javax.swing.JFormattedTextField getyTextField() {
+    return yTextField;
+  }
+
+  /**
+   * @param yTextField the yTextField to set
+   */
+  public void setyTextField(javax.swing.JFormattedTextField yTextField) {
+    this.yTextField = yTextField;
+  }
+
+  /**
+   * @return the wTextField
+   */
+  public javax.swing.JTextField getwTextField() {
+    return wTextField;
+  }
+
+  /**
+   * @param wTextField the wTextField to set
+   */
+  public void setwTextField(javax.swing.JFormattedTextField wTextField) {
+    this.wTextField = wTextField;
+  }
+
+  /**
+   * @return the hTextField
+   */
+  public javax.swing.JTextField gethTextField() {
+    return hTextField;
+  }
+
+  /**
+   * @param hTextField the hTextField to set
+   */
+  public void sethTextField(javax.swing.JFormattedTextField hTextField) {
+    this.hTextField = hTextField;
+  }
+
+  /**
+   * @return the filterCheckBoxList
+   */
+  public ArrayList<JCheckBox> getFilterCheckBoxList() {
+    return filterCheckBoxList;
+  }
+
+  /**
+   * @return the targetCheckBoxList
+   */
+  public ArrayList<JCheckBox> getTargetCheckBoxList() {
+    return targetCheckBoxList;
+  }
+
+  public ArrayList<JCheckBox> getReferenceCheckBoxList() {
+    return referenceCheckBoxList;
+  }
+
+  /**
+   * @return the modeSelector
+   */
+  public javax.swing.JComboBox getModeSelector() {
+    return modeSelector;
+  }
+
+  /**
+   * @param modeSelector the modeSelector to set
+   */
+  public void setModeSelector(javax.swing.JComboBox modeSelector) {
+    this.modeSelector = modeSelector;
+  }
+
+  /**
+   * @param filterCheckBoxList the filterCheckBoxList to set
+   */
+  public void setFilterCheckBoxList(ArrayList<JCheckBox> filterCheckBoxList) {
+    this.filterCheckBoxList = filterCheckBoxList;
+  }
+
+  /**
+   * @param targetCheckBoxList the targetCheckBoxList to set
+   */
+  public void setTargetCheckBoxList(ArrayList<JCheckBox> targetCheckBoxList) {
+    this.targetCheckBoxList = targetCheckBoxList;
+  }
+
+  /**
+   * @param referenceCheckBoxList the referenceCheckBoxList to set
+   */
+  public void setReferenceCheckBoxList(ArrayList<JCheckBox> referenceCheckBoxList) {
+    this.referenceCheckBoxList = referenceCheckBoxList;
+  }
+
+  public JLabel getLabelFilter() {
+    return this.jLabelFilter;
+  }
+
+  /**
+   * @return the symlinkRadioButton
+   */
+  public javax.swing.JRadioButton getSymlinkRadioButton() {
+    return symlinkRadioButton;
+  }
+
+  /**
+   * @param symlinkRadioButton the symlinkRadioButton to set
+   */
+  public void setSymlinkRadioButton(javax.swing.JRadioButton symlinkRadioButton) {
+    this.symlinkRadioButton = symlinkRadioButton;
+  }
 
 }
