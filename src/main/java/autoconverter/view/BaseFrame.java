@@ -252,6 +252,7 @@ public class BaseFrame extends javax.swing.JFrame {
   //private Instant timer; // 最後にイベントから呼ばれた時間
   private long timer = 0; // 最後にイベントから呼ばれた時間
   private static final long inactive_time = 500; // 連続で同じイベントが来たときに無視する時間
+	private static BaseFrame currentFrame;
 
   public void enableListener(boolean flag) {
     // enable するとactive状態になる. < 1 の時はListenerが動かない
@@ -278,131 +279,133 @@ public class BaseFrame extends javax.swing.JFrame {
   /**
    * Creates new form baseFrame
    */
-  public BaseFrame() {
-    try {
-      AutoConverterConfig.load();
-    } catch (FileNotFoundException ex) {
-      Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    Integer _width = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, "400", null));
-    Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, "300", null));
+	public BaseFrame() {
+		try {
+			AutoConverterConfig.load();
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(BaseFrame.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		Integer _width = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_X, "400", null));
+		Integer _height = Integer.valueOf(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_MAIN_FRAME_SIZE_Y, "300", null));
+		
+		this.appController = new ApplicationController(this);
+		inputverifier = new IntegerVerifier();
+		
+		initComponents();
+		
+		// checkbox をまとめておく
+		this.filterCheckBoxList = new ArrayList();
+		this.targetCheckBoxList = new ArrayList();
+		this.referenceCheckBoxList = new ArrayList();
+		this.filterCheckBoxList.add(jCheckBoxFilter1);
+		this.filterCheckBoxList.add(jCheckBoxFilter2);
+		this.filterCheckBoxList.add(jCheckBoxFilter3);
+		this.filterCheckBoxList.add(jCheckBoxFilter4);
+		this.filterCheckBoxList.add(jCheckBoxFilter5);
+		this.filterCheckBoxList.add(jCheckBoxFilter6);
+		this.filterCheckBoxList.add(jCheckBoxFilter7);
+		this.targetCheckBoxList.add(jCheckBoxTarget1);
+		this.targetCheckBoxList.add(jCheckBoxTarget2);
+		this.targetCheckBoxList.add(jCheckBoxTarget3);
+		this.targetCheckBoxList.add(jCheckBoxTarget4);
+		this.targetCheckBoxList.add(jCheckBoxTarget5);
+		this.targetCheckBoxList.add(jCheckBoxTarget6);
+		this.targetCheckBoxList.add(jCheckBoxTarget7);
+		this.referenceCheckBoxList.add(jCheckBoxRef1);
+		this.referenceCheckBoxList.add(jCheckBoxRef2);
+		this.referenceCheckBoxList.add(jCheckBoxRef3);
+		this.referenceCheckBoxList.add(jCheckBoxRef4);
+		this.referenceCheckBoxList.add(jCheckBoxRef5);
+		this.referenceCheckBoxList.add(jCheckBoxRef6);
+		this.referenceCheckBoxList.add(jCheckBoxRef7);
+		
+    // crop 位置のロード
+		this.xTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, "0", null));
+		this.yTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_Y, "0", null));
+		this.hTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, "0", null));
+		this.wTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, "0", null));
+		
+    // crop are text panel 無効化
+		this.cropAreaPanel.setVisible(false);
 
-    this.appController = new ApplicationController(this);
-// input verifier
-    inputverifier = new IntegerVerifier();
+		String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
+		this.initFilePatternComboBox(selected_item);
+		
+		String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
+		String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
+		this.sourceText.setText(_srcDir);
+		this.destinationText.setText(_dstDir);
+		
+		String _recursive = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RECURSIVE_ON, "true", null);
+		if (_recursive.equals("true")) {
+			this.recursiveRadioButton.setSelected(true);
+		} else {
+			this.recursiveRadioButton.setSelected(false);
+		}
 
-    initComponents();
+		// special char load
+		String _remove_spec_char = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, "true", null);
+		if (_remove_spec_char.equals("true")) {
+			this.removeSpecialCharRadioButton.setSelected(true);
+		} else {
+			this.removeSpecialCharRadioButton.setSelected(false);
+		}
 
-    // checkbox をまとめておく
-    this.filterCheckBoxList = new ArrayList();
-    this.targetCheckBoxList = new ArrayList();
-    this.referenceCheckBoxList = new ArrayList();
-    this.filterCheckBoxList.add(jCheckBoxFilter1);
-    this.filterCheckBoxList.add(jCheckBoxFilter2);
-    this.filterCheckBoxList.add(jCheckBoxFilter3);
-    this.filterCheckBoxList.add(jCheckBoxFilter4);
-    this.filterCheckBoxList.add(jCheckBoxFilter5);
-    this.filterCheckBoxList.add(jCheckBoxFilter6);
-    this.filterCheckBoxList.add(jCheckBoxFilter7);
-    this.targetCheckBoxList.add(jCheckBoxTarget1);
-    this.targetCheckBoxList.add(jCheckBoxTarget2);
-    this.targetCheckBoxList.add(jCheckBoxTarget3);
-    this.targetCheckBoxList.add(jCheckBoxTarget4);
-    this.targetCheckBoxList.add(jCheckBoxTarget5);
-    this.targetCheckBoxList.add(jCheckBoxTarget6);
-    this.targetCheckBoxList.add(jCheckBoxTarget7);
-    this.referenceCheckBoxList.add(jCheckBoxRef1);
-    this.referenceCheckBoxList.add(jCheckBoxRef2);
-    this.referenceCheckBoxList.add(jCheckBoxRef3);
-    this.referenceCheckBoxList.add(jCheckBoxRef4);
-    this.referenceCheckBoxList.add(jCheckBoxRef5);
-    this.referenceCheckBoxList.add(jCheckBoxRef6);
-    this.referenceCheckBoxList.add(jCheckBoxRef7);
+		// add param load
+		String _add_param = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, "true", null);
+		if (_add_param.equals("true")) {
+			this.addParamRadioButton.setSelected(true);
+		} else {
+			this.addParamRadioButton.setSelected(false);
+		}
+		String _ignore_symlink = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_IGNORE_SYMLINK, "true", null);
+		if (_ignore_symlink.equals("true")) {
+			this.symlinkRadioButton.setSelected(true);
+		} else {
+			this.symlinkRadioButton.setSelected(false);
+		}
+		
+		String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
+		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
+		// resize
+		String resize_width = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RESIZE_WIDTH, "0", null);
+		logger.fine(resize_width);
+		this.resizeSpinner.setValue(Integer.parseInt(resize_width));
+		String resize_check = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RESIZE_CHECK, "false", null);
+		if( resize_check.equals("true")){
+			this.resizeRadioButton.setSelected(true);
+		} else {
+			this.resizeRadioButton.setSelected(false);
+		}
+		
+		this.appController.updateWizerdButton();
+		
+		this.setSize(new Dimension(_width, _height));
 
-// crop 位置のロード
-    this.xTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_X, "0", null));
-    this.yTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_Y, "0", null));
-    this.hTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_H, "0", null));
-    this.wTextField.setText(AutoConverterConfig.getConfig(AutoConverterConfig.KEY_CROP_AREA_W, "0", null));
-
-// crop are text panel 無効化
-    this.cropAreaPanel.setVisible(false);
-
-    String selected_item = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_PATTERN, AutoConverterConfig.REGEXP_NAME_CELAVIEW, null);
-    this.initFilePatternComboBox(selected_item);
-
-    String _srcDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SOURCE_DIRECTORY, null, null);
-    String _dstDir = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_DESTINATION_DIRECTORY, null, null);
-    this.sourceText.setText(_srcDir);
-    this.destinationText.setText(_dstDir);
-
-    String _recursive = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RECURSIVE_ON, "true", null);
-    if (_recursive.equals("true")) {
-      this.recursiveRadioButton.setSelected(true);
-    } else {
-      this.recursiveRadioButton.setSelected(false);
-    }
-
-// special char load
-    String _remove_spec_char = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_REMOVE_SPECIAL_CHAR, "true", null);
-    if (_remove_spec_char.equals("true")) {
-      this.removeSpecialCharRadioButton.setSelected(true);
-    } else {
-      this.removeSpecialCharRadioButton.setSelected(false);
-    }
-
-// add param load
-    String _add_param = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_ADD_PARAM_TO_FILENAME, "true", null);
-    if (_add_param.equals("true")) {
-      this.addParamRadioButton.setSelected(true);
-    } else {
-      this.addParamRadioButton.setSelected(false);
-    }
-    String _ignore_symlink = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_IGNORE_SYMLINK, "true", null);
-    if (_ignore_symlink.equals("true")) {
-	  this.symlinkRadioButton.setSelected(true);
-    } else {
-	  this.symlinkRadioButton.setSelected(false);
-    }
-
-    String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
-    this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
-
-	// resize
-	String resize_width = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RESIZE_WIDTH, "0", null);
-	logger.fine(resize_width);
-	this.resizeSpinner.setValue(Integer.parseInt(resize_width));
-	//SpinnerNumberModel _model = (SpinnerNumberModel) this.resizeSpinner.getModel();
-
-	String resize_check = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_RESIZE_CHECK, "false", null);
-	if( resize_check.equals("true")){
-		this.resizeRadioButton.setSelected(true);
-	} else {
-		this.resizeRadioButton.setSelected(false);
+		currentFrame = this;
 	}
 
-    this.appController.updateWizerdButton();
-
-    this.setSize(new Dimension(_width, _height));
-  }
-
-  /**
-   * ファイルパターンを表示するcomboBox 設定.
-   *
-   * @param selected_item 選択するitemを指定する. null の場合は指定しない
-   */
-  public void initFilePatternComboBox(String selected_item) {
-    ArrayList<String> filePatterns = AutoConverterConfig.getFilePatternNames();
-    if (filePatterns.size() > 0) {
-      DefaultComboBoxModel itemList = new DefaultComboBoxModel(filePatterns.toArray());
-      if (selected_item != null) {
-        itemList.setSelectedItem(selected_item);
-      }
-      String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
-      if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)) {
-        regexString = AutoConverterConfig.celaviewRegexpString;
-        this.getFilePatternTextField().setEditable(false);
-        this.filePatternComboBox.setEditable(false);
+	public static BaseFrame getInstance(){
+		return currentFrame;
+	}
+	
+	/**
+	 * ファイルパターンを表示するcomboBox 設定.
+	 *
+	 * @param selected_item 選択するitemを指定する. null の場合は指定しない
+	 */
+	public void initFilePatternComboBox(String selected_item) {
+		ArrayList<String> filePatterns = AutoConverterConfig.getFilePatternNames();
+		if (filePatterns.size() > 0) {
+			DefaultComboBoxModel itemList = new DefaultComboBoxModel(filePatterns.toArray());
+			if (selected_item != null) {
+				itemList.setSelectedItem(selected_item);
+			}
+			String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
+			if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)) {
+				regexString = AutoConverterConfig.celaviewRegexpString;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
       } else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)) {
         regexString = AutoConverterConfig.inCell6000RegexpString;
         this.getFilePatternTextField().setEditable(false);

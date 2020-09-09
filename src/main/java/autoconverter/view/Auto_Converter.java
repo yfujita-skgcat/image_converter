@@ -17,14 +17,17 @@ import ij.plugin.PlugIn;
  */
 public class Auto_Converter implements PlugIn {
   //private AutoConverter ac;
-  private BaseFrame ac;
+  private static BaseFrame bf = null;
+	//private static final Logger logger = AutoConverterUtils.getLogger();
 
   public void run(String arg) {
     //ac = new AutoConverter();
-    ac = new BaseFrame();
+    //ac = new BaseFrame();
     java.awt.EventQueue.invokeLater(new Runnable() {
       public void run() {
-        new BaseFrame().setVisible(true);
+        //new BaseFrame().setVisible(true);
+
+        bf.setVisible(true);
       }
     });
   }

@@ -29,6 +29,22 @@ public class ExImagePlus extends ImagePlus {
 	public ExImagePlus(){
 		super();
 	}
+	/**
+	 * Merge 画像などを一時的にExImagePlusにするためのdummyコンストラクタ
+	 * @param title
+	 * @param img
+	 * @param path 
+	 */
+	public ExImagePlus(String title, Image img, String dummy){
+		super(title, img);
+		params = new HashMap();
+		this.directory = dummy;
+		this.shotID = dummy;
+		this.imageID = dummy;
+		this.appCtrl = ApplicationController.getInstance();
+		this.file = null;
+		params.put("FILTER", "NOSPECIFIED");
+	}
 	public ExImagePlus(String title, java.awt.Image image){
 		super(title, image);
 		this.initParameter(new File(title));
