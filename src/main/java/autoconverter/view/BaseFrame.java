@@ -2050,6 +2050,7 @@ private void autoTypeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//G
 
   if (this.autoRadioButton.isSelected()) {
     appController.adjustValues();
+		this.appController.updateImage();
   }
   //appController.storeCurrentFilterSettings(false);
 }//GEN-LAST:event_autoTypeComboBoxItemStateChanged
