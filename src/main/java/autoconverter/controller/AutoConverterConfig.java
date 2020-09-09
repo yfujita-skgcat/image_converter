@@ -63,6 +63,8 @@ public class AutoConverterConfig {
 	public static final String KEY_REMOVE_SPECIAL_CHAR = "REMOVE_SPECIAL_CHAR";
 	public static final String KEY_ADD_PARAM_TO_FILENAME = "ADD_PARAM_TO_FILENAME";
 	public static final String KEY_IGNORE_SYMLINK = "IGNORE_SYMLINK";
+	public static final String KEY_CONVERT_WELL_NAME = "CONVERT_WELL_NAME";
+	public static final String KEY_PLATE_TYPE = "PLATE_TYPE";
 	public static final String KEY_IMAGE_MODE = "IMAGE_MODE";
 	public static final String KEY_RESIZE_CHECK = "RESIZE_CHECK";
 	public static final String KEY_RESIZE_WIDTH = "RESIZE_WIDTH";

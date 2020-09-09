@@ -1971,6 +1971,16 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
+
+	public void storePlateType(boolean save){
+		String selected = (String) baseFrame.getPlateSelectComboBox().getSelectedItem();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_PLATE_TYPE, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{selected}));
+		if (save) {
+			AutoConverterConfig.save(baseFrame, true);
+		}
+
+	}
+
 	/**
 	 * ファイル名に変換設定を加えて保存する.
 	 *
