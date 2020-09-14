@@ -425,6 +425,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 		String dstpath = dst + relsrc;
 		logger.fine("dstpath=" + dstpath);
 		File dstdir = new File(dstpath).getParentFile();
+		logger.fine("distdir==" + dstdir);
 		if (!dstdir.exists()) { //ディレクトリが無い!
 			dstdir.mkdirs();
 		} else if (!dstdir.isDirectory()) {
@@ -503,22 +504,24 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 				logger.fine(AutoConverterUtils.stacktrace(e));
 			}
 		}
+		logger.fine("fname==" + fname);
 		if (mode == BaseFrame.IMAGE_MODE_SINGLE) {
-			// 特に何もしない
+			fname = removeExtension(fname);
 		} else if (mode == BaseFrame.IMAGE_MODE_RELATIVE) {
-			fname = removeExtension(fname).replaceFirst(imp.getFilter() + "$", "") + filters.stream().collect(Collectors.joining("_div_"));
-			logger.fine("fname (Relative)=" + fname);
+			fname = removeExtension(fname).replaceFirst("(?s)(.*)" + imp.getFilter(), "$1" + filters.stream().collect(Collectors.joining("_div_")));
 		} else if (mode == BaseFrame.IMAGE_MODE_MERGE) {
-			fname = removeExtension(fname).replaceFirst(imp.getFilter() + "$", "") + filters.stream().collect(Collectors.joining("-"));
+			fname = removeExtension(fname).replaceFirst("(?s)(.*)" + imp.getFilter(), "$1" + filters.stream().collect(Collectors.joining("-")));
 		} else if (mode == BaseFrame.IMAGE_MODE_THRESHOLD) {
 			//fname = removeExtension(fname).replaceFirst(imp.getFilter(), "Thres" + imp.getFilter());
-			fname = removeExtension(fname).replaceFirst(imp.getFilter() + "$", "Thres" + imp.getFilter());
+			fname = removeExtension(fname).replaceFirst("(?s)(.*)" + imp.getFilter(), "$1" + "Thres" + imp.getFilter());
 		}
 
+		logger.fine("fname==" + fname);
 		if (remove_char) {
 			fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
 		}
-		String dstbase = removeExtension(dstdir + File.separator + fname);
+		//String dstbase = removeExtension(dstdir + File.separator + fname);
+		String dstbase = dstdir + File.separator + fname;
 		logger.fine("dstbase=" + dstbase);
 		if (addparam) {
 			dstbase = dstbase + this.getParamString(imp);
