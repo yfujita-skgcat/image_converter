@@ -518,7 +518,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 
 		logger.fine("fname==" + fname);
 		if (remove_char) {
-			fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".");
+			fname = AutoConverterUtils.tr("()[]{} *?/:;!<>#$%&'\"\\", "______________________", fname).replaceAll("_+", "_").replaceAll("_-_", "-").replaceAll("_+\\.", ".").replaceAll("_+$", "");
 		}
 		//String dstbase = removeExtension(dstdir + File.separator + fname);
 		String dstbase = dstdir + File.separator + fname;

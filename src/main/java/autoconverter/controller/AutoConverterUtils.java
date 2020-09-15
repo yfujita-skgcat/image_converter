@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import autoconverter.model.ImageSet;
 import autoconverter.view.DirectoryChooserDialog;
+import ij.io.DirectoryChooser;
+import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -53,46 +55,17 @@ public class AutoConverterUtils {
 	 * @return
 	 */
 	public static File getDirectory(Component parent, String def) {
-		int ret = 0;
-		DirectoryChooserDialog dcd = null;
-		JFileChooser jfc = null;
-		File def_dir = null;
+		String path = null;
+
 		if(def != null){
-			def_dir = new File(def);
+			DirectoryChooser.setDefaultDirectory(def);
 		}
-
-		if (!AutoConverterUtils.isWindows()) {
-			dcd = new DirectoryChooserDialog((Frame) parent, true);
-			if( def_dir != null && def_dir.isDirectory()){
-				dcd.setFilePath(def);
-			}
-			ret = dcd.showDialog();
-		} else {
-
-			jfc = new JFileChooser(".");
-			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if( def_dir != null && def_dir.isDirectory()){
-				jfc.setSelectedFile(def_dir);
-			}
-			ret = jfc.showSaveDialog(parent);
-		}
-
-		if (ret != JFileChooser.APPROVE_OPTION) {
+		DirectoryChooser dc = new DirectoryChooser("Select directory");
+		path = dc.getDirectory();
+		if(path == null){
 			return null;
 		}
-		File directory;
-		if (!AutoConverterUtils.isWindows()) {
-			directory = dcd.getFile();
-		} else {
-			directory = jfc.getSelectedFile();
-		}
-		if(directory == null){
-			return null;
-		}
-		if (!directory.isDirectory()) {
-			File parent_dir = directory.getParentFile();
-			return parent_dir;
-		}
+		File directory = new File(path);
 		return directory;
 	}
 
@@ -316,5 +289,9 @@ public class AutoConverterUtils {
 		if(logger != null){
 			logger.fine(AutoConverterUtils.stacktrace(msg));
 		}
+	}
+
+	private static String DirectoryChooser(String select_directory) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }
