@@ -44,9 +44,9 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 
 	private static final Logger logger = AutoConverterUtils.getLogger();
 	ArrayList<ArrayList<String>> stat_data = new ArrayList<ArrayList<String>>();
-	private static final ApplicationController appController = ApplicationController.getInstance();
-	private static final BaseFrame bf = BaseFrame.getInstance();
-	private static JTextArea textArea = bf.getSummaryDisplayArea();
+	private ApplicationController appController = ApplicationController.getInstance();
+	private BaseFrame bf = BaseFrame.getInstance();
+	private JTextArea textArea = bf.getSummaryDisplayArea();
 	final String dst = appController.getDestinationDirectoryPath();
 	final String src = appController.getSourceDirectoryPath();
 
@@ -55,6 +55,14 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 	final boolean addparam = bf.getAddParamRadioButton().isSelected();
 	private final ImageCalculator ic = new ImageCalculator();
 	private ThresholdToSelection tts = new ThresholdToSelection();
+
+
+	public ImageProcessWorker(){
+		ArrayList<ArrayList<String>> stat_data = new ArrayList<ArrayList<String>>();
+		appController = ApplicationController.getInstance();
+		bf = BaseFrame.getInstance();
+		textArea = bf.getSummaryDisplayArea();
+	}
 
 	/**
 	 *
@@ -165,13 +173,13 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 			for (CaptureImage _cimg : image_set) {
 				eximps.add(_cimg.getImagePlus());
 			}
-			ExImagePlus flat_image = ImageProcessWorker.appController.updateMergeImage(eximps);
+			ExImagePlus flat_image = appController.updateMergeImage(eximps);
 			flat_image = this.imageCropAndResize(flat_image);
 			logger.fine("Creating destination path...");
 			//ExImagePlus _first_image = image_set.get(0).getImagePlus();
 			ExImagePlus _first_image = eximps.get(0);
 			logger.fine("milestone0");
-			String fname = this.getDistPath(eximps, ImageProcessWorker.appController.getImageMode());
+			String fname = this.getDistPath(eximps, appController.getImageMode());
 			String abssrc = _first_image.getFile().getAbsolutePath();
 			logger.fine("milestone1");
 
@@ -228,7 +236,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 				}
 				imps = new ArrayList<ExImagePlus>(Arrays.asList(imps_array));
 				logger.fine("before updateRelativeImage()");
-				ImagePlus rel_imp = ImageProcessWorker.appController.updateRelativeImage(all_imps);
+				ImagePlus rel_imp = appController.updateRelativeImage(all_imps);
 				logger.fine("Done.");
 				ImageProcessor ip = rel_imp.getProcessor();
 				Roi roi = rel_imp.getRoi();
@@ -268,7 +276,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 					logger.fine("area=" + s_area + ", min=" + s_min + ", max=" + s_max + ", mean=" + s_mean + ", sd=" + s_sd + ", median=" + s_median);
 				}
 
-				String fpath = this.getDistPath(imps, ImageProcessWorker.appController.getImageMode());
+				String fpath = this.getDistPath(imps, appController.getImageMode());
 				String fname = new File(fpath).getName();
 
 				ArrayList<String> record = new ArrayList<String>();
@@ -326,7 +334,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 			ImagePlus flatten = imp.flatten();
 			String abssrc = _cm.getFile().getAbsolutePath();
 
-			String fpath = this.getDistPath(imp, ImageProcessWorker.appController.getImageMode());
+			String fpath = this.getDistPath(imp, appController.getImageMode());
 			this.saveFile(flatten, fpath, count, number, abssrc);
 			imp.close();
 			count++;
@@ -358,7 +366,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 			}
 			imp = this.imageCropAndResize(imp);
 
-			String fpath = this.getDistPath(imp, ImageProcessWorker.appController.getImageMode());
+			String fpath = this.getDistPath(imp, appController.getImageMode());
 			this.saveFile(imp, fpath, count, number, abssrc);
 			imp.close();
 			count++;
