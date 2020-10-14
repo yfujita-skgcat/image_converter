@@ -805,6 +805,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					imps.add(_ci.getImagePlus());
 				}
 				pimp = this.updateRelativeImage(imps);
+				this.baseFrame.getPlotPanel().setOriginalMax(this.baseFrame.getScaleRangeSlider().getMaximum());
 			} else { // Merge mode
 				ArrayList<CaptureImage> _cimgs = getImageSet().getShotAt(_cimg.getShotID());
 				ArrayList<ExImagePlus> imps = new ArrayList<ExImagePlus>();
@@ -823,6 +824,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 				logger.fine("colorHash=" + getColorHash().get(imp.getFilter()));
 				baseFrame.getPlotPanel().setImp(pimp);
 				baseFrame.getPlotPanel().setColor(getColorHash().get(imp.getFilter()));
+			} else {
+				// pimp が null 一応ログを残す
+				logger.fine("pimp==null");
 			}
 		} finally {
 			this.updateDensityPlot();
@@ -937,12 +941,16 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		logger.fine("stat.min=" + stat.min);
 		//Integer min = this.minHash.get(tgt_filter);
 		//Integer max = this.maxHash.get(tgt_filter);
+		//this.setMessageLabel("Min:" + ip.getMin() * ApplicationController.RELATIVE_MULTIPLICITY + ", Max:" + ip.getMax() * ApplicationController.RELATIVE_MULTIPLICITY + "/1000");
+		this.setMessageLabel("Min:" + stat.min + ", Max:" + stat.max + ", mean:" + stat.mean + ", median:" + stat.median + ", area:" + stat.area +  ", The min, max, mean and median shown here are 1000 times raw values");
 		if(this.getCardIndex() != 2){
 			int upper_limit = (int) (calc_max * ApplicationController.RELATIVE_MULTIPLICITY);
 			int current_upper_limit = this.baseFrame.getScaleRangeSlider().getMaximum();
-			if(upper_limit > current_upper_limit){
-				this.baseFrame.getScaleRangeSlider().setMaximum(upper_limit);
-			}
+
+			//if(upper_limit * 2 > current_upper_limit){ // density plot の横軸がcalc_max の1000倍より小さい場合はそれ x 2 に合わせる
+			//	this.baseFrame.getScaleRangeSlider().setMaximum(upper_limit * 2);
+			//}
+			this.baseFrame.getScaleRangeSlider().setMaximum(upper_limit * 2);
 		}
 		int range_min = this.baseFrame.getScaleRangeSlider().getLowValue();
 		int range_max = this.baseFrame.getScaleRangeSlider().getUpperValue();
@@ -1355,6 +1363,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 
 			this.updateSingleImage(cimg);
 			this.updateDensityPlot();
+			this.updateImage();
 			//this.baseFrame.getImageDisplayPanel().repaint();
 		} finally {
 			this.baseFrame.enableListener(true);
@@ -2104,7 +2113,16 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	public LUT loadLut(String lut_name, double min, double max) throws IOException{
 		InputStream is = getClass().getResourceAsStream(lut_name);
 		DataInputStream dis = new DataInputStream(is);
-		byte[] lut_byte_data = dis.readAllBytes();
+		String version = System.getProperty("java.specification.version");
+		logger.fine("version=" + version);
+		byte[] lut_byte_data = null;
+		if(version.equals("1.8")){
+			int length = dis.available();
+			lut_byte_data = new byte[length];
+			dis.readFully(lut_byte_data);
+		} else {
+		  lut_byte_data = dis.readAllBytes();
+		}
 		int read_index = lut_byte_data.length - ApplicationController.COLOR_DEPTH * 3;
 		logger.fine("lut_byte_data.length=" + lut_byte_data.length);
 		logger.fine("read_index=" + read_index);
@@ -2246,6 +2264,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		logger.fine("IN:  setImageMode()");
 		try{
 			this.baseFrame.enableListener(false);
+			this.baseFrame.getPlotPanel().setOriginalMax(this.getMaxDisplayRangeValue()+1);
 			TreeSet<String> filters = this.getImageSet().getFilters();
 			String filter = (String) this.baseFrame.getFilterSelectCBox().getSelectedItem();
 			int nfilter = filters.size();

@@ -10,6 +10,7 @@
  */
 package autoconverter.view;
 
+import autoconverter.controller.ApplicationController;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import java.awt.Graphics;
@@ -49,6 +50,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
   private int scaled_high_limit = 4095;
   public static final int X_MARGIN = 30;
   public static final int Y_MARGIN = 30;
+	private final ApplicationController appContoller;
 
   /** Creates new form PlotPanel */
   public PlotPanel() {
@@ -67,6 +69,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
     //  System.exit(2);
     //}
     //this.setImp(_imp);
+		appContoller = ApplicationController.getInstance();
   }
 
   /** This method is called from within the constructor to
@@ -144,15 +147,20 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
     this.y_max = 0;
     for (int i = 0; i < original_max; i++) {
       _intensity_sum += stat[i];
-      if ((i % mag) == mag - 1) {
-        //logger.fine("i/mag=" + (i/mag));
-        //logger.fine("scaled_stat[i/mag]=" + _intensity_sum);
-        scaled_stat[i / mag] = _intensity_sum;
-        if (_intensity_sum > this.y_max) {
-          this.y_max = _intensity_sum;
-        }
-        _intensity_sum = 0;
-      }
+			if ((i % mag) == mag - 1) {
+				//logger.fine("i/mag=" + (i/mag));
+				//logger.fine("scaled_stat[i/mag]=" + _intensity_sum);
+				try {
+					scaled_stat[i / mag] = _intensity_sum;
+					if (_intensity_sum > this.y_max) {
+						this.y_max = _intensity_sum;
+					}
+				} catch (ArrayIndexOutOfBoundsException e){
+					// おそらく端数の関係で scaled_stat[255] でエラーになる。
+					// 単純に無視すれば良い.
+				}
+				_intensity_sum = 0;
+			}
     }
 
     //this.repaint();
@@ -207,64 +215,6 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 
 
 
-  //for (int i = 0; i < width; i++) {
-  //  osg.drawLine(i, HEIGHT, i, HEIGHT - ((int) (HEIGHT * histogram[i]) / hmax));
-  //}
-
-
-  //int x1, y1, x2, y2;
-  /*
-  double scale = (double) WIDTH / (defaultMax - defaultMin);
-  double slope = 0.0;
-  if (max != min) {
-  slope = HEIGHT / (max - min);
-  }
-  if (min >= defaultMin) {
-  x1 = (int) (scale * (min - defaultMin));
-  y1 = HEIGHT;
-  } else {
-  x1 = 0;
-  if (max > min) {
-  y1 = HEIGHT - (int) ((defaultMin - min) * slope);
-  } else {
-  y1 = HEIGHT;
-  }
-  }
-  if (max <= defaultMax) {
-  x2 = (int) (scale * (max - defaultMin));
-  y2 = 0;
-  } else {
-  x2 = WIDTH;
-  if (max > min) {
-  y2 = HEIGHT - (int) ((defaultMax - min) * slope);
-  } else {
-  y2 = 0;
-  }
-  }
-  if (histogram != null) {
-  if (os == null && hmax != 0) {
-  os = createImage(WIDTH, HEIGHT);
-  osg = os.getGraphics();
-  osg.setColor(Color.white);
-  osg.fillRect(0, 0, WIDTH, HEIGHT);
-  osg.setColor(color);
-  for (int i = 0; i < WIDTH; i++) {
-  osg.drawLine(i, HEIGHT, i, HEIGHT - ((int) (HEIGHT * histogram[i]) / hmax));
-  }
-  osg.dispose();
-  }
-  if (os != null) {
-  g.drawImage(os, 0, 0, this);
-  }
-  } else {
-  g.setColor(Color.white);
-  g.fillRect(0, 0, WIDTH, HEIGHT);
-  }
-  g.setColor(Color.black);
-  g.drawLine(x1, y1, x2, y2);
-  g.drawLine(x2, HEIGHT - 5, x2, HEIGHT);
-  g.drawRect(0, 0, WIDTH, HEIGHT);
-   */
   }
 
   /**
@@ -311,6 +261,14 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 			throw new IllegalArgumentException("imp.getType() != ImagePlus.GRAY16");
 		}
 		this.ip = imp.getProcessor();
+		if(this.appContoller.getImageMode() == BaseFrame.IMAGE_MODE_RELATIVE){
+			//ip.setHistogramSize((int) (original_max));
+			//ip.setHistogramSize(this.appController.ge);
+			ip.setHistogramRange(0,this.appContoller.getBaseFrame().getScaleRangeSlider().getMaximum());
+			ip.setHistogramSize(this.appContoller.getBaseFrame().getScaleRangeSlider().getMaximum());
+			//int _width = this.getWidth() - PlotPanel.X_MARGIN;
+			//ip.setHistogramSize(_width);
+		}
 		this.stat = this.ip.getHistogram();
 		//logger.fine("original_max="+original_max);
 		//logger.fine("stat="+stat);
@@ -326,6 +284,11 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 				return;
 			}
 			return;
+		} else {
+			logger.fine("stat != null");
+			logger.fine("stat.length==" + stat.length);
+			logger.fine("original_max==" + original_max);
+			logger.fine("mag==" + mag);
 		}
 		if(original_max > stat.length){
 			int[] tmp = this.stat;
@@ -339,6 +302,16 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 			}
 			original_max = stat.length;
 		}
+
+		// relative mode のときは選択外領域は0となり、最大をしめるため、
+		// ここを除外したヒストグラムを作製しないとピークがy軸方向にスケールされるので
+		//見えない
+		if(this.appContoller.getImageMode() == BaseFrame.IMAGE_MODE_RELATIVE){
+      this.stat[0] = 0;
+		}
+
+		/*
+		logger.fine("scaled_max == " + scaled_max);
 		scaled_stat = new int[scaled_max];
 		
 		// remap
@@ -346,6 +319,7 @@ public class PlotPanel extends javax.swing.JPanel implements PlotPanelMediator {
 			//scaled_stat[i] = original_max[i*mag] + original_max[i*mag+1] + original_max[i*mag+2] + original_max[i*mag+3];
 			scaled_stat[i] = stat[i * mag] + stat[i * mag + 1] + stat[i * mag + 2] + stat[i * mag + 3];
 		}
+		*/
 	} finally {
 		imp.close();
 	}
