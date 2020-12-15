@@ -24,7 +24,7 @@
 
 	<groupId>saitolab.imgconv</groupId>
 	<artifactId>Img_Conv</artifactId>
-	<version>0.5.16</version>
+	<version>0.5.17</version>
 
 	<name>image converter plugins/Img_Conv.jar</name>
 	<description>A project for image converter</description>

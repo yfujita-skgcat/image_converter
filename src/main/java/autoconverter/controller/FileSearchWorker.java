@@ -135,7 +135,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 			// ここを正規表現で最初からマッチさせる
 			if (filePattern.matcher(sdir.getName()).matches() ) {
 				if (!sdir.getName().matches("_thumb_")) {
-					if(Files.isSymbolicLink(sdir.toPath())){
+					if(Files.isSymbolicLink(sdir.toPath()) && ignore_symlink  ){
 						publish("SKIP(symlink): " + sdir.getAbsolutePath());
 					} else {
 						publish("FOUND: " + sdir.getAbsolutePath());
