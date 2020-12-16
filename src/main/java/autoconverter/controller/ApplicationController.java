@@ -1045,7 +1045,12 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 					//logger.fine("Checking color color_name("+color_name+") ?= " + COLOR_INDEX[i]);
 					if(color_name.equals(COLOR_INDEX[i])){
 						//logger.fine("filter("+filter+") => " + color_name);
-						_imps[i] = _imp;
+						if( _imps[i] == null){
+							_imps[i] = _imp;
+						} else {
+							logger.fine("_imps[i] は既に設定済み: 同じ色のフィルタを指定している");
+							this.setMessageLabel("同一の色のフィルタを指定している可能性があります。");
+						}
 						break;
 					}
 				}
@@ -1069,6 +1074,10 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			} else {
 				//  ImagePlus から ExImagePlus へのキャスト出来ないのでこのまま.
 				ImagePlus mergeImg =  RGBStackMerge.mergeChannels(_imps, false);
+				if(mergeImg==null && this.getCardIndex() != 2){
+					returnImp = this.processImage(cur_imp, true);
+					return returnImp;
+				}
 				if(this.getCardIndex() != 2){
 					baseFrame.getImageDisplayPanel().setImp(mergeImg);
 				} else {

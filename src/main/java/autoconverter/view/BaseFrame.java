@@ -297,6 +297,8 @@ public class BaseFrame extends javax.swing.JFrame {
 
 		initComponents();
 
+
+
 		// checkbox をまとめておく
 		this.filterCheckBoxList = new ArrayList();
 		this.targetCheckBoxList = new ArrayList();
@@ -390,6 +392,8 @@ public class BaseFrame extends javax.swing.JFrame {
 		this.appController.updateWizerdButton();
 
 		this.setSize(new Dimension(_width, _height));
+
+		this.imagePanel.setPreferredSize(new Dimension(_width + 200, _height + 200));
 
 		currentFrame = this;
 	}
@@ -2444,6 +2448,13 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         }//GEN-LAST:event_scaleTextFieldActionPerformed
 
         private void imagePanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_imagePanelMouseWheelMoved
+		Component c = evt.getComponent();
+		Container s = SwingUtilities.getAncestorOfClass(JScrollPane.class, c);
+		JScrollPane sp = null;
+		if(Objects.nonNull(s)){
+			logger.fine("s.class == JScrollPane");
+			sp = (JScrollPane)s;
+		}
 		if(evt.isControlDown()){
 			int scale = Integer.parseInt(this.getScaleTextField().getText());
 			if( evt.getWheelRotation() > 0){
@@ -2461,14 +2472,18 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			int _w = (int) (Integer.parseInt(this.wTextField.getText()) * scale_factor);
 			int _h = (int) (Integer.parseInt(this.hTextField.getText()) * scale_factor);
 			this.imagePanel.setCropRectangleParams(_x, _y, _w, _h);
-		} else {
-			Component c = evt.getComponent();
-			Container s = SwingUtilities.getAncestorOfClass(JScrollPane.class, c);
-			if(Objects.nonNull(s)){
-				JScrollPane sp = (JScrollPane)s;
+			if(sp != null){
+				//sp.revalidate();
+				//sp.repaint();
+				//sp.revalidate();
+				//sp.validate();
+			}
+
+		}  else {
+			if(sp != null){
 				sp.dispatchEvent(evt);
 			}
-		}
+		} 
 		this.appController.updateImage();
         }//GEN-LAST:event_imagePanelMouseWheelMoved
 

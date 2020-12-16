@@ -136,7 +136,10 @@ public class ImagePanel extends javax.swing.JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		double scale = appCtrl.getScaleDouble();
+		double scale = 0;
+		if ( appCtrl != null) {
+			scale = appCtrl.getScaleDouble();
+		}
 		if (imp != null) {
 			if(scale == 1.0){
 				g.drawImage(imp.getImage(), 0, 0, this);
@@ -154,10 +157,32 @@ public class ImagePanel extends javax.swing.JPanel {
 			}
 			imp.close();
 		}
+		this.getParent().validate();
 		if(rect.width > 0 && rect.height > 0){
 			g.setColor(Color.YELLOW);
 			g.drawRect(rect.x, rect.y, rect.width, rect.height);
 		}
+	}
+
+	@Override
+	public Dimension getPreferredSize(){
+		Dimension d = super.getPreferredSize();
+		if( imp == null ){
+			return d;
+		}
+		double scale = appCtrl.getScaleDouble();
+		int w = (int) (imp.getWidth() * scale);
+		int h = (int) (imp.getHeight() * scale);
+		int bfw = appCtrl.getBaseFrame().getWidth();
+		int bfh = appCtrl.getBaseFrame().getHeight();
+		if( w < bfw + 200 ){
+			w = bfw + 200;
+		}
+		if( h < bfh + 200){
+			h = bfh + 200;
+		}
+		logger.fine("pref size = " + w + ", " + h) ;
+		return new Dimension(w, h);
 	}
 
 	/**
