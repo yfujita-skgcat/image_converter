@@ -37,6 +37,8 @@ public class ImagePanel extends javax.swing.JPanel {
 
 	private ImagePlus imp;
 	private Image img;
+	private Image cache_img;
+	private double cache_scale = 0;
 	private Point start;
 	private Point end;
 	private boolean dragF;
@@ -139,10 +141,16 @@ public class ImagePanel extends javax.swing.JPanel {
 			if(scale == 1.0){
 				g.drawImage(imp.getImage(), 0, 0, this);
 			} else {
-				double scaled_width = imp.getWidth() * scale;
-				logger.fine("scaled_width=" + scaled_width);
-				Image scaled_image = imp.getImage().getScaledInstance((int) scaled_width, -1, Image.SCALE_SMOOTH);
-				g.drawImage(scaled_image, 0, 0, this);
+				if( cache_scale == scale && cache_img != null && this.isDragged()){ // drag 中は cache を使う
+					g.drawImage(cache_img, 0, 0, this);
+				} else {
+					double scaled_width = imp.getWidth() * scale;
+					logger.fine("scaled_width=" + scaled_width);
+					Image scaled_image = imp.getImage().getScaledInstance((int) scaled_width, -1, Image.SCALE_SMOOTH);
+					g.drawImage(scaled_image, 0, 0, this);
+					cache_img = scaled_image;
+					cache_scale = scale;
+				}
 			}
 			imp.close();
 		}
@@ -264,6 +272,11 @@ public class ImagePanel extends javax.swing.JPanel {
 
 	public ImagePlus getImp(){
 		return imp;
+	}
+
+	public void resetCache(){
+		this.cache_img = null;
+		this.cache_scale = 0;
 	}
 
 	/**

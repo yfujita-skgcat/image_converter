@@ -134,10 +134,16 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 
 	private ExImagePlus imageCropAndResize(ExImagePlus _imp) {
 		ImagePanel imgPanel = bf.getImageDisplayPanel();
+		/*
 		int crop_height = imgPanel.getRoiHeight();
 		int crop_width = imgPanel.getRoiWidth();
 		int crop_x = imgPanel.getLeftTopX();
 		int crop_y = imgPanel.getLeftTopY();
+		*/
+		int crop_height = Integer.parseInt(appController.getBaseFrame().gethTextField().getText());
+		int crop_width = Integer.parseInt(appController.getBaseFrame().getwTextField().getText());
+		int crop_x = Integer.parseInt(appController.getBaseFrame().getxTextField().getText());
+		int crop_y = Integer.parseInt(appController.getBaseFrame().getyTextField().getText());
 		int resize_x = appController.getResizeX();
 		if (crop_height != 0 && crop_width != 0) { // crop 領域が設定されている.
 			_imp.setRoi(crop_x, crop_y, crop_width, crop_height);
