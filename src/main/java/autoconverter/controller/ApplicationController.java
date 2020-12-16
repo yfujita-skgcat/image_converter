@@ -1364,6 +1364,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			this.updateSingleImage(cimg);
 			this.updateDensityPlot();
 			this.updateImage();
+			//this.baseFrame.pack();
+			this.baseFrame.validate();
+			this.baseFrame.repaint();
 			//this.baseFrame.getImageDisplayPanel().repaint();
 		} finally {
 			this.baseFrame.enableListener(true);
