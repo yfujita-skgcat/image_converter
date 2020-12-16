@@ -62,6 +62,21 @@ public class ImagePanel extends javax.swing.JPanel {
 	}
 
 	/**
+	 * 選択範囲の四角の位置を保存しているrectを更新する。数値は描画の絶対位置
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h 
+	 */
+	public void setCropRectangleParams(int x, int y, int w, int h){
+		if(rect != null){
+			rect.setBounds(x, y, w, h);
+		} else {
+			logger.warning("rect == null");
+		}
+	}
+
+	/**
 	 * 最後に選択した左上のy座標
 	 * @return
 	 */
@@ -119,22 +134,17 @@ public class ImagePanel extends javax.swing.JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		double scale = appCtrl.getScaleDouble();
 		if (imp != null) {
-			//if( appCtrl.getImageMode() == BaseFrame.IMAGE_MODE_THRESHOLD){
-			//	IJ.run(imp, "Convert to Mask", "");
-			//}
-			//imp.draw();
-			g.drawImage(imp.getImage(), 0, 0, this);
-			imp.close();
-			/*
-			Roi roi = imp.getRoi();
-			if(roi != null){
-				logger.fine("drawing roi");
-				g.drawPolygon(roi.getPolygon());
+			if(scale == 1.0){
+				g.drawImage(imp.getImage(), 0, 0, this);
 			} else {
-				logger.fine("roi == null" );
+				double scaled_width = imp.getWidth() * scale;
+				logger.fine("scaled_width=" + scaled_width);
+				Image scaled_image = imp.getImage().getScaledInstance((int) scaled_width, -1, Image.SCALE_SMOOTH);
+				g.drawImage(scaled_image, 0, 0, this);
 			}
-			*/
+			imp.close();
 		}
 		if(rect.width > 0 && rect.height > 0){
 			g.setColor(Color.YELLOW);
@@ -155,9 +165,11 @@ public class ImagePanel extends javax.swing.JPanel {
 	}
 
 	public void setStart(int x, int y) {
-		start.setLocation(x, y);
-		this.appCtrl.setCropPanel(x, y, 0, 0);
 		this.setDragged(true);
+		start.setLocation(x, y);
+		//this.appCtrl.setCropPanel(x, y, 0, 0);
+		double scale = appCtrl.getScaleDouble();
+		this.appCtrl.setCropPanel((int)(x/scale), (int)(y/scale), 0, 0);
 	}
 
 	public void setNow(int x, int y) {
@@ -176,7 +188,13 @@ public class ImagePanel extends javax.swing.JPanel {
 			height = y - start.y;
 		}
 		rect.setBounds(left_top_x, left_top_y, width, height);
-		this.appCtrl.setCropPanel(left_top_x, left_top_y, width, height);
+		double scale = appCtrl.getScaleDouble();
+		logger.fine("scale=" + scale);
+		logger.fine("left_top_x=" + left_top_x);
+		logger.fine("left_top_x/scale=" + left_top_x/scale);
+		logger.fine("(int) left_top_x/scale=" + (int)(left_top_x/scale));
+		//this.appCtrl.setCropPanel(left_top_x, left_top_y, width, height);
+		this.appCtrl.setCropPanel((int) (left_top_x/scale), (int) (left_top_y/scale), (int) (width/scale), (int) (height/scale));
 		repaint();
 	}
 
@@ -190,7 +208,9 @@ public class ImagePanel extends javax.swing.JPanel {
 			width = 0;
 			rect.setBounds(left_top_x, left_top_y, width, height);
 		}
-		this.appCtrl.setCropPanel(left_top_x, left_top_y, width, height);
+		//this.appCtrl.setCropPanel(left_top_x, left_top_y, width, height);
+		double scale = appCtrl.getScaleDouble();
+		this.appCtrl.setCropPanel((int)(left_top_x/scale), (int)(left_top_y/scale), (int) (width/scale), (int) (height/scale));
 		this.storeCropAreaToHash();
 		repaint();
 

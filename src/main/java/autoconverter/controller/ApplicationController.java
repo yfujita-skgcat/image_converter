@@ -2375,6 +2375,11 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		}
 	}
 
+	public double getScaleDouble(){
+		double scale = Double.parseDouble(this.baseFrame.getScaleTextField().getText());
+		return scale/100.0;
+	}
+
 	/**
 	 * @return the maxHash
 	 */
