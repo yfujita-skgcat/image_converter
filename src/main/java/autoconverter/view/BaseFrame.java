@@ -2459,7 +2459,7 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				logger.fine("s.class == JScrollPane");
 				sp = (JScrollPane)s;
 				if(evt.isControlDown()){
-					this.imagePanel.setScaleChanged(true);
+					this.imagePanel.setImageChanged(true);
 					int scale = Integer.parseInt(this.getScaleTextField().getText());
 					if( evt.getWheelRotation() > 0){
 						scale = scale * 9 / 10;

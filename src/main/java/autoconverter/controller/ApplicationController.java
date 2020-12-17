@@ -830,6 +830,7 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			}
 		} finally {
 			this.updateDensityPlot();
+			this.baseFrame.getImageDisplayPanel().setImageChanged(true); // ここで画像が更新される必要があることを imagePanel に通知する
 			this.baseFrame.getImageDisplayPanel().repaint();
 			updating = false;
 		}

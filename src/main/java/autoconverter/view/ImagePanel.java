@@ -149,19 +149,21 @@ public class ImagePanel extends javax.swing.JPanel {
 			} else {
 				//logger.fine("cache_scale=" + cache_scale);
 				//logger.fine("scale=" + cache_scale);
-				//logger.fine("cache_img=" + cache_img);
+				logger.fine("cache_img=" + cache_img);
+				logger.fine("imp.getImage()" + imp.getImage());
 				//logger.fine("isDragged()" + this.isDragged());
-				if( cache_scale == scale && cache_img != null && ( this.isDragged() || !this.isScaleChanged()) ){ // drag 中は cache を使う
+				if( cache_scale == scale && cache_img != null && ( this.isDragged() || !this.isImageChanged()) ){ // drag 中は cache を使う, imageが変更されていない場合はそのままキャッシュを用いる
 					g.drawImage(cache_img, 0, 0, this);
 				} else {
-					if( this.isScaleChanged() ){
+					if( this.isImageChanged() ){
 						double scaled_width = imp.getWidth() * scale;
 						logger.fine("scaled_width=" + scaled_width);
 						Image scaled_image = imp.getImage().getScaledInstance((int) scaled_width, -1, Image.SCALE_SMOOTH);
+						logger.fine("scaled_image=" + scaled_image);
 						g.drawImage(scaled_image, 0, 0, this);
 						cache_img = scaled_image;
 						cache_scale = scale;
-						this.setScaleChanged(false);
+						this.setImageChanged(false);
 					}
 				}
 			}
@@ -287,11 +289,11 @@ public class ImagePanel extends javax.swing.JPanel {
 		return dragF;
 	}
 
-	public void setScaleChanged(boolean change){
+	public void setImageChanged(boolean change){
 		changeF = change;
 	}
 
-	public boolean isScaleChanged(){
+	public boolean isImageChanged(){
 		return changeF;
 	}
 
