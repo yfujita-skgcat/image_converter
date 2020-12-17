@@ -142,6 +142,7 @@ public class ImagePanel extends javax.swing.JPanel {
 		}
 		if (imp != null) {
 			if(scale == 1.0){
+				logger.fine("draw normal image");
 				g.drawImage(imp.getImage(), 0, 0, this);
 			} else {
 				if( cache_scale == scale && cache_img != null && this.isDragged()){ // drag 中は cache を使う
@@ -181,7 +182,7 @@ public class ImagePanel extends javax.swing.JPanel {
 		if( h < bfh + 200){
 			h = bfh + 200;
 		}
-		logger.fine("pref size = " + w + ", " + h) ;
+		//logger.fine("pref size = " + w + ", " + h) ;
 		return new Dimension(w, h);
 	}
 

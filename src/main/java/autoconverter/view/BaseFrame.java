@@ -2449,42 +2449,50 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
         private void imagePanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_imagePanelMouseWheelMoved
 		Component c = evt.getComponent();
-		Container s = SwingUtilities.getAncestorOfClass(JScrollPane.class, c);
-		JScrollPane sp = null;
-		if(Objects.nonNull(s)){
-			logger.fine("s.class == JScrollPane");
-			sp = (JScrollPane)s;
+		if( c == this.imagePanel){
+			this.imagePanel.setDragged(true);
 		}
-		if(evt.isControlDown()){
-			int scale = Integer.parseInt(this.getScaleTextField().getText());
-			if( evt.getWheelRotation() > 0){
-				scale = scale * 9 / 10;
-				if(scale < 10 ){
-					scale = 10;
-				}
-			} else if (evt.getWheelRotation() < 0 ){
-				scale = scale * 10 / 9;
+		try {
+			Container s = SwingUtilities.getAncestorOfClass(JScrollPane.class, c);
+			JScrollPane sp = null;
+			if(Objects.nonNull(s)){
+				logger.fine("s.class == JScrollPane");
+				sp = (JScrollPane)s;
+				if(evt.isControlDown()){
+					int scale = Integer.parseInt(this.getScaleTextField().getText());
+					if( evt.getWheelRotation() > 0){
+						scale = scale * 9 / 10;
+						if(scale < 10 ){
+							scale = 10;
+						}
+					} else if (evt.getWheelRotation() < 0 ){
+						scale = scale * 10 / 9;
+					}
+					this.getScaleTextField().setText("" + scale);
+					double scale_factor = this.appController.getScaleDouble();
+					int _x = (int) (Integer.parseInt(this.xTextField.getText()) * scale_factor);
+					int _y = (int) (Integer.parseInt(this.yTextField.getText()) * scale_factor);
+					int _w = (int) (Integer.parseInt(this.wTextField.getText()) * scale_factor);
+					int _h = (int) (Integer.parseInt(this.hTextField.getText()) * scale_factor);
+					this.imagePanel.setCropRectangleParams(_x, _y, _w, _h);
+					if(sp != null){
+						//sp.revalidate();
+						//sp.repaint();
+						//sp.revalidate();
+						//sp.validate();
+					}
+					this.appController.updateImage();
+				}  else {
+					if(sp != null){
+						sp.dispatchEvent(evt);
+					}
+				} 
 			}
-			this.getScaleTextField().setText("" + scale);
-			double scale_factor = this.appController.getScaleDouble();
-			int _x = (int) (Integer.parseInt(this.xTextField.getText()) * scale_factor);
-			int _y = (int) (Integer.parseInt(this.yTextField.getText()) * scale_factor);
-			int _w = (int) (Integer.parseInt(this.wTextField.getText()) * scale_factor);
-			int _h = (int) (Integer.parseInt(this.hTextField.getText()) * scale_factor);
-			this.imagePanel.setCropRectangleParams(_x, _y, _w, _h);
-			if(sp != null){
-				//sp.revalidate();
-				//sp.repaint();
-				//sp.revalidate();
-				//sp.validate();
+		} finally{
+			if( c == this.imagePanel){
+				this.imagePanel.setDragged(false);
 			}
-
-		}  else {
-			if(sp != null){
-				sp.dispatchEvent(evt);
-			}
-		} 
-		this.appController.updateImage();
+		}
         }//GEN-LAST:event_imagePanelMouseWheelMoved
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
