@@ -49,6 +49,7 @@ public class ImagePanel extends javax.swing.JPanel {
 	private int width;
 	private final ApplicationController appCtrl;
 	private static final Logger logger = AutoConverterUtils.getLogger();
+	private boolean changeF;
 
 	/**
 	 * 最後に選択した左上のx座標
@@ -136,29 +137,37 @@ public class ImagePanel extends javax.swing.JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		//AutoConverterUtils.printStackTrace(20, true);
 		double scale = 0;
 		if ( appCtrl != null) {
 			scale = appCtrl.getScaleDouble();
 		}
 		if (imp != null) {
 			if(scale == 1.0){
-				logger.fine("draw normal image");
+				//logger.fine("draw normal image");
 				g.drawImage(imp.getImage(), 0, 0, this);
 			} else {
-				if( cache_scale == scale && cache_img != null && this.isDragged()){ // drag 中は cache を使う
+				//logger.fine("cache_scale=" + cache_scale);
+				//logger.fine("scale=" + cache_scale);
+				//logger.fine("cache_img=" + cache_img);
+				//logger.fine("isDragged()" + this.isDragged());
+				if( cache_scale == scale && cache_img != null && ( this.isDragged() || !this.isScaleChanged()) ){ // drag 中は cache を使う
 					g.drawImage(cache_img, 0, 0, this);
 				} else {
-					double scaled_width = imp.getWidth() * scale;
-					logger.fine("scaled_width=" + scaled_width);
-					Image scaled_image = imp.getImage().getScaledInstance((int) scaled_width, -1, Image.SCALE_SMOOTH);
-					g.drawImage(scaled_image, 0, 0, this);
-					cache_img = scaled_image;
-					cache_scale = scale;
+					if( this.isScaleChanged() ){
+						double scaled_width = imp.getWidth() * scale;
+						logger.fine("scaled_width=" + scaled_width);
+						Image scaled_image = imp.getImage().getScaledInstance((int) scaled_width, -1, Image.SCALE_SMOOTH);
+						g.drawImage(scaled_image, 0, 0, this);
+						cache_img = scaled_image;
+						cache_scale = scale;
+						this.setScaleChanged(false);
+					}
 				}
 			}
 			imp.close();
 		}
-		this.getParent().validate();
+		//this.getParent().validate();
 		if(rect.width > 0 && rect.height > 0){
 			g.setColor(Color.YELLOW);
 			g.drawRect(rect.x, rect.y, rect.width, rect.height);
@@ -276,6 +285,14 @@ public class ImagePanel extends javax.swing.JPanel {
 
 	public boolean isDragged() {
 		return dragF;
+	}
+
+	public void setScaleChanged(boolean change){
+		changeF = change;
+	}
+
+	public boolean isScaleChanged(){
+		return changeF;
 	}
 
 

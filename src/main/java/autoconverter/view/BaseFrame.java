@@ -2449,16 +2449,17 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
         private void imagePanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_imagePanelMouseWheelMoved
 		Component c = evt.getComponent();
-		if( c == this.imagePanel){
-			this.imagePanel.setDragged(true);
-		}
-		try {
+		//if( c == this.imagePanel){
+		//	this.imagePanel.setDragged(true);
+		//}
+		//try {
 			Container s = SwingUtilities.getAncestorOfClass(JScrollPane.class, c);
 			JScrollPane sp = null;
 			if(Objects.nonNull(s)){
 				logger.fine("s.class == JScrollPane");
 				sp = (JScrollPane)s;
 				if(evt.isControlDown()){
+					this.imagePanel.setScaleChanged(true);
 					int scale = Integer.parseInt(this.getScaleTextField().getText());
 					if( evt.getWheelRotation() > 0){
 						scale = scale * 9 / 10;
@@ -2488,11 +2489,11 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 					}
 				} 
 			}
-		} finally{
-			if( c == this.imagePanel){
-				this.imagePanel.setDragged(false);
-			}
-		}
+		//} finally{
+		//	if( c == this.imagePanel){
+		//		this.imagePanel.setDragged(false);
+		//	}
+		//}
         }//GEN-LAST:event_imagePanelMouseWheelMoved
 
         // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -186,7 +186,7 @@ public class AutoConverterUtils {
 		for(int i = 2; i < ste.length ; i++){
 			String str = ste[i].toString();
 			//logger.fine("str=" + str);
-			if(!all && ! str.matches("java.*")){
+			if(all || ! str.matches("java.*")){
 				al.add(str);
 				depth_count++;
 				if(depth_count>depth){
