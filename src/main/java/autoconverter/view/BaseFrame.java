@@ -371,10 +371,17 @@ public class BaseFrame extends javax.swing.JFrame {
 			this.symlinkRadioButton.setSelected(false);
 		}
 
+		String _read_cq1config = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_READ_CQ1CONFIG, "false", null);
+		if (_read_cq1config.equals("true")) {
+			this.readCQ1configRadioButton.setSelected(true);
+		} else {
+			this.readCQ1configRadioButton.setSelected(false);
+		}
+
 
 		String _plate_name = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_PLATE_TYPE, "No change", null);
-		logger.fine("_plate_name==" + _plate_name);
-		this.plateSelectComboBox.getModel().setSelectedItem(_plate_name);
+		//logger.fine("_plate_name==" + _plate_name);
+		//this.plateSelectComboBox.getModel().setSelectedItem(_plate_name);
 
 		String disp_range = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_SELECTED_DISPLAY_RANGE, "4095", null);
 		this.displayRangeComboBox.getModel().setSelectedItem(disp_range);
@@ -417,6 +424,10 @@ public class BaseFrame extends javax.swing.JFrame {
 			String regexString = AutoConverterConfig.getConfig(selected_item, "", AutoConverterConfig.PREFIX_REGEXP);
 			if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CELAVIEW)) {
 				regexString = AutoConverterConfig.celaviewRegexpString;
+				this.getFilePatternTextField().setEditable(false);
+				this.filePatternComboBox.setEditable(false);
+			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_CQ1)) {
+				regexString = AutoConverterConfig.CQ1RegexpString;
 				this.getFilePatternTextField().setEditable(false);
 				this.filePatternComboBox.setEditable(false);
 			} else if (selected_item.equals(AutoConverterConfig.REGEXP_NAME_INCELL6000)) {
@@ -480,7 +491,7 @@ public class BaseFrame extends javax.swing.JFrame {
                 removeSpecialCharRadioButton = new javax.swing.JRadioButton();
                 addParamRadioButton = new javax.swing.JRadioButton();
                 symlinkRadioButton = new javax.swing.JRadioButton();
-                plateSelectComboBox = new javax.swing.JComboBox<>();
+                readCQ1configRadioButton = new javax.swing.JRadioButton();
                 regexPanel = new javax.swing.JPanel();
                 filePatternComboBox = new javax.swing.JComboBox<>();
                 filePatternTextField = new javax.swing.JTextField();
@@ -668,13 +679,13 @@ public class BaseFrame extends javax.swing.JFrame {
                 });
                 checkBoxPanel.add(symlinkRadioButton);
 
-                plateSelectComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No change", "6 well", "12 well", "24 well", "48 well", "96 well", "384 well" }));
-                plateSelectComboBox.addItemListener(new java.awt.event.ItemListener() {
-                        public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                                plateSelectComboBoxItemStateChanged(evt);
+                readCQ1configRadioButton.setText(bundle.getString("BaseFrame.readCQ1configRadioButton.text")); // NOI18N
+                readCQ1configRadioButton.addChangeListener(new javax.swing.event.ChangeListener() {
+                        public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                                readCQ1configRadioButtonStateChanged(evt);
                         }
                 });
-                checkBoxPanel.add(plateSelectComboBox);
+                checkBoxPanel.add(readCQ1configRadioButton);
 
                 regexPanel.setLayout(new java.awt.BorderLayout());
 
@@ -2397,22 +2408,22 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         }//GEN-LAST:event_jCheckBoxRef6ActionPerformed
 
         private void jCheckBoxRef7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxRef7ActionPerformed
-					// TODO add your handling code here:
-					this.enableListener(false);
-					this.appController.updateNextButton();
-					this.appController.updateImage();
-					this.enableListener(true);
+		// TODO add your handling code here:
+		this.enableListener(false);
+		this.appController.updateNextButton();
+		this.appController.updateImage();
+		this.enableListener(true);
         }//GEN-LAST:event_jCheckBoxRef7ActionPerformed
 
     private void symlinkRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_symlinkRadioButtonStateChanged
-			// TODO add your handling code here:
-			if (!active) {
-				return;
-			}
-			if (evt.getSource() != this.getSymlinkRadioButton()) {
-				return;
-			}
-			appController.storeIgnoreSymlink(false);
+	// TODO add your handling code here:
+	if (!active) {
+		return;
+	}
+	if (evt.getSource() != this.getSymlinkRadioButton()) {
+		return;
+	}
+	appController.storeIgnoreSymlink(false);
     }//GEN-LAST:event_symlinkRadioButtonStateChanged
 
     private void resizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_resizeSpinnerStateChanged
@@ -2421,17 +2432,6 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				appController.storeResizeWidthSetting(false);
 			}
     }//GEN-LAST:event_resizeSpinnerStateChanged
-
-  private void plateSelectComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_plateSelectComboBoxItemStateChanged
-    // TODO add your handling code here:
-		if (!active) {
-			return;
-		}
-		if (evt.getSource() != this.getPlateSelectComboBox()) {
-			return;
-		}
-		appController.storePlateType(false);
-  }//GEN-LAST:event_plateSelectComboBoxItemStateChanged
 
         private void scaleTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scaleTextFieldActionPerformed
                 // TODO add your handling code here:
@@ -2495,6 +2495,16 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		//	}
 		//}
         }//GEN-LAST:event_imagePanelMouseWheelMoved
+
+        private void readCQ1configRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_readCQ1configRadioButtonStateChanged
+			if (!active) {
+				return;
+			}
+			if (evt.getSource() != this.readCQ1configRadioButton) {
+				return;
+			}
+			appController.storeReadCQ1Config(false);
+        }//GEN-LAST:event_readCQ1configRadioButtonStateChanged
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JRadioButton addParamRadioButton;
@@ -2570,10 +2580,10 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         private javax.swing.JComboBox modeSelector;
         private javax.swing.JButton nextButton;
         private javax.swing.JPanel paramPanel;
-        private javax.swing.JComboBox<String> plateSelectComboBox;
         private autoconverter.view.PlotPanel plotPanel;
         private javax.swing.JComboBox positionSelectCBox;
         private javax.swing.JPanel proceedPanel;
+        private javax.swing.JRadioButton readCQ1configRadioButton;
         private javax.swing.JRadioButton recursiveRadioButton;
         private javax.swing.ButtonGroup referenceButtonGroup;
         private javax.swing.JPanel regexPanel;
@@ -3256,15 +3266,13 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		this.symlinkRadioButton = symlinkRadioButton;
 	}
 
-	/**
-	 * @return the plateSelectComboBox
-	 */
-	public javax.swing.JComboBox<String> getPlateSelectComboBox() {
-		return plateSelectComboBox;
-	}
 
 	public javax.swing.JFormattedTextField getScaleTextField(){
 		return scaleTextField;
+	}
+
+	public javax.swing.JRadioButton getReadCQ1ConfigRadioButton(){
+		return readCQ1configRadioButton;
 	}
 
 }

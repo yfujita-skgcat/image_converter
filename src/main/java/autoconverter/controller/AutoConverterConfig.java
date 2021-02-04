@@ -38,8 +38,9 @@ public class AutoConverterConfig {
 	//public static final String CytellRegexpString =     "(?<WELL>[A-Q] - \\d+)\\((fld (?<POS>\\d+))? ?(z (?<ZPOS>\\d+))? ?(wv (?<FILTER>[^\\)]+))?\\)\\.(?:tif|TIF|tiff|TIFF)";
 	//public static final Pattern CytellPattern     = Pattern.compile("");
 	public static final String IX81RegexpString = "(?!.*_thumb_)(?!.*_univ).*-(?<POS>\\d{3})_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
-	
 	public static final Pattern ixPattern = Pattern.compile(IX81RegexpString);
+	public static final String CQ1RegexpString = "(?<WELL>W\\d+)F(?<POS>\\d+)T(?<TIME>\\d+)Z(?<ZPOS>...)(?<FILTER>C\\d+)\\.(?:tif|TIF|tiff|TIFF)";
+	public static final Pattern CQ1Pattern = Pattern.compile(CQ1RegexpString);
 	public static final String IX81RegexString_A = "(?!.*_thumb_)(?!.*_univ)(?<WELL>\\d+)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
 	public static final Pattern ix81Pattern_A = Pattern.compile(IX81RegexString_A);
 	public static final String IX81RegexString_B = "(?!.*_thumb_)(?!.*_univ)(?<WELL>.*)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
@@ -48,6 +49,8 @@ public class AutoConverterConfig {
 	public static final Pattern ix81Pattern_C = Pattern.compile(IX81RegexString_C);
 	public static final String IX81RegexString_D = "(?!.*_thumb_)(?!.*_univ)(?<WELL>.*)[ -](?<POS>\\d+)_w(?<FILTER>[^.]+)\\.(?:TIF|tif|TIFF|tiff)";
 	public static final Pattern ix81Pattern_D = Pattern.compile(IX81RegexString_D);
+	public static final String CQ1ChannelRegexString = "Ch(\\d+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^/ ]+).*";
+	public static final Pattern CQ1ChannelPattern = Pattern.compile(CQ1ChannelRegexString);
 	public static final String KEY_CROP_AREA_X = "CROP_AREA_X";
 	public static final String KEY_CROP_AREA_Y = "CROP_AREA_Y";
 	public static final String KEY_CROP_AREA_W = "CROP_AREA_W";
@@ -68,6 +71,7 @@ public class AutoConverterConfig {
 	public static final String KEY_IMAGE_MODE = "IMAGE_MODE";
 	public static final String KEY_RESIZE_CHECK = "RESIZE_CHECK";
 	public static final String KEY_RESIZE_WIDTH = "RESIZE_WIDTH";
+	public static final String KEY_READ_CQ1CONFIG = "READCQ1CONFIG";
 
 	public static final String PREFIX_BALL = "BALL";
 	public static final String PREFIX_MIN = "MIN";
@@ -94,6 +98,7 @@ public class AutoConverterConfig {
 
 	public static final String REGEXP_NAME_CUSTOM = "Custom";
 	public static final String REGEXP_NAME_CELAVIEW = "Celaview";
+	public static final String REGEXP_NAME_CQ1 = "CQ1";
 	public static final String REGEXP_NAME_INCELL6000 = "In Cell 6000";
 	public static final String REGEXP_NAME_IX81 = "IX81";
 	public static final String REGEXP_NAME_IX81A = "IX81 (e.g. 13_w1BF.tif)";
@@ -292,6 +297,7 @@ public class AutoConverterConfig {
 				pattern.put(key, config.get(key));
 			}
 		}
+		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_CQ1, AutoConverterConfig.CQ1RegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_CELAVIEW, AutoConverterConfig.celaviewRegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_INCELL6000, AutoConverterConfig.inCell6000RegexpString);
 		pattern.put(AutoConverterConfig.PREFIX_REGEXP + "_" + AutoConverterConfig.REGEXP_NAME_IX81, AutoConverterConfig.IX81RegexpString);

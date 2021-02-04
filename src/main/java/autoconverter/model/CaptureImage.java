@@ -82,9 +82,26 @@ public class CaptureImage {
 				try{
 					if(matcher.group(key) == null){
 						params.put(key, "");
-					} else {
-					        params.put(key, matcher.group(key));
+						continue;
 					}
+					// filter 名と well 名を CQ1の設定ファイルから取得する
+					if (this.appCtrl.getBaseFrame().getReadCQ1ConfigRadioButton().isSelected() ){
+						if(key.equals("FILTER")){
+							String original_filter = matcher.group(key);
+							// ここに key == FILTER のときに、matcher.group(key): ファイル名のフィルタ部分 がCQ1のC1, C2, C3... の場合に MeasurementProtocol.xml から割り当てる
+							//original_filter = appCtrl.convertFilterName(_f, original_filter);
+							original_filter = MeasurementProtocols.getChannelFilterName(_f, original_filter);
+							params.put(key, original_filter);
+							continue;
+						}
+						if (key.equals("WELL")){
+							String original_well_name = matcher.group(key);
+							original_well_name = MeasurementProtocols.getWellName(_f, original_well_name);
+							params.put(key, original_well_name);
+							continue;
+						}
+					}
+					params.put(key, matcher.group(key));
 				} catch(IllegalArgumentException e){
 					params.put(key, ""); // "" を入れとかないとエラーになるので...
 				}

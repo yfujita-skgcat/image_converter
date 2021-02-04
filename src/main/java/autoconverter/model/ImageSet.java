@@ -143,6 +143,7 @@ public class ImageSet {
 			IJ.showMessage("_img == null. This is bug! Report to Yoshihiko Fujita.");
 			return;
 		}
+		// /home/yfujita/work/experiment/data/2021/02/03/tif/210203_800_CQ1_cell_counting/20210203T155840_Tile_20210203T160106/MeasurementProtocol.xml
 		this.getFiles().add(_img);
 		this.getDirectories().add(_img.getDirectory());
 		this.getWellNames().add(_img.getWellName());

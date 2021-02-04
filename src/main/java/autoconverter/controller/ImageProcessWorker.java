@@ -21,10 +21,13 @@ import ij.process.ImageStatistics;
 import ij.process.LUT;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,9 +113,13 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 
 		String memoPath = dst + File.separator + "conversion_log" + date + ".txt";
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(memoPath)));
-			bw.write(textArea.getText());
-			bw.close();
+			//BufferedWriter bw = new BufferedWriter(new FileWriter(new File(memoPath)));
+			//bw.write(textArea.getText());
+			//bw.close();
+			// 改行コードをOSに合わせて出力する
+			BufferedReader br = new BufferedReader(new StringReader(textArea.getText()));
+			PrintWriter pw = new PrintWriter(new FileWriter(new File(memoPath)));
+			br.lines().forEach(line -> pw.println(line));
 		} catch (IOException ex) {
 			textArea.append("Fail to write log to " + memoPath);
 		}
@@ -169,7 +176,7 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 		int count = 1;
 
 		// 選択されているフィルタ名を取得
-		//ArrayList<String> filters = appController.getSelectedFilters();
+		ArrayList<String> filters = appController.getSelectedFilters();
 		for (int i = 0; i < number; i++) {
 			if (isCancelled()) {
 				return (22);
@@ -177,7 +184,9 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 			ArrayList<CaptureImage> image_set = appController.getImageSet().getShotAt(i);
 			ArrayList<ExImagePlus> eximps = new ArrayList<ExImagePlus>();
 			for (CaptureImage _cimg : image_set) {
-				eximps.add(_cimg.getImagePlus());
+				if( filters.contains(_cimg.getFilter()) ){
+					eximps.add(_cimg.getImagePlus());
+				}
 			}
 			ExImagePlus flat_image = appController.updateMergeImage(eximps);
 			flat_image = this.imageCropAndResize(flat_image);
@@ -449,13 +458,16 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 		}
 		ArrayList<String> filters = new ArrayList<String>();
 		for (ExImagePlus _imp : imps) {
+			logger.fine("_imp.getFilter()=" + _imp.getFilter());
 			filters.add(_imp.getFilter());
 		}
 		int well_number = 0;
 		int total_well_number = 0;
+		/*
 		if (!"No change".equals(bf.getPlateSelectComboBox().getSelectedItem())) { // well 番号から well 名への変更
 			try {
 				String src_well_name = imp.getWellName();
+				logger.fine("src_well_name=" + src_well_name);
 				String well_name = src_well_name.replaceAll("[^\\d]+", "");
 				well_number = Integer.parseInt(well_name);
 				logger.fine("well_name==" + well_name);
@@ -518,7 +530,16 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 				logger.fine(AutoConverterUtils.stacktrace(e));
 			}
 		}
-		logger.fine("fname==" + fname);
+		*/
+		fname = removeExtension(fname);
+		logger.fine("fname=" + fname);
+		if(bf.getReadCQ1ConfigRadioButton().isSelected()){
+			// CQ1の場合は末尾のC1-C4 をreplace
+			fname = fname.replaceFirst("C\\d+$", imp.getFilter());
+			logger.fine("fname=" + fname);
+			fname = fname.replaceFirst("W\\d+", imp.getWellName());
+			logger.fine("fname=" + fname);
+		}
 		if (mode == BaseFrame.IMAGE_MODE_SINGLE) {
 			fname = removeExtension(fname);
 		} else if (mode == BaseFrame.IMAGE_MODE_RELATIVE) {

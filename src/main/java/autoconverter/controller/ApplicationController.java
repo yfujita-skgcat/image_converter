@@ -58,10 +58,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
@@ -70,6 +72,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.text.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -141,6 +151,11 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	private HashSet<String> messageList;
 	private Object oldSearchPath;
 	private ImageSet imageSet;
+	// CQ1 MeasrementProtocol.xml のリスト
+	private ArrayList<File> measurementProtocols;
+	// フィルタの別名のHashtableをもつ. measurementProtocols.xml のファイルパスをキーとするハッシュ
+	private Hashtable<String, Hashtable<String,String>> filterAliases;
+
 	private SpinnerNumberModel minSpinnerModel;
 	private SpinnerNumberModel maxSpinnerModel;
 	private HashMap<String, Integer> storedMax;
@@ -276,6 +291,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		oldSearchPath = null;
 		imageSet = new ImageSet();
 		baseFrame = _base;
+
+		measurementProtocols = new ArrayList<File>();
 
 		storedMax = new HashMap<String, Integer>();
 		storedMin = new HashMap<String, Integer>();
@@ -689,6 +706,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		Boolean auto = this.getAutoHash().get(filter);
 		String auto_type = this.getTypeHash().get(filter);
 		String color = this.getColorHash().get(filter);
+		logger.fine("a" + this.getBallHash());
+		logger.fine("filter=" + filter);
 		int ballsize = this.getBallHash().get(filter);
 		if (ballsize != 0) {
 			logger.fine("Subtracting....");
@@ -1993,15 +2012,14 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			AutoConverterConfig.save(baseFrame, true);
 		}
 	}
-
-	public void storePlateType(boolean save){
-		String selected = (String) baseFrame.getPlateSelectComboBox().getSelectedItem();
-		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_PLATE_TYPE, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{selected}));
+	public void storeReadCQ1Config(boolean save){
+		boolean selected = baseFrame.getReadCQ1ConfigRadioButton().isSelected();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_READ_CQ1CONFIG, java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("autoconverter/controller/Bundle").getString("{0}"), new Object[]{selected}));
 		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
-
 	}
+
 
 	/**
 	 * ファイル名に変換設定を加えて保存する.
