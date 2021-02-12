@@ -120,6 +120,8 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 			BufferedReader br = new BufferedReader(new StringReader(textArea.getText()));
 			PrintWriter pw = new PrintWriter(new FileWriter(new File(memoPath)));
 			br.lines().forEach(line -> pw.println(line));
+			pw.flush();
+			pw.close();
 		} catch (IOException ex) {
 			textArea.append("Fail to write log to " + memoPath);
 		}

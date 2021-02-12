@@ -77,6 +77,11 @@ public class ImagePanel extends javax.swing.JPanel {
 		} else {
 			logger.warning("rect == null");
 		}
+		this.width  = w;
+		this.height = h;
+		this.left_top_x = x;
+		this.left_top_y = y;
+		this.storeCropAreaToHash();
 	}
 
 	/**
@@ -202,6 +207,7 @@ public class ImagePanel extends javax.swing.JPanel {
 	 * @return 
 	 */
 	public boolean isSelected(){
+		logger.fine("width=" + width + ", height=" + height);
 		if(width != 0 && height != 0 ){
 			return true;
 		} else {
@@ -262,10 +268,16 @@ public class ImagePanel extends javax.swing.JPanel {
 	}
 
 	public void storeCropAreaToHash(){
+		/*
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_H, height);
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_W, width);
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_X, left_top_x);
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_Y, left_top_y);
+		*/
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_H, this.appCtrl.getBaseFrame().gethTextField().getText());
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_W, this.appCtrl.getBaseFrame().getwTextField().getText());
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_X, this.appCtrl.getBaseFrame().getxTextField().getText()); 
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_CROP_AREA_Y, this.appCtrl.getBaseFrame().getyTextField().getText()); 
 	}
 
 	/**

@@ -1441,12 +1441,19 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		area.append("\n\n");
 		area.append("Cropping: ");
 		ImagePanel imgPanel = this.baseFrame.getImageDisplayPanel();
+		
 		if (imgPanel.isSelected()) {
 			area.append("YES\n");
+			area.append("x: " + this.baseFrame.getxTextField().getText() + "\n");
+			area.append("y: " + this.baseFrame.getyTextField().getText() + "\n");
+			area.append("width: " + this.baseFrame.getwTextField().getText() + "\n");
+			area.append("height: " + this.baseFrame.gethTextField().getText() + "\n\n");
+			/*
 			area.append("x: " + imgPanel.getLeftTopX() + "\n");
 			area.append("y: " + imgPanel.getLeftTopY() + "\n");
 			area.append("width: " + imgPanel.getRoiWidth() + "\n");
 			area.append("height: " + imgPanel.getRoiHeight() + "\n\n");
+			*/
 		} else {
 			area.append("NO\n\n");
 		}
@@ -1467,6 +1474,8 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		area.append("Mode: " + mode);
 		area.append("\n\n");
 
+		area.append("File target: " + ((String) this.baseFrame.getFilePatternComboBox().getSelectedItem()) + "\n" );
+		area.append("File regexp: " + this.baseFrame.getFilePatternTextField().getText() + "\n" );
 		area.append("Total file: " + getImageSet().size() + "\n");
 
 		area.append("\n");
