@@ -1475,6 +1475,15 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		area.append("Mode: " + mode);
 		area.append("\n\n");
 
+		String includeString = this.baseFrame.getIncludeTextField().getText();
+		String excludeString = this.baseFrame.getExcludeTextField().getText();
+		if(! includeString.equals("")){
+			area.append("Include Regexp: " + includeString + "\n\n");
+		}
+		if(! excludeString.equals("")){
+			area.append("Exclude Regexp: " + excludeString + "\n\n");
+		}
+
 		area.append("File target: " + ((String) this.baseFrame.getFilePatternComboBox().getSelectedItem()) + "\n" );
 		area.append("File regexp: " + this.baseFrame.getFilePatternTextField().getText() + "\n" );
 		area.append("Total file: " + getImageSet().size() + "\n");
@@ -1596,6 +1605,11 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			// ファイルに保存するかどうか. 付加が軽いので保存しても良いと思う.
 			this.storeInitialSettings(false);
 			// 正規表現が正しいかチェックしてダメだったらキャンセル
+			if(! this.isValidIncludeRegexp()){
+				String includeString = this.getIncludeRegexpString();
+				this.setMessageLabel(includeString + " is invalid REGEXP.", Color.red);
+				return;
+			}
 			if(! this.isValidExcludeRegexp()){
 				String excludeString = this.getExcludeRegexpString();
 				this.setMessageLabel(excludeString + " is invalid REGEXP.", Color.red);
@@ -1943,6 +1957,12 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		// add param
 		this.storeAddParamSetting(false);
 
+		// include Regexp
+		this.storeInludeRegexpString(false);
+
+		// exclude Regexp
+		this.storeExcludeRegexpString(false);
+
 		if (save) {
 			AutoConverterConfig.save(baseFrame, true);
 		}
@@ -2083,6 +2103,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 
 	}
 
+	public void storeInludeRegexpString(boolean save){
+		String regexString = this.getIncludeRegexpString();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_INCLUDE_REGEXP_STRING, regexString);
+		if(save){
+			AutoConverterConfig.save(baseFrame, true);
+		}
+	}
 	public void storeExcludeRegexpString(boolean save){
 		String regexString = this.getExcludeRegexpString();
 		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_EXCLUDE_REGEXP_STRING, regexString);
@@ -2610,6 +2637,13 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		return storedRAutoType;
 	}
 
+	public String getIncludeRegexpString(){
+		String text = this.baseFrame.getIncludeTextField().getText();
+		return text;
+	}
+	public void setIncludeRegexpString(String str){
+		this.baseFrame.getIncludeTextField().setText(str);
+	}
 	/**
 	 * 除外のテキストを取得する
 	 * @return 
@@ -2623,6 +2657,23 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 		this.baseFrame.getExcludeTextField().setText(str);
 	}
 
+	public boolean isValidIncludeRegexp(){
+		String regexp = this.getIncludeRegexpString();
+		Pattern include_pattern = null;
+		try {
+			include_pattern = Pattern.compile(regexp);
+		} catch (PatternSyntaxException e){
+			return false;
+		}
+		return true;
+	}
+	public Pattern getIncludeRegexpPattern(){
+		String regexp = this.getIncludeRegexpString();
+		if(regexp.equals("")){
+			return null;
+		}
+		return Pattern.compile(regexp);
+	}
 	public boolean isValidExcludeRegexp(){
 		String regexp = this.getExcludeRegexpString();
 		Pattern exclude_pattern = null;
@@ -2635,6 +2686,9 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	}
 	public Pattern getExcludeRegexpPattern(){
 		String regexp = this.getExcludeRegexpString();
+		if(regexp.equals("")){
+			return null;
+		}
 		return Pattern.compile(regexp);
 	}
 }

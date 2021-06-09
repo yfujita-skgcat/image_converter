@@ -122,6 +122,7 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 		ArrayList<File> list = new ArrayList();
 		Pattern filePattern = appCtrl.getFilePattern();
 		// ここに来るまでに正規表現が正しいかはチェック済み前提
+		Pattern includePattern = appCtrl.getIncludeRegexpPattern();
 		Pattern excludePattern = appCtrl.getExcludeRegexpPattern();
 
 		String[] contents = top.list();
@@ -137,7 +138,11 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 			// ここを正規表現で最初からマッチさせる
 			if (filePattern.matcher(sdir.getName()).matches() ) {
 				// excludePatternがある場合は除外する. excludePattern はfullpathにマッチする
-				if(excludePattern != null && excludePattern.matcher(sdir.getAbsolutePath()).matches() ){
+				if(includePattern != null && ! includePattern.matcher(sdir.getAbsolutePath()).matches()){
+					publish("SKIP(include): " + sdir.getAbsolutePath());
+					continue;
+				}
+				if(excludePattern != null  && excludePattern.matcher(sdir.getAbsolutePath()).matches() ){
 					publish("SKIP(exclude): " + sdir.getAbsolutePath());
 					continue;
 				}
