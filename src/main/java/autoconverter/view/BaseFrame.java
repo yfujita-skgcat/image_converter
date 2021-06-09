@@ -396,6 +396,11 @@ public class BaseFrame extends javax.swing.JFrame {
 			this.resizeRadioButton.setSelected(false);
 		}
 
+		String exclude_regexp_string = AutoConverterConfig.getConfig(AutoConverterConfig.KEY_EXCLUDE_REGEXP_STRING, "", null);
+		if(! exclude_regexp_string.equals("")){
+			this.getExcludeTextField().setText(exclude_regexp_string);
+		}
+
 		this.appController.updateWizerdButton();
 
 		this.setSize(new Dimension(_width, _height));
@@ -502,6 +507,8 @@ public class BaseFrame extends javax.swing.JFrame {
                 displayRangeComboBox = new javax.swing.JComboBox<>();
                 resizeRadioButton = new javax.swing.JCheckBox();
                 resizeSpinner = new javax.swing.JSpinner();
+                excludeLabel = new javax.swing.JLabel();
+                excludeTextField = new javax.swing.JTextField();
                 slideScrollPane2 = new javax.swing.JScrollPane();
                 slide2 = new javax.swing.JPanel();
                 imageScrollPane = new javax.swing.JScrollPane();
@@ -737,6 +744,10 @@ public class BaseFrame extends javax.swing.JFrame {
                         }
                 });
 
+                excludeLabel.setText(bundle.getString("BaseFrame.excludeLabel.text")); // NOI18N
+
+                excludeTextField.setText(bundle.getString("BaseFrame.excludeTextField.text")); // NOI18N
+
                 javax.swing.GroupLayout paramPanelLayout = new javax.swing.GroupLayout(paramPanel);
                 paramPanel.setLayout(paramPanelLayout);
                 paramPanelLayout.setHorizontalGroup(
@@ -750,11 +761,14 @@ public class BaseFrame extends javax.swing.JFrame {
                                 .addComponent(displayRangeLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(displayRangeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(59, 59, 59)
+                                .addGap(50, 50, 50)
                                 .addComponent(resizeRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(resizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
+                                .addGap(50, 50, 50)
+                                .addComponent(excludeLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(excludeTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
                 );
                 paramPanelLayout.setVerticalGroup(
                         paramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -766,7 +780,9 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(displayRangeLabel)
                                         .addComponent(displayRangeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(resizeRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(resizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(resizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(excludeLabel)
+                                        .addComponent(excludeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(5, 5, 5))
                 );
 
@@ -782,7 +798,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                         .addComponent(checkBoxPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(regexPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(destinationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(paramPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1237, Short.MAX_VALUE))
+                                        .addComponent(paramPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1044, Short.MAX_VALUE))
                                 .addContainerGap())
                 );
                 slide1Layout.setVerticalGroup(
@@ -799,7 +815,7 @@ public class BaseFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(regexPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                                 .addContainerGap())
                 );
 
@@ -1419,11 +1435,11 @@ public class BaseFrame extends javax.swing.JFrame {
                 plotPanel.setLayout(plotPanelLayout);
                 plotPanelLayout.setHorizontalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1083, Short.MAX_VALUE)
+                        .addGap(0, 890, Short.MAX_VALUE)
                 );
                 plotPanelLayout.setVerticalGroup(
                         plotPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 213, Short.MAX_VALUE)
+                        .addGap(0, 208, Short.MAX_VALUE)
                 );
 
                 brightnessPanel.add(plotPanel, java.awt.BorderLayout.CENTER);
@@ -1728,18 +1744,18 @@ public class BaseFrame extends javax.swing.JFrame {
                         .addGap(0, 100, Short.MAX_VALUE)
                         .addGroup(convertPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(convertPanelLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addGap(0, 10, Short.MAX_VALUE)
                                         .addComponent(convertButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                        .addGap(0, 10, Short.MAX_VALUE)))
                 );
                 convertPanelLayout.setVerticalGroup(
                         convertPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(0, 40, Short.MAX_VALUE)
                         .addGroup(convertPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(convertPanelLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addGap(0, 5, Short.MAX_VALUE)
                                         .addComponent(convertButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                        .addGap(0, 5, Short.MAX_VALUE)))
                 );
 
                 proceedPanel.add(convertPanel, java.awt.BorderLayout.EAST);
@@ -2532,6 +2548,8 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         private javax.swing.JComboBox dirSelectCBox;
         private javax.swing.JComboBox<String> displayRangeComboBox;
         private javax.swing.JLabel displayRangeLabel;
+        private javax.swing.JLabel excludeLabel;
+        private javax.swing.JTextField excludeTextField;
         private javax.swing.JButton exitButton;
         private javax.swing.JMenu fileMenu;
         private javax.swing.JComboBox<String> filePatternComboBox;
@@ -3275,4 +3293,7 @@ private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		return readCQ1configRadioButton;
 	}
 
+	public javax.swing.JTextField getExcludeTextField(){
+		return this.excludeTextField;
+	}
 }

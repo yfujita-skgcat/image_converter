@@ -72,6 +72,7 @@ public class AutoConverterConfig {
 	public static final String KEY_RESIZE_CHECK = "RESIZE_CHECK";
 	public static final String KEY_RESIZE_WIDTH = "RESIZE_WIDTH";
 	public static final String KEY_READ_CQ1CONFIG = "READCQ1CONFIG";
+	public static final String KEY_EXCLUDE_REGEXP_STRING = "EXCLUDE_REGEXP_STRING";
 
 	public static final String PREFIX_BALL = "BALL";
 	public static final String PREFIX_MIN = "MIN";

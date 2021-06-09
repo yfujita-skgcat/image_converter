@@ -121,6 +121,8 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 	public ArrayList<File> recursiveSearch(File top) throws InterruptedException {
 		ArrayList<File> list = new ArrayList();
 		Pattern filePattern = appCtrl.getFilePattern();
+		// ここに来るまでに正規表現が正しいかはチェック済み前提
+		Pattern excludePattern = appCtrl.getExcludeRegexpPattern();
 
 		String[] contents = top.list();
 		for (int i = 0; i < contents.length; i++) {
@@ -134,6 +136,11 @@ public class FileSearchWorker extends SwingWorker <ArrayList<File>, String>{
 			}
 			// ここを正規表現で最初からマッチさせる
 			if (filePattern.matcher(sdir.getName()).matches() ) {
+				// excludePatternがある場合は除外する. excludePattern はfullpathにマッチする
+				if(excludePattern != null && excludePattern.matcher(sdir.getAbsolutePath()).matches() ){
+					publish("SKIP(exclude): " + sdir.getAbsolutePath());
+					continue;
+				}
 				if (!sdir.getName().matches("_thumb_")) {
 					if(Files.isSymbolicLink(sdir.toPath()) && ignore_symlink  ){
 						publish("SKIP(symlink): " + sdir.getAbsolutePath());

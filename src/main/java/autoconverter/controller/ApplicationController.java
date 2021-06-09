@@ -65,6 +65,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -1594,6 +1595,12 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			// で元のnextに戻す. という流れかな?
 			// ファイルに保存するかどうか. 付加が軽いので保存しても良いと思う.
 			this.storeInitialSettings(false);
+			// 正規表現が正しいかチェックしてダメだったらキャンセル
+			if(! this.isValidExcludeRegexp()){
+				String excludeString = this.getExcludeRegexpString();
+				this.setMessageLabel(excludeString + " is invalid REGEXP.", Color.red);
+				return;
+			}
 			this.startSearchFileList();
 		} else if (cardIndex == 1) {
 			//this.baseFrame.getCropAreaPanel().setEnabled(false);
@@ -2074,6 +2081,14 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 			AutoConverterConfig.save(baseFrame, true);
 		}
 
+	}
+
+	public void storeExcludeRegexpString(boolean save){
+		String regexString = this.getExcludeRegexpString();
+		AutoConverterConfig.setConfig(AutoConverterConfig.KEY_EXCLUDE_REGEXP_STRING, regexString);
+		if(save){
+			AutoConverterConfig.save(baseFrame, true);
+		}
 	}
 
 
@@ -2593,5 +2608,33 @@ public class ApplicationController implements ApplicationMediator, Measurements 
 	 */
 	public HashMap<String, String> getStoredRAutoType() {
 		return storedRAutoType;
+	}
+
+	/**
+	 * 除外のテキストを取得する
+	 * @return 
+	 */
+	public String getExcludeRegexpString(){
+		String text = this.baseFrame.getExcludeTextField().getText();
+		return text;
+	}
+
+	public void setExcludeRegexpString(String str){
+		this.baseFrame.getExcludeTextField().setText(str);
+	}
+
+	public boolean isValidExcludeRegexp(){
+		String regexp = this.getExcludeRegexpString();
+		Pattern exclude_pattern = null;
+		try {
+			exclude_pattern = Pattern.compile(regexp);
+		} catch (PatternSyntaxException e){
+			return false;
+		}
+		return true;
+	}
+	public Pattern getExcludeRegexpPattern(){
+		String regexp = this.getExcludeRegexpString();
+		return Pattern.compile(regexp);
 	}
 }
