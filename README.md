@@ -10,8 +10,18 @@ ImageJ でモノクロtif画像を複数の画像で共通のコントラスト�
 ## インストール
 名前付き正規表現を使用しているためJavaの最新版をインストールしてください。
 また、ImageJのAPIを使用しているのでImageJも最新版が望ましいです。
+よくわからない場合は、[ImageJのダウンロードサイト](https://imagej.nih.gov/ij/download.html)から、ImageJ bundled with Java 1.8.xxx のようにJava付属のImageJ をダウンロードしてください。
 
 plugin フォルダに Img_Conv-*.jar コピーしてください。ImageJ のpluginに表示されるようになります。
+
+### Linux
+ImageJ のpluginディレクトリにコピーしてください。
+
+### Mac OS
+ダウンロードした ImageJ の「パッケージの内容を表示」して、中にある plugin フォルダにコピーしてください。
+
+### Windows
+ImageJ がインストールされたフォルダの中にある plugin フォルダにコピーしてください。
 
 ## 1ページ目
 
