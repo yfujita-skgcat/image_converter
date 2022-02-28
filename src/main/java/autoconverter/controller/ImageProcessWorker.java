@@ -13,6 +13,7 @@ import autoconverter.view.ImagePanel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import ij.io.FileSaver;
 import ij.plugin.ImageCalculator;
 import ij.plugin.RGBStackMerge;
 import ij.plugin.filter.ThresholdToSelection;
@@ -594,7 +595,14 @@ public class ImageProcessWorker extends SwingWorker<Integer, String> {
 		logger.fine("fpath=" + fpath);
 		logger.fine("abssrc=" + abssrc);
 
+		//FileSaver fs = new FileSaver(flatten_image);
 		if (type.equals("jpg")) {
+			//int jq = FileSaver.getJpegQuality();
+			//logger.fine("jpg_quality=" + jq);
+			//fs.saveAsJpeg(fpath);
+			//FileSaver.setJpegQuality(100);
+			//fs.saveAsJpeg(fpath + ".q100.jpg");
+			//FileSaver.setJpegQuality(jq);
 			IJ.saveAs(flatten_image, "jpg", fpath);
 		} else if (type.equals("png") || type.equals("ping")) {
 			IJ.saveAs(flatten_image, "png", fpath);
